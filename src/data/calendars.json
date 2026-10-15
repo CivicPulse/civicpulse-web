@@ -29,11 +29,6 @@
       "id": "mgrls",
       "name": "Middle Georgia Regional Library",
       "color": "#375f74"
-    },
-    {
-      "id": "sample",
-      "name": "Sample events",
-      "color": "#586358"
     }
   ],
   "calendars": [
@@ -148,12 +143,6 @@
       "organizationId": "mgrls",
       "name": "Teens/ Young Adults",
       "color": "#38667b"
-    },
-    {
-      "id": "sample-events",
-      "organizationId": "sample",
-      "name": "Demonstration events",
-      "color": "#586358"
     }
   ]
 }

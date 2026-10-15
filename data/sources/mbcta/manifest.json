@@ -1,0 +1,8 @@
+{
+  "sourceUrl": "https://myride.mbcta.net/gtfs/google_transit.zip",
+  "authorityWebsite": "https://mbcta.net/routes/",
+  "checked": "2026-10-15",
+  "attribution": "Macon-Bibb County Transit Authority",
+  "format": "GTFS Schedule",
+  "liveArrivals": false
+}

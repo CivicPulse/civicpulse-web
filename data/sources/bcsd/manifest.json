@@ -1,0 +1,63 @@
+{
+  "checked": "2026-10-15",
+  "endorsingWebsite": "https://www.bcsdk12.net/about-us",
+  "officialMap": "https://experience.arcgis.com/experience/44abdeca0a6e4fd28f3bb4f76b8806b0",
+  "attributionExisting": "Bibb County School District; Middle Georgia Regional Commission",
+  "datasets": [
+    {
+      "id": "schools",
+      "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "status": "existing",
+      "proposal": null,
+      "count": 43,
+      "geometryTypes": [
+        "Point"
+      ],
+      "lastEditDate": 1760450428635
+    },
+    {
+      "id": "school-zones-elementary",
+      "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/4",
+      "status": "existing",
+      "proposal": null,
+      "count": 23,
+      "geometryTypes": [
+        "Polygon"
+      ],
+      "lastEditDate": 1767983572364
+    },
+    {
+      "id": "school-zones-middle",
+      "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/3",
+      "status": "existing",
+      "proposal": null,
+      "count": 6,
+      "geometryTypes": [
+        "Polygon"
+      ],
+      "lastEditDate": 1767984005024
+    },
+    {
+      "id": "school-zones-high",
+      "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/2",
+      "status": "existing",
+      "proposal": null,
+      "count": 6,
+      "geometryTypes": [
+        "Polygon"
+      ],
+      "lastEditDate": 1767984337432
+    },
+    {
+      "id": "school-board-districts",
+      "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_Board_of_Education_Districts/FeatureServer/0",
+      "status": "existing",
+      "proposal": null,
+      "count": 6,
+      "geometryTypes": [
+        "Polygon"
+      ],
+      "lastEditDate": 1761161695316
+    }
+  ]
+}

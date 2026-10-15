@@ -1,0 +1,15 @@
+{
+  "sourceUrl": "https://rapid.mbcta.net/",
+  "embeddedMap": "https://www.google.com/maps/d/u/0/embed?mid=1XRJZHA2YN6PVYQcTneJiPw_QS1S6g9E&ehbc=2E312F&noprof=1",
+  "kmlUrl": "https://www.google.com/maps/d/kml?mid=1XRJZHA2YN6PVYQcTneJiPw_QS1S6g9E&forcekml=1",
+  "checked": "2026-10-15",
+  "attribution": "Macon-Bibb County Transit Authority — Rapid Transit",
+  "expectedZones": 4,
+  "publishedZoneNames": [
+    "Zone I — Downtown Macon",
+    "Zone II — South Bibb",
+    "Zone III — East Bibb",
+    "Zone IV — Northwest Bibb"
+  ],
+  "note": "The county authority embeds this Google My Maps map. Zone I is the placemark originally labeled Rapid Transit vector. Zone III/IV source descriptions retain the original Coming July 1, 2026 annotation; the authority website lists all four service zones. This snapshot does not guarantee ride availability."
+}

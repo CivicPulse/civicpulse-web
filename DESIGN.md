@@ -108,7 +108,7 @@ Rectangular panels and fine dividers organize content. Date columns and map-laye
 - Warm paper and forest ink.
 - Unna headings with DM Sans controls and prose.
 - Flat rectangular panels and fine dividing rules.
-- Geographic layers and event dates remain legible alongside sample-content notices.
+- Geographic layers and event dates remain legible alongside source notices.
 
 ## Colors
 
@@ -187,17 +187,17 @@ The bold Unna wordmark anchors a plain sans navigation row. Current and hovered 
 
 ### Calendar and event rows
 
-Month and agenda selectors use a terracotta underline for the pressed view. Calendar cells use a forest fill for the selected date, a fine circular ring for today and a dot for sample events. Event rows place the title before category and other metadata, with terracotta date numerals, fine horizontal dividers and native disclosure for details. Downloads and map links remain ordinary readable actions.
+Month and agenda selectors use a terracotta underline for the pressed view. Calendar cells use a forest fill for the selected date, a fine circular ring for today and colored dots for sourced events. Event rows place the title before category and other metadata, with terracotta date numerals, fine horizontal dividers and native disclosure for details. Downloads and map links remain ordinary readable actions.
 
 ### Panels and notices
 
-The calendar month panel uses paper, a thin border and generous padding; the map workspace uses the same flat vocabulary. Events are separated rows rather than individual floating cards. Sample-content notices use sand fill, brown text and a fine warm border. The homepage SVG preview renders the actual voting GeoJSON and links to the interactive map.
+The calendar month panel uses paper, a thin border and generous padding; the map workspace uses the same flat vocabulary. Events are separated rows rather than individual floating cards. Source notices use sand fill, brown text and a fine warm border. The homepage SVG preview renders the actual voting GeoJSON and links to the interactive map.
 
 ## Do's and Don'ts
 
 ### Do:
 - Do preserve forest text, cream ground and the sage/terracotta relationship.
-- Do keep sample and illustrative-content notices visible as readable text.
+- Do keep source and data-limit notices visible as readable text.
 - Do use native controls, visible keyboard focus and tabular date numerals.
 - Do keep geographic layer swatches consistent with the map features.
 

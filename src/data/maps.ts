@@ -1,4 +1,6 @@
+import { educationTransitLayers, educationTransitMaps } from './education-transit';
 export const layers = [
+  ...educationTransitLayers,
   { id: 'recreation-centers', name: 'Recreation centers', description: '11 county centers with published hours and amenities', color: '#26726b', kind: 'point' },
   { id: 'libraries', name: 'MGRLS libraries', description: '18 library and book-locker locations in seven counties', color: '#2166ac', kind: 'point' },
   { id: 'commission-districts', name: 'Commission districts', description: 'Nine county districts and commissioner contact details', color: '#4d6a8c', kind: 'area' },
@@ -12,6 +14,7 @@ export const maps = [
   { id: 'events', name: 'Community events', description: 'Explore calendar events by venue. Online events and listings without coordinates remain in the calendar.', layers: ['event-locations'] },
   { id: 'recreation', name: 'Macon-Bibb recreation centers', description: 'Explore 11 county recreation, community, senior and boxing centers, with published hours and amenities. Locations are approximate street-address matches.', layers: ['recreation-centers'] },
   { id: 'libraries', name: 'MGRLS libraries', description: 'Find Middle Georgia Regional Library locations, published opening hours and contact details. Book markers are colored by county.', layers: ['libraries'] },
+  ...educationTransitMaps,
 ];
 
 export function layerUrl(id: string) {

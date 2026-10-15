@@ -7,6 +7,8 @@ import { eventDate, eventTime, type CommunityEvent } from '../lib/events';
 import { organizationMarker } from '../lib/organization-marker';
 import { organizationFor } from '../lib/calendars';
 import libraryCounties from '../data/library-counties.json';
+import { officialLayerIds, officialFeatureColor, isSchoolPointLayer, schoolIcon, schoolPointLayerIds, layerGroup, schoolAttribution, transitAttribution, rapidAttribution, transitFeedExpired } from '../data/education-transit';
+import { appendOfficialDetails } from '../lib/official-map-popup';
 
 type PrecinctStyle = (typeof qgisStyle.layers.voting_precincts)['EM1'];
 type PollingStyle = (typeof qgisStyle.layers.polling_places)['EM1'];
@@ -32,6 +34,7 @@ mapElement.replaceChildren();
 const map = L.map(mapElement, { scrollWheelZoom: false, fadeAnimation: !matchMedia('(prefers-reduced-motion: reduce)').matches, zoomAnimation: !matchMedia('(prefers-reduced-motion: reduce)').matches }).setView([32.844, -83.649], 12);
 map.createPane('boundaryLayers').style.zIndex = '400';
 map.createPane('pointLayers').style.zIndex = '450';
+map.createPane('routeLayers').style.zIndex = '425';
 map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
 const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -46,7 +49,7 @@ let currentMap = maps.find(item => item.id === params.get('map')) || maps.find(i
 let selected = new Set<string>(currentMap.layers);
 const requestedLayers = params.get('layers');
 if (requestedLayers !== null) {
-  const valid = requestedLayers.split(',').filter(id => layers.some(layer => layer.id === id));
+  const valid = requestedLayers.split(',').flatMap(id => id === 'schools' ? schoolPointLayerIds : [id]).filter(id => layers.some(layer => layer.id === id));
   if (valid.length || requestedLayers === '') selected = new Set(valid);
 }
 
@@ -66,7 +69,9 @@ function popup(feature: Feature, title: string, source: string) {
   element.append(heading);
   const properties = feature.properties || {};
   const add = (text: string) => { const p = document.createElement('p'); p.textContent = text; element.append(p); };
-  if (source === 'recreation-centers') {
+  if (officialLayerIds.has(source)) {
+    appendOfficialDetails(element, feature, source);
+  } else if (source === 'recreation-centers') {
     add(String(properties.fulladd));
     const hoursHeading = document.createElement('h4'); hoursHeading.textContent = 'Published hours'; element.append(hoursHeading);
     const hoursList = document.createElement('ul');
@@ -164,7 +169,7 @@ function reveal(place: Place) {
 }
 function renderDirectory() {
   const term = search.value.trim().toLocaleLowerCase();
-  const visible = places.filter(place => selected.has(place.source) && `${place.title} ${place.feature.properties?.fulladd || ''} ${place.feature.properties?.county || ''} ${(place.feature.properties?.amenities || []).join(' ')} ${place.source === 'polling-places' ? recordStatus(place.feature) : ''} ${(place.feature.properties?.events || []).map((event: CommunityEvent) => event.title).join(' ')}`.toLocaleLowerCase().includes(term));
+  const visible = places.filter(place => selected.has(place.source) && `${place.title} ${place.feature.properties?.fulladd || ''} ${place.feature.properties?.county || ''} ${place.feature.properties?.BoardMember || ''} ${(place.feature.properties?.routeNumbers || []).map((n: string) => `Route ${n}`).join(' ')} ${(place.feature.properties?.routeNames || []).join(' ')} ${place.feature.properties?.stop_code || ''} ${(place.feature.properties?.amenities || []).join(' ')} ${place.source === 'polling-places' ? recordStatus(place.feature) : ''} ${(place.feature.properties?.events || []).map((event: CommunityEvent) => event.title).join(' ')}`.toLocaleLowerCase().includes(term));
   directory.replaceChildren();
   directoryStatus.textContent = `${visible.length} ${visible.length === 1 ? 'feature' : 'features'}${term ? ` matching “${search.value.trim()}”` : ' in selected layers'}`;
   if (!visible.length) {
@@ -176,7 +181,7 @@ function renderDirectory() {
     const config = layers.find(layer => layer.id === place.source)!;
     const row = document.createElement('div'); row.className = 'place-row';
     const symbology = votingStyle(place.feature, place.source);
-    const dot = document.createElement('span'); dot.className = 'place-dot'; dot.style.background = place.source === 'commission-districts' ? commissionColor(place.feature.properties?.commdist) : symbology?.color || config.color; dot.setAttribute('aria-hidden', 'true');
+    const dot = document.createElement('span'); dot.className = 'place-dot'; dot.style.background = officialLayerIds.has(place.source) ? officialFeatureColor(place.feature.properties || {}, place.source) : place.source === 'commission-districts' ? commissionColor(place.feature.properties?.commdist) : symbology?.color || config.color; dot.setAttribute('aria-hidden', 'true');
     if (place.source === 'polling-places' && symbology && 'icon' in symbology && typeof symbology.icon === 'string') {
       const icon = document.createElement('img'); icon.src = symbology.icon; icon.alt = ''; icon.width = 24; icon.height = 27;
       dot.className = 'place-ballot'; dot.style.background = ''; dot.append(icon);
@@ -192,6 +197,7 @@ function renderDirectory() {
     const info = document.createElement('div');
     const title = document.createElement('strong'); title.textContent = place.title;
     const subtitle = document.createElement('small'); subtitle.textContent = `${config.name} · ${place.source === 'polling-places' ? recordStatus(place.feature) : place.source === 'event-locations' ? `${organizationFor(place.feature.properties?.organizationId)?.name || 'Community'} · ${place.feature.properties?.events?.length || 0} saved events` : 'Uploaded data'}`;
+    if (officialLayerIds.has(place.source)) subtitle.textContent = isSchoolPointLayer(place.source) ? `${place.feature.properties?.schoolType || 'Facility'} · ${place.feature.properties?.recordStatus || 'Status not recorded'}` : place.source.startsWith('transit-') ? `${config.name} · Saved schedule` : `${config.name} · Published GIS`;
     if (place.source === 'recreation-centers') subtitle.textContent = `${place.feature.properties?.street} · Macon-Bibb Recreation`;
     if (place.source === 'libraries') subtitle.textContent = `MGRLS · ${place.feature.properties?.county}${place.feature.properties?.kind === 'book-locker' ? ' · Book locker' : ''}`;
     info.append(title, subtitle);
@@ -205,33 +211,51 @@ function fit() {
   if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, animate: false });
   else map.setView([32.844, -83.649], 12, { animate: false });
 }
-function sync(updateUrl = true) {
+function sync(updateUrl = true, resetGroups = false) {
   choice.value = currentMap.id;
   byId('map-description').textContent = currentMap.description;
+  const activeGroups = new Set<string>([...selected].map(layerGroup));
+  for (const group of document.querySelectorAll<HTMLDetailsElement>('.layer-group')) { if (resetGroups || activeGroups.has(group.dataset.layerGroup || '')) group.open = activeGroups.has(group.dataset.layerGroup || ''); }
+  byId('rapid-map-note').hidden = !selected.has('rapid-service-area');
+  byId('school-map-note').hidden = ![...selected].some(id => id.startsWith('school-zones-'));
+  byId('transit-map-note').hidden = ![...selected].some(id => id.startsWith('transit-'));
+  byId('transit-expired').hidden = !transitFeedExpired();
   byId('event-map-note').hidden = !selected.has('event-locations');
   byId('event-marker-key').hidden = !selected.has('event-locations');
   byId('library-marker-key').hidden = !selected.has('libraries');
   for (const [id, layer] of loaded) { if (selected.has(id)) layer.addTo(map); else map.removeLayer(layer); }
-  for (const check of checks) { check.checked = selected.has(check.value); check.disabled = !loaded.has(check.value); }
+  for (const check of checks) { check.checked = selected.has(check.value); check.disabled = failures.includes(layers.find(layer => layer.id === check.value)!.name); }
   const active = [...selected].filter(id => loaded.has(id));
-  status.textContent = `${active.length} ${active.length === 1 ? 'layer' : 'layers'} visible · ${active.length ? active.includes('recreation-centers') ? 'Recreation centers & selected layers' : active.includes('libraries') ? 'MGRLS libraries & selected layers' : active.includes('event-locations') ? 'Event venues & selected layers' : active.includes('commission-districts') ? 'County districts & selected layers' : 'Uploaded voting data' : 'No layers selected'}`;
+  status.textContent = `${active.length} ${active.length === 1 ? 'layer' : 'layers'} visible · ${active.length ? active.includes('rapid-service-area') ? 'Rapid service areas & selected layers' : active.some(id => id.startsWith('transit-')) ? 'Scheduled transit & selected layers' : active.some(id => id.startsWith('school')) ? 'School data & selected layers' : active.includes('recreation-centers') ? 'Recreation centers & selected layers' : active.includes('libraries') ? 'MGRLS libraries & selected layers' : active.includes('event-locations') ? 'Event venues & selected layers' : active.includes('commission-districts') ? 'County districts & selected layers' : 'Uploaded voting data' : 'No layers selected'}`;
   if (updateUrl) {
     const next = new URL(location.href); next.searchParams.set('map', currentMap.id); next.searchParams.set('layers', [...selected].join(','));
     history.replaceState(null, '', next);
   }
   renderDirectory();
 }
-async function init() {
-  await Promise.all(layers.map(async config => {
+function loadingState() {
+  choice.disabled = true;
+  for (const check of checks) check.disabled = true;
+  status.textContent = 'Loading map layers…';
+}
+async function loadLayers(ids: string[]) {
+  // Keep the linked voting pair available for their existing cross-navigation.
+  const requested = new Set(ids);
+  if (ids.some(id => id === 'polling-places' || id === 'voting-precincts')) { requested.add('polling-places'); requested.add('voting-precincts'); }
+  await Promise.all(layers.filter(config => requested.has(config.id) && !loaded.has(config.id)).map(async config => {
     try {
       const response = await fetch(layerUrl(config.id));
       if (!response.ok) throw new Error('Could not load layer');
       const data = await response.json() as FeatureCollection;
       if (data.type !== 'FeatureCollection' || !Array.isArray(data.features)) throw new Error('Invalid layer');
       const group = L.geoJSON(data, {
-        attribution: config.id === 'recreation-centers' ? '<a href="https://www.maconbibb.us/recreation/recreation-center/">Macon-Bibb County Recreation</a> · <a href="https://geocoding.geo.census.gov/">US Census Geocoder</a>' : config.id === 'libraries' ? '<a href="https://bibblib.org/locations_hours.php">MGRLS</a>' : config.id === 'event-locations' ? '' : '<a href="https://www.maconbibb.us/">Macon-Bibb County Government IT GIS</a>',
-        pane: config.kind === 'point' ? 'pointLayers' : 'boundaryLayers',
+        attribution: config.id === 'rapid-service-area' ? rapidAttribution : config.id.startsWith('school') ? schoolAttribution : config.id.startsWith('transit-') ? transitAttribution : config.id === 'recreation-centers' ? '<a href="https://www.maconbibb.us/recreation/recreation-center/">Macon-Bibb County Recreation</a> · <a href="https://geocoding.geo.census.gov/">US Census Geocoder</a>' : config.id === 'libraries' ? '<a href="https://bibblib.org/locations_hours.php">MGRLS</a>' : config.id === 'event-locations' ? '' : '<a href="https://www.maconbibb.us/">Macon-Bibb County Government IT GIS</a>',
+        pane: config.kind === 'line' ? 'routeLayers' : config.kind === 'point' ? 'pointLayers' : 'boundaryLayers',
         style: (feature) => {
+          if (feature && officialLayerIds.has(config.id)) {
+            const color = officialFeatureColor(feature.properties || {}, config.id);
+            return config.kind === 'line' ? { color, weight: 4, opacity: .9, lineCap: 'round', lineJoin: 'round' } : { color: '#374151', weight: 1.5, opacity: .85, fillColor: color, fillOpacity: .35 };
+          }
           const style = feature && votingStyle(feature, config.id);
           if (config.id === 'voting-precincts' && style) return {
             color: style.outline, weight: style.outlineWidth, opacity: style.outlineOpacity,
@@ -244,6 +268,8 @@ async function init() {
           return { color: config.color, weight: 2, fillColor: config.color, fillOpacity: config.kind === 'point' ? 1 : .13 };
         },
         pointToLayer: (feature, latlng) => {
+          if (isSchoolPointLayer(config.id)) return L.marker(latlng, { title: featureTitle(feature, config.id), alt: featureTitle(feature, config.id), icon: L.icon({iconUrl:schoolIcon(config.id),className:`school-marker ${config.id}`,iconSize:[30,38],iconAnchor:[15,36],popupAnchor:[0,-32]}) });
+          if (config.id === 'transit-stops') return L.circleMarker(latlng, {pane:'pointLayers',radius:4,color:'#173e34',weight:1,fillColor:'#fffcf6',fillOpacity:1,className:'transit-stop-marker'});
           if (config.id === 'recreation-centers') return L.marker(latlng, {
             title: featureTitle(feature, config.id), alt: featureTitle(feature, config.id),
             icon: L.icon({ iconUrl: '/icons/recreation/center.svg', className: 'recreation-marker', iconSize: [36, 45], iconAnchor: [18, 43], popupAnchor: [0, -39] }),
@@ -271,7 +297,8 @@ async function init() {
         },
         onEachFeature: (feature, layer) => {
           const title = featureTitle(feature, config.id);
-          layer.bindPopup(() => popup(feature, title, config.id), config.id === 'recreation-centers' ? { maxHeight: 200, maxWidth: 280, autoPanPadding: L.point(12, 12) } : ['event-locations', 'libraries'].includes(config.id) ? { maxHeight: 300 } : {});
+          layer.bindPopup(() => popup(feature, title, config.id), officialLayerIds.has(config.id) ? { maxHeight: 200, maxWidth: 280, autoPanPadding: L.point(12,12) } : config.id === 'recreation-centers' ? { maxHeight: 200, maxWidth: 280, autoPanPadding: L.point(12, 12) } : ['event-locations', 'libraries'].includes(config.id) ? { maxHeight: 300 } : {});
+          if (officialLayerIds.has(config.id)) layer.bindTooltip(title, { sticky: config.kind !== 'point' });
           if (config.id === 'commission-districts') layer.bindTooltip(title, { sticky: true });
           if (config.id === 'voting-precincts') layer.bindTooltip(String(feature.properties?.precinctid || title), { sticky: true });
           if (config.id === 'event-locations') layer.bindTooltip(title);
@@ -286,20 +313,26 @@ async function init() {
     error.hidden = false;
     error.querySelector('p')!.textContent = `Could not load: ${failures.join(', ')}. Other layers are still available. Reload to try again.`;
   }
+}
+async function init() {
+  loadingState();
+  await loadLayers([...selected]);
   choice.disabled = false;
-  sync(); fit();
+  sync(true, true); fit();
   const eventId = params.get('event');
   const place = places.find(place => place.source === 'event-locations' && place.feature.properties?.events?.some((item: {id: string}) => item.id === eventId));
   if (place) { selected.add(place.source); sync(); reveal(place); }
 }
-choice.addEventListener('change', () => {
+choice.addEventListener('change', async () => {
   currentMap = maps.find(item => item.id === choice.value)!;
-  selected = new Set(currentMap.layers.filter(id => loaded.has(id)));
+  selected = new Set(currentMap.layers);
   search.value = '';
   const next = new URL(location.href); next.searchParams.delete('event'); history.replaceState(null, '', next);
-  map.closePopup(); sync(); fit();
+  map.closePopup(); sync(true, true); loadingState();
+  await loadLayers([...selected]);
+  choice.disabled = false; sync(); fit();
 });
-for (const check of checks) check.addEventListener('change', () => { if (check.checked) selected.add(check.value); else selected.delete(check.value); sync(); });
+for (const check of checks) check.addEventListener('change', async () => { if (check.checked) { selected.add(check.value); loadingState(); await loadLayers([check.value]); choice.disabled = false; } else selected.delete(check.value); sync(); });
 search.addEventListener('input', renderDirectory);
 byId('fit-map').addEventListener('click', fit);
 byId('retry-map').addEventListener('click', () => location.reload());

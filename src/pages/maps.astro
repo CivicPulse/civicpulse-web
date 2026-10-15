@@ -9,8 +9,9 @@ const markerOrganizations = organizations.filter(organization => mappedEvents.so
 const venueCount = new Set(eventLocations.features.map(feature => feature.geometry.coordinates.join(','))).size;
 import { commissionColors } from '../data/commission-style';
 import libraryCounties from '../data/library-counties.json';
+import { mapLayerGroups, layerGroup, transitServicePeriod, officialFeatureColor, isSchoolPointLayer, schoolIcon } from '../data/education-transit';
 ---
-<Layout title="Explore maps" description="Explore county recreation centers, Middle Georgia libraries, community events, commission districts, polling places and voting precincts.">
+<Layout title="Explore maps" description="Explore schools, attendance boundaries, school-board districts, transit routes, county recreation centers, Middle Georgia libraries, community events, commission districts, polling places and voting precincts.">
   <main id="main">
     <div class="page-intro"><h1>Find your way around.</h1><p>A different view of Macon–Bibb. Choose a map, then make it your own with layers.</p></div>
     <div class="map-workspace">
@@ -18,11 +19,14 @@ import libraryCounties from '../data/library-counties.json';
         <label class="field-label" for="map-choice">Choose a map</label>
         <select id="map-choice" aria-describedby="map-description" disabled>{maps.map(map => <option value={map.id}>{map.name}</option>)}</select>
         <p id="map-description">{maps[0].description}</p>
+        <p id="rapid-map-note" class="map-help" hidden>On-demand rideshare zones, separate from fixed bus routes. Both pickup and destination must be inside active zones. <a href="https://rapid.mbcta.net/">Check MBCTA Rapid availability</a>.</p>
+        <p id="school-map-note" class="map-help" hidden>Attendance polygons are labeled <strong>2025–26</strong> in the source. Split and temporary elementary zones are retained. <a href="https://www.bcsdk12.net/about-us">Confirm current enrollment assignments with BCSD</a>.</p>
+        <p id="transit-map-note" class="map-help" hidden>Schedule snapshot: {transitServicePeriod}. No live arrivals. <strong id="transit-expired" hidden>This schedule has expired.</strong> <a href="https://myride.mbcta.net/">Check current bus information</a>.</p>
         <div id="library-marker-key" class="event-marker-key" hidden><details><summary>Library counties</summary>{libraryCounties.map(county => <p><img src={county.icon} width="20" height="25" alt=""/>{county.name}</p>)}</details><p class="map-help"><a href="https://bibblib.org/directory_page_T49_R56.php">Library WOW</a> is a mobile service. Contact MGRLS to arrange a visit.</p></div>
         <p id="event-map-note" class="map-help" hidden>{mappedEvents.length} calendar events at {venueCount} venues. Locations are approximate; confirm the meeting point with the organizer. <a href="/calendar/">View the full calendar</a>.</p>
         <div id="event-marker-key" class="event-marker-key" hidden><details><summary>Organization &amp; calendar colors</summary>{markerOrganizations.map(organization => <section><h3><img src={organization.id === 'mgdsa' ? '/icons/dsa/marker.svg' : `/icons/organizations/${organization.id}/marker.svg`} width="24" height="30" alt=""/>{organization.name}</h3>{calendars.filter(calendar => calendar.organizationId === organization.id && mappedEvents.some(event => event.calendarIds?.includes(calendar.id))).map(calendar => <p><span style={`background:${calendar.color}`} aria-hidden="true"/>{calendar.name}</p>)}</section>)}<small>A shared venue shows each calendar color.</small></details></div>
         <fieldset class="layer-controls"><legend>Map layers <Icon name="layers" size={18}/></legend>
-          {layers.map(layer => <label class="layer-control"><input type="checkbox" value={layer.id} disabled checked={(maps[0].layers as string[]).includes(layer.id)} />{layer.id === 'recreation-centers' ? <img class="layer-ballot" src="/icons/recreation/center.svg" alt="" width="20" height="25"/> : layer.id === 'libraries' ? <img class="layer-ballot" src="/icons/libraries/library-bibb.svg" alt="" width="20" height="25"/> : layer.id === 'polling-places' ? <img class="layer-ballot" src={qgisStyle.layers.polling_places.EarlyVote.icon} alt="" width="20" height="23"/> : layer.id === 'event-locations' ? <span class="layer-swatch point" style={`--swatch:${layer.color}`} aria-hidden="true"/> : layer.id === 'commission-districts' ? <span class="commission-swatches" aria-hidden="true">{Object.entries(commissionColors).map(([district,color]) => <i style={`background:${color}`} title={`District ${district}`}/>)}</span> : <span class="precinct-swatches" aria-hidden="true">{[...new Set(Object.values(qgisStyle.layers.voting_precincts).map(style => style.color))].map(color => <i style={`background:${color}`}/>)}</span>}<span><strong>{layer.name}</strong><small>{layer.description}</small></span></label>)}
+          {mapLayerGroups.map(group => <details class="layer-group" data-layer-group={group.id} open={group.id === 'community'}><summary>{group.name}</summary><div>{layers.filter(layer => layerGroup(layer.id) === group.id).map(layer => <label class="layer-control"><input type="checkbox" value={layer.id} disabled checked={(maps[0].layers as string[]).includes(layer.id)} />{layer.id === 'rapid-service-area' ? <span class="rapid-swatches" aria-hidden="true">{[1,2,3,4].map(zoneNumber => <i style={`background:${officialFeatureColor({zoneNumber}, 'rapid-service-area')}`}/>)}</span> : isSchoolPointLayer(layer.id) ? <img class="layer-ballot" src={schoolIcon(layer.id)} alt="" width="20" height="25"/> : layer.id === 'recreation-centers' ? <img class="layer-ballot" src="/icons/recreation/center.svg" alt="" width="20" height="25"/> : layer.id === 'libraries' ? <img class="layer-ballot" src="/icons/libraries/library-bibb.svg" alt="" width="20" height="25"/> : layer.id === 'polling-places' ? <img class="layer-ballot" src={qgisStyle.layers.polling_places.EarlyVote.icon} alt="" width="20" height="23"/> : layer.id === 'event-locations' ? <span class="layer-swatch point" style={`--swatch:${layer.color}`} aria-hidden="true"/> : layer.id === 'commission-districts' ? <span class="commission-swatches" aria-hidden="true">{Object.entries(commissionColors).map(([district,color]) => <i style={`background:${color}`} title={`District ${district}`}/>)}</span> : layer.id !== 'voting-precincts' ? <span class={`layer-swatch ${layer.kind}`} style={`--swatch:${layer.color}`} aria-hidden="true"/> : <span class="precinct-swatches" aria-hidden="true">{[...new Set(Object.values(qgisStyle.layers.voting_precincts).map(style => style.color))].map(color => <i style={`background:${color}`}/>)}</span>}<span><strong>{layer.name}</strong><small>{layer.description}</small></span></label>)}</div></details>)}
         </fieldset>
         <label class="basemap-control"><input type="checkbox" id="basemap" checked /> Show street basemap</label>
         <button id="fit-map" type="button">Fit map to visible layers</button>
@@ -37,11 +41,11 @@ import libraryCounties from '../data/library-counties.json';
       </div>
     </div>
     <section class="place-directory" aria-labelledby="directory-title">
-      <div class="directory-heading"><div><h2 id="directory-title">Places on your map</h2><p>Search recreation centers, amenities, event venues, commissioner names, precinct codes or addresses in your selected layers.</p></div><label class="search-field"><span class="sr-only">Search places, precincts or addresses</span><Icon name="search"/><input id="place-search" type="search" placeholder="Search places, precincts or addresses" /></label></div>
+      <div class="directory-heading"><div><h2 id="directory-title">Places on your map</h2><p>Search names, addresses, school-board members, bus routes or stop codes in your selected layers.</p></div><label class="search-field"><span class="sr-only">Search places, precincts or addresses</span><Icon name="search"/><input id="place-search" type="search" placeholder="Search places, precincts or addresses" /></label></div>
       <p id="directory-status" class="status" role="status"></p>
       <div id="place-list"></div>
     </section>
-    <noscript><p class="sample-notice">Enable JavaScript to use the interactive map. You can still <a href="/data/">download the GeoJSON files</a> and explore them in your preferred mapping application.</p></noscript>
+    <noscript><p class="data-notice">Enable JavaScript to use the interactive map. You can still <a href="/data/">download the GeoJSON files</a> and explore them in your preferred mapping application.</p></noscript>
   </main>
 </Layout>
 <script>import '../scripts/map';</script>
@@ -62,3 +66,10 @@ import libraryCounties from '../data/library-counties.json';
 <style>
 #library-marker-key .map-help{display:block}
 </style>
+
+<style>
+.layer-group{border-top:1px solid var(--line)}.layer-group summary{cursor:pointer;font-size:13px;font-weight:600;min-height:44px;padding:12px 0;line-height:1.5}.layer-group>div{padding-bottom:12px}
+@media(max-width:600px){.layer-controls{display:block}.layer-group>div{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}}
+</style>
+
+<style>.rapid-swatches{display:grid;grid-template-columns:repeat(2,6px);gap:1px;flex:none}.rapid-swatches i{width:6px;height:6px}</style>

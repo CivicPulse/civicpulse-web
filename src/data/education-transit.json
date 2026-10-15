@@ -1,0 +1,148 @@
+{
+  "checked": "2026-10-15",
+  "schoolMap": "https://experience.arcgis.com/experience/44abdeca0a6e4fd28f3bb4f76b8806b0",
+  "transitFeed": {
+    "sourceUrl": "https://myride.mbcta.net/gtfs/google_transit.zip",
+    "sourceChecked": "2026-10-15",
+    "attribution": "Macon-Bibb County Transit Authority",
+    "serviceStart": "20260607",
+    "serviceEnd": "20261031",
+    "feedVersion": "6-6-26",
+    "liveArrivals": false
+  },
+  "datasets": [
+    {
+      "id": "schools",
+      "data": "/data/schools.geojson",
+      "featureCount": 43,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "sourceSchoolYear": null
+    },
+    {
+      "id": "school-zones-elementary",
+      "data": "/data/school-zones-elementary.geojson",
+      "featureCount": 23,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/4",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "sourceSchoolYear": "2025–26"
+    },
+    {
+      "id": "school-zones-middle",
+      "data": "/data/school-zones-middle.geojson",
+      "featureCount": 6,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/3",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "sourceSchoolYear": "2025–26"
+    },
+    {
+      "id": "school-zones-high",
+      "data": "/data/school-zones-high.geojson",
+      "featureCount": 6,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_County_School_Zones_WFL1/FeatureServer/2",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "sourceSchoolYear": "2025–26"
+    },
+    {
+      "id": "school-board-districts",
+      "data": "/data/school-board-districts.geojson",
+      "featureCount": 6,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Macon_Bibb_Board_of_Education_Districts/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "sourceSchoolYear": null
+    },
+    {
+      "id": "schools-elementary",
+      "data": "/data/schools-elementary.geojson",
+      "featureCount": 22,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "Elementary School"
+    },
+    {
+      "id": "schools-middle",
+      "data": "/data/schools-middle.geojson",
+      "featureCount": 6,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "Middle School"
+    },
+    {
+      "id": "schools-high",
+      "data": "/data/schools-high.geojson",
+      "featureCount": 6,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "High School"
+    },
+    {
+      "id": "schools-pre-k",
+      "data": "/data/schools-pre-k.geojson",
+      "featureCount": 1,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "Pre-K"
+    },
+    {
+      "id": "schools-administration",
+      "data": "/data/schools-administration.geojson",
+      "featureCount": 7,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "Administration"
+    },
+    {
+      "id": "schools-specialty",
+      "data": "/data/schools-specialty.geojson",
+      "featureCount": 1,
+      "sourceUrl": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/MBC_Schools/FeatureServer/0",
+      "attribution": "Bibb County School District; Middle Georgia Regional Commission",
+      "zoneStatus": "existing",
+      "derivedFrom": "schools",
+      "schoolType": "Specialty School"
+    },
+    {
+      "id": "transit-routes",
+      "data": "/data/transit-routes.geojson",
+      "featureCount": 10,
+      "sourceUrl": "https://myride.mbcta.net/gtfs/google_transit.zip",
+      "attribution": "Macon-Bibb County Transit Authority",
+      "shapeCount": 29,
+      "serviceStart": "20260607",
+      "serviceEnd": "20261031"
+    },
+    {
+      "id": "transit-stops",
+      "data": "/data/transit-stops.geojson",
+      "featureCount": 854,
+      "sourceUrl": "https://myride.mbcta.net/gtfs/google_transit.zip",
+      "attribution": "Macon-Bibb County Transit Authority",
+      "serviceStart": "20260607",
+      "serviceEnd": "20261031"
+    },
+    {
+      "id": "rapid-service-area",
+      "data": "/data/rapid-service-area.geojson",
+      "featureCount": 4,
+      "sourceUrl": "https://rapid.mbcta.net/",
+      "sourceMap": "https://www.google.com/maps/d/u/0/embed?mid=1XRJZHA2YN6PVYQcTneJiPw_QS1S6g9E&ehbc=2E312F&noprof=1",
+      "attribution": "Macon-Bibb County Transit Authority — Rapid Transit",
+      "serviceType": "on-demand rideshare"
+    }
+  ]
+}

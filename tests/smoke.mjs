@@ -47,11 +47,13 @@ try {
     await page.getByRole('searchbox', { name: 'Search places, precincts or addresses' }).fill('');
     await page.getByLabel('Polling places', { exact: false }).uncheck();
     await expect(page.locator('.place-row')).toHaveCount(31);
-    await expect(page.locator('.layer-control input')).toHaveCount(6);
+    await expect(page.locator('.layer-control input')).toHaveCount(19);
     await expect(page.locator('#map-choice')).toHaveCount(1);
     await page.getByLabel('Voting precincts', { exact: false }).uncheck();
     await expect(page.locator('.place-row')).toHaveCount(0);
     await expect(page.locator('#place-list')).toContainText('Turn on a layer');
+    const communityLayers = page.locator('[data-layer-group="community"]');
+    if (await communityLayers.getAttribute('open') === null) await communityLayers.locator('summary').click();
     await page.getByLabel('Polling places', { exact: false }).check();
     await expect(page.locator('.place-row')).toHaveCount(34);
     await page.getByRole('searchbox', { name: 'Search places, precincts or addresses' }).fill('EM3');
@@ -64,6 +66,8 @@ try {
     await page.screenshot({ path: `${out}/maps-${name}.png`, fullPage: true });
     await page.getByRole('link', { name: 'Community calendar', exact: true }).click();
     await expect(page.locator('#month-title')).toHaveText('October 2026');
+    await expect(page.locator('[data-calendar-organization=sample], option[value=sample], input[value=sample-events]')).toHaveCount(0);
+    await expect(page.locator('main')).not.toContainText(/Sample events|Demonstration events|Fictional demonstration/);
     await page.getByLabel('Organization', { exact: true }).selectOption('macon-bibb-dems');
     await expect(page.locator('.calendar-event:visible')).toHaveCount(maconOctoberCount);
     await page.getByRole('button', { name: 'Hide all', exact: true }).click();
@@ -97,8 +101,8 @@ try {
     await expect(page.locator('.calendar-event:visible')).toHaveCount(october17Count);
     await page.getByRole('button', { name: 'Show whole month' }).click();
     console.log(name + ': map controls and day selection passed');
-    await page.getByLabel('Category', { exact: true }).selectOption('Community');
-    await expect(page.locator('.calendar-event:visible')).toHaveCount(monthEvents('2026-10').filter(event => event.category === 'Community').length);
+    await page.getByLabel('Category', { exact: true }).selectOption('Adults');
+    await expect(page.locator('.calendar-event:visible')).toHaveCount(monthEvents('2026-10').filter(event => event.category === 'Adults').length);
     await page.getByLabel('Find an event').fill('does-not-exist');
     await expect(page.locator('#events-empty')).toBeVisible();
     await page.getByRole('button', { name: 'Clear filters' }).click();
@@ -109,9 +113,6 @@ try {
     await page.getByRole('button', { name: 'Agenda', exact: true }).click();
     await expect(page.locator('#month-view')).toBeHidden();
     await expect(page.locator('#agenda-summary')).toBeVisible();
-    await page.goto(`${base}/calendar/?event=live-on-poplar`);
-    await expect(page.locator('#month-title')).toHaveText('November 2026');
-    await expect(page.locator('#event-live-on-poplar details')).toHaveAttribute('open', '');
     await page.goto(`${base}/calendar/?event=mobilize-1033976-2026-11-03`);
     await expect(page.locator('#month-title')).toHaveText('November 2026');
     const imported = page.locator('#event-mobilize-1033976-2026-11-03');
@@ -241,16 +242,19 @@ try {
   results.push('Voting and calendar layers are available; removed sample GeoJSON URLs return 404');
   const ics = await (await fetch(base + '/events.ics')).text();
   expect((ics.match(/BEGIN:VEVENT/g) || []).length).toBe(allEvents.length);
-  expect(ics).toContain('SUMMARY:[SAMPLE]'); expect(ics).toContain('DTSTART:20261107T230000Z');
+  expect(ics).not.toContain('[SAMPLE]');
+  expect(ics).toContain('DTSTART:20261103T140000Z');
   for (const line of ics.split('\r\n')) expect(Buffer.byteLength(line)).toBeLessThanOrEqual(75);
-  const eventICS = await (await fetch(base + '/events/live-on-poplar.ics')).text();
-  expect((eventICS.match(/BEGIN:VEVENT/g) || []).length).toBe(1);
+  for (const id of ['fall-cleanup', 'resource-fair', 'live-on-poplar', 'neighborhood-walk', 'library-makers', 'winter-garden']) {
+    expect(allEvents.some(event => event.id === id)).toBeFalsy();
+    expect((await fetch(`${base}/events/${id}.ics`)).status).toBe(404);
+  }
   const importedICS = await (await fetch(base + '/events/mobilize-1033976-2026-11-03.ics')).text();
   expect(importedICS).toContain('DTSTART:20261103T140000Z');
   expect(importedICS).toContain('URL:https://www.mobilize.us/democraticpartyofgeorgia26/event/1033976/');
   expect(importedICS).not.toContain('[SAMPLE]');
   expect((ics.match(/URL:https:\/\/www.mobilize.us/g) || []).length).toBe(mobilize.length);
-  results.push('Calendar downloads: correct event count, SAMPLE labels, DST-aware UTC, RFC 5545 line folding');
+  results.push('Calendar downloads: only sourced events, removed demo URLs, DST-aware UTC, RFC 5545 line folding');
   const allDay = mgdsa.find(event => event.allDay);
   const allDayICS = await (await fetch(`${base}/events/${allDay.id}.ics`)).text();
   expect(allDayICS).toContain(`DTSTART;VALUE=DATE:${allDay.start.slice(0,10).replaceAll('-', '')}`);

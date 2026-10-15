@@ -44,14 +44,14 @@ Open http://localhost:4321. Run `npm run build` for TypeScript/Astro checks and 
 - Voting, commissioner, event and MGRLS library map presets with independently controlled GeoJSON layers, using Leaflet.
 - Searchable feature directory, keyboard controls, feature popups, layer-aware fit-to-bounds, and optional OpenStreetMap street tiles.
 - Month/agenda calendar, day selection, event/category search, native expandable event details, and static `.ics` downloads.
-- Mobile layouts, self-hosted fonts, reduced-motion support, skip link, sample-data notices, source downloads, and custom 404.
+- Mobile layouts, self-hosted fonts, reduced-motion support, skip link, source notices, source downloads, and custom 404.
 - No server adapter, database, credentials or runtime application backend required.
 
-## Sample content
+## Sourced content
 
-119 dated shifts from 25 nearby listings in the supplied Democratic Party of Georgia 26 feed on Mobilize were captured October 15, 2026. Imported entries include signup links and capture dates; this is a manual snapshot. **Entries marked “Sample event” are fictional.** Voting layers preserve the uploaded data. They are not authoritative boundaries, routes or services. The home map preview is rendered from the voting GeoJSON. Site copy does not claim official affiliation. The default voting view uses the uploaded GeoJSON files.
+119 dated shifts from 25 nearby listings in the supplied Democratic Party of Georgia 26 feed on Mobilize were captured October 15, 2026. Imported entries include signup links and capture dates; this is a manual snapshot. The calendar contains only sourced events; fictional demonstration records and their calendar have been removed. Voting layers preserve the uploaded data. They are not authoritative boundaries, routes or services. The home map preview is rendered from the voting GeoJSON. Site copy does not claim official affiliation. The default voting view uses the uploaded GeoJSON files.
 
-Sample events are dated October–December 2026. The calendar opens to the visitor’s current month in America/New_York; a direct event link opens that event’s month. Later visitors can navigate back to the sample months. Confirm imported event arrangements through the linked organizer page.
+The calendar opens to the visitor’s current month in America/New_York; a direct event link opens that event’s month. Confirm imported event arrangements through the linked organizer page.
 
 ## Update voting maps
 
@@ -59,11 +59,11 @@ Replace the two canonical GeoJSON files listed above with WGS84 FeatureCollectio
 
 ## Update events
 
-Edit `src/data/events.json`. Each record needs a unique `id`, `title`, ISO `start` and `end` with the correct UTC offset, `category`, `location`, `address`, `description`, `note`, and `sample` boolean. Sourced records also include `sourceUrl`, `sourceChecked`, and `organizer`. Coordinates are optional; only include verified `[longitude, latitude]` coordinates.
+Edit `src/data/events.json`. Each record needs a unique `id`, `title`, ISO `start` and `end` with the correct UTC offset, `category`, `location`, `address`, `description`, `note`, and a `sample` boolean set to `false`. The build rejects events marked as samples. Sourced records also include `sourceUrl`, `sourceChecked`, and `organizer`. Coordinates are optional; only include verified `[longitude, latitude]` coordinates.
 
-Use the correct daylight-saving offset for each date. The frontend formats in America/New_York and `.ics` output uses UTC. Single-event files and the full calendar are generated at build time. Only fictional entries receive sample labels in the UI and calendar exports. Keep source links and capture dates current when refreshing events.
+Use the correct daylight-saving offset for each date. The frontend formats in America/New_York and `.ics` output uses UTC. Single-event files and the full calendar are generated at build time. Calendar exports contain only the sourced events. Keep source links and capture dates current when refreshing events.
 
-The homepage features the first three upcoming sourced occurrences in chronological order. Imported IDs combine the Mobilize event ID and occurrence date. Events are shown only in the calendar; there is no sample event-location map layer.
+The homepage features the first three upcoming sourced occurrences in chronological order. Imported IDs combine the Mobilize event ID and occurrence date. Events with verified coordinates also appear on the calendar event map.
 
 ## Cloudflare Pages
 
@@ -117,17 +117,17 @@ Voting layers use the saved visible `polling_places` and `voting_precincts` rend
 
 Original public ICS downloads, the source page, feed status manifest, and US Census geocoding responses are preserved in `data/sources/mgdsa/`. Four of six embedded chapter feeds were accessible on October 15, 2026; two returned 404. The separate community calendar is excluded. The raw files preserve history, recurrence rules, exceptions, and all-day dates.
 
-To regenerate offline, install `scripts/requirements-events.txt` in a Python environment and run `python scripts/import-mgdsa.py`. The manifest defines the bounded expansion window (January 1, 2026 through October 15, 2027). Generated output is `src/data/mgdsa-events.json` plus `public/data/event-locations.geojson`. Re-running replaces generated records without duplicating events or changing the Mobilize/sample records. Builds use these saved files and make no calendar requests. Refresh the raw files and manifest deliberately before regenerating; no automatic polling is configured.
+To regenerate offline, install `scripts/requirements-events.txt` in a Python environment and run `python scripts/import-mgdsa.py`. The manifest defines the bounded expansion window (January 1, 2026 through October 15, 2027). Generated output is `src/data/mgdsa-events.json` plus `public/data/event-locations.geojson`. Re-running replaces generated records without duplicating events or changing the Mobilize records. Builds use these saved files and make no calendar requests. Refresh the raw files and manifest deliberately before regenerating; no automatic polling is configured.
 
 Event venue markers group occurrences by address and link back to calendar details. Coordinates are address interpolations from the US Census geocoder, with responses saved for review. Virtual and unspecified locations are not mapped. All-day exports use DATE values with exclusive end dates.
 
-The map selector offers voting and community-event presets; visitors can combine all three layers. The event layer is generated at build time as `/data/calendar-events.geojson` from the same records used by the calendar, grouping sourced events with valid coordinates at their venues. Fictional sample events remain calendar-only. Event titles and venue addresses are searchable, and calendar/map links open the matching event. The imported `public/data/event-locations.geojson` is retained as source output; the displayed layer uses the calendar-derived file.
+The map selector offers voting and community-event presets; visitors can combine all three layers. The event layer is generated at build time as `/data/calendar-events.geojson` from the same records used by the calendar, grouping sourced events with valid coordinates at their venues. Event titles and venue addresses are searchable, and calendar/map links open the matching event. The imported `public/data/event-locations.geojson` is retained as source output; the displayed layer uses the calendar-derived file.
 
 ## Organizations and calendars
 
 `src/data/calendars.json` defines organizations and their calendars, including display colors and source Google Calendar IDs. Every event has an `organizationId` and a `calendarIds` array; calendar IDs must belong to the event's organization. Events may belong to several calendars and appear only once when any matching calendar is selected. Builds reject unknown or cross-organization memberships.
 
-The DSA importer preserves source calendar membership and merges memberships when the same occurrence appears in several feeds. Saved Mobilize listings belong to Macon-Bibb Dems and its main events calendar plus a training, voter outreach, or committee calendar. These subcalendars are site groupings based on the saved event categories. Sample events have their own organization and calendar.
+The DSA importer preserves source calendar membership and merges memberships when the same occurrence appears in several feeds. Saved Mobilize listings belong to Macon-Bibb Dems and its main events calendar plus a training, voter outreach, or committee calendar. These subcalendars are site groupings based on the saved event categories. Only organizations with sourced events appear in the calendar catalog.
 
 Calendar visitors can combine organization, calendars, category, date and text search. Organization and selected calendars are combined with AND; selected calendars match with OR. Show all/Hide all act on the currently selected organization's calendars. Color by switches between organization and calendar; multiple membership labels remain visible. Calendar selections, organization and color mode are stored in the URL.
 
@@ -186,3 +186,28 @@ Original CalendarWiz snapshots are in `data/sources/mgrls-events/`: 13 complete 
 Run `python scripts/import-mgrls-events.py` to regenerate `src/data/mgrls-events.json` offline using Python 3.9+ and the standard library. The saved October 15, 2026 snapshot contains 446 events through November 30. Later months through October 2027 were checked and have no published events. The importer validates month response identity, complete row/detail coverage, matching detail and month dates/times, timezone offsets and stable source IDs. It preserves all-day dates, uses explicit end times, and supports source listings without an end time without inventing a duration.
 
 Events belong to the MGRLS organization and the publisher’s seven program-category calendars. Short source excerpts appear on event cards; complete original descriptions remain in the raw HTML and source links. The map includes 424 occurrences at 18 venues. Coordinates reuse `public/data/libraries.geojson`; the bring-your-own-book event uses the explicitly published Sweet Eleanor’s address, with existing Census coordinate evidence. Library Without Walls visits and the Preschool-building book sale have no guessed markers. Location overrides and the review list document these decisions. Builds use saved files only; no automatic calendar refresh or deployment is configured by this import.
+
+
+## School and transit maps
+
+The map chooser includes Schools & facilities, Elementary/Middle/High attendance zones, School-board districts and Macon-Bibb transit. Layer controls are grouped into community, education and transit sections; groups with visible layers open automatically. Schools use building pins, attendance/board polygons have translucent categorical fills, and route lines use the authority’s colors above polygon layers and below stops. Source popups and map credits carry attribution. Search includes school addresses, member names, route names/numbers and stop codes.
+
+`data/sources/bcsd/` preserves the five official GeoJSON snapshots and service metadata linked through BCSD’s District Zone Maps app. Attendance source term is `CURRENT 2025-26 SY`; it is displayed explicitly, rather than asserted as current-year enrollment guidance. The 43 locations include facilities and source status; 23 elementary polygon records include split/temporary zones. Six middle, six high and six geographic school-board polygons are included. Proposed rezoning datasets are excluded. Attribution: Bibb County School District; Middle Georgia Regional Commission.
+
+`data/sources/mbcta/google_transit.zip` preserves the authority’s official GTFS Schedule feed, captured October 15, 2026. The importer groups shapes via trips into 10 MultiLineString route features, retaining 29 path variants, and joins stops via stop_times/trips to their scheduled routes. All 854 source stop records are retained, including any with no scheduled trips. Source wheelchair-boarding values and IDs remain available. Original schedules/calendars are in the ZIP; no live-arrival feed is used. Feed coverage is June 7–October 31, 2026 and is shown on the map; an expired-feed notice is computed in America/New_York. Attribution: Macon-Bibb County Transit Authority.
+
+Run `python3 scripts/import-education-transit.py` to rebuild the seven school/fixed-transit GeoJSON files and `src/data/education-transit.json` offline using standard-library modules. `public/data/map-sources.json` catalogs the sources. Refresh snapshots and catalog provenance deliberately; builds make no source requests.
+
+
+## MBCTA Rapid service area
+
+The `rapid` map preset uses `rapid-service-area.geojson`, imported from the public KML of the authority’s embedded Google My Maps map (`mid=1XRJZHA2YN6PVYQcTneJiPw_QS1S6g9E`). `data/sources/mbcta-rapid/` preserves the KML and source manifest. Four zone records preserve all six polygon parts, including the multipart Northwest area. The Downtown name follows the authority’s website; `originalName` retains “Rapid Transit vector.” Original map descriptions, including older July 1, 2026 annotations, remain available. Attribution: Macon-Bibb County Transit Authority — Rapid Transit.
+
+The shared offline importer regenerates this eighth dataset too. KML rings, holes and multipart geometry are retained as WGS84 Polygon/MultiPolygon features. This on-demand service uses separate source links and notes from fixed-route transit; GTFS expiry dates do not apply to Rapid. The map does not guarantee current trip availability.
+
+
+## School location types
+
+The Schools by type preset enables six independent point layers generated from the official `Type` field: elementary (22), middle (6), high (6), pre-K (1), Administration (7), and Specialty School (1). Source categories are retained, including classifications of academies and support facilities. Each type has a consistent building-marker color in the layer key, map and directory. The point-type subsets are non-overlapping and together contain all 43 original IDs; `schools.geojson` remains available as a combined download.
+
+Attendance presets enable only the matching elementary, middle or high point layer plus that level’s boundaries. Schools by type enables all six. Bookmarked `layers=schools` URLs expand to the new point layers. The offline importer regenerates the six type files along with the other official datasets.
