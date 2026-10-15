@@ -7,8 +7,12 @@
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro check && astro build",
     "preview": "astro preview --host 0.0.0.0",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name civicpulse-web --branch main",
     "check": "astro check",
     "test:e2e": "node tests/smoke.mjs",
+    "test:markers": "node tests/dsa-markers.mjs",
+    "test:organization-markers": "node tests/organization-markers.mjs",
+    "test:libraries": "node tests/libraries.mjs",
     "prebuild": "node scripts/validate-voting-data.mjs",
     "predev": "node scripts/validate-voting-data.mjs"
   },
@@ -23,6 +27,7 @@
     "@astrojs/check": "^0.9.0",
     "@playwright/test": "^1.56.0",
     "@types/leaflet": "^1.9.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "wrangler": "^4.151.0"
   }
 }

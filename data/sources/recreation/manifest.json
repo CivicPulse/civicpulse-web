@@ -1,0 +1,8 @@
+{
+  "sourceUrl": "https://www.maconbibb.us/recreation/recreation-center/",
+  "sourceChecked": "2026-10-15",
+  "expectedCount": 11,
+  "attribution": "Macon-Bibb County Government Recreation Department",
+  "geocoder": "US Census Geocoder, Public_AR_Current",
+  "coordinateMethod": "Street-address interpolation; approximate, not building entrances. Published ZIP codes are preserved; geocoder queries use street, city and state because some source ZIP codes differ from returned matches."
+}

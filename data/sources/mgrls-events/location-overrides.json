@@ -1,0 +1,20 @@
+{
+  "192153892": {
+    "location": "Sweet Eleanor’s Divine Desserts",
+    "address": "530 Poplar St, Macon, GA 31201",
+    "coordinates": [
+      -83.62924058101,
+      32.834490488543
+    ],
+    "venueId": "mgrls-offsite-sweet-eleanors",
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=530+Poplar+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "reason": "Event description explicitly names Sweet Eleanor’s at 530 Poplar St; Washington Memorial is the host, not the venue.",
+    "offsite": true
+  },
+  "192155044": {
+    "location": "Preschool building — confirm with Jones County Public Library",
+    "address": "Confirm the exact location in the source listing",
+    "reason": "Event description specifies the Preschool building without a street address. Do not place it at the main library.",
+    "offsite": true
+  }
+}

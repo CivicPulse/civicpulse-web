@@ -1,0 +1,1351 @@
+{
+  "https://bibblib.org/directory_page_T49_R55.php": {
+    "query": "1931 Rocky Creek Rd, Macon, GA 31206",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1931 Rocky Creek Rd, Macon, GA 31206"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81060263"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.684245225797,
+              "y": 32.785461702998
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "ROCKY CREEK",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1901",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "2099",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1931 ROCKY CREEK RD, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R73.php": {
+    "query": "5494 Forsyth Road, Macon, GA 31210",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "5494 Forsyth Road, Macon, GA 31210"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81068194"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.74199336229,
+              "y": 32.887933398599
+            },
+            "addressComponents": {
+              "zip": "31210",
+              "streetName": "FORSYTH",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "5434",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "5498",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "5494 FORSYTH RD, MACON, GA, 31210"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R3.php": {
+    "query": "6504 Houston Road, Macon, GA 31216",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "6504 Houston Road, Macon, GA 31216"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81066256"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.685327477248,
+              "y": 32.723578029318
+            },
+            "addressComponents": {
+              "zip": "31216",
+              "streetName": "HOUSTON",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "6598",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "6500",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "6504 HOUSTON RD, MACON, GA, 31216"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R8.php": {
+    "query": "144 McCrary Avenue, Roberta, GA 31078",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "144 McCrary Avenue, Roberta, GA 31078"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "90634595"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13079",
+                  "CENTLAT": "+32.7144781",
+                  "AREAWATER": 3986929,
+                  "STATE": "13",
+                  "BASENAME": "Crawford",
+                  "OID": "27590540515819",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.7094368",
+                  "NAME": "Crawford County",
+                  "OBJECTID": 2625,
+                  "CENTLON": "-083.9863230",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00342918",
+                  "AREALAND": 841524097,
+                  "INTPTLON": "-083.9791720",
+                  "MTFCC": "G4020",
+                  "COUNTY": "079"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -84.011287589234,
+              "y": 32.72311185151
+            },
+            "addressComponents": {
+              "zip": "31078",
+              "streetName": "MCCRARY",
+              "preType": "",
+              "city": "ROBERTA",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "108",
+              "state": "GA",
+              "suffixType": "AVE",
+              "toAddress": "598",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "144 MCCRARY AVE, ROBERTA, GA, 31078"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R83.php": {
+    "query": "200 Cherry Street, Macon, GA 31201",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "200 Cherry Street, Macon, GA 31201"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81079842"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.623750334547,
+              "y": 32.833360304463
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "CHERRY",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "298",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "200",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "200 CHERRY ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R16.php": {
+    "query": "154 East Main Street, Irwinton, GA 31042",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "154 East Main Street, Irwinton, GA 31042"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "65562532"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13319",
+                  "CENTLAT": "+32.8023520",
+                  "AREAWATER": 7063256,
+                  "STATE": "13",
+                  "BASENAME": "Wilkinson",
+                  "OID": "27590386637476",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.8042663",
+                  "NAME": "Wilkinson County",
+                  "OBJECTID": 1198,
+                  "CENTLON": "-083.1712124",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00346824",
+                  "AREALAND": 1163481398,
+                  "INTPTLON": "-083.1755122",
+                  "MTFCC": "G4020",
+                  "COUNTY": "319"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.169414651047,
+              "y": 32.815639090107
+            },
+            "addressComponents": {
+              "zip": "31042",
+              "streetName": "MAIN",
+              "preType": "",
+              "city": "IRWINTON",
+              "preDirection": "E",
+              "suffixDirection": "",
+              "fromAddress": "148",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "158",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "154 E MAIN ST, IRWINTON, GA, 31042"
+          },
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "65558654"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13319",
+                  "CENTLAT": "+32.8023520",
+                  "AREAWATER": 7063256,
+                  "STATE": "13",
+                  "BASENAME": "Wilkinson",
+                  "OID": "27590386637476",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.8042663",
+                  "NAME": "Wilkinson County",
+                  "OBJECTID": 1198,
+                  "CENTLON": "-083.1712124",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00346824",
+                  "AREALAND": 1163481398,
+                  "INTPTLON": "-083.1755122",
+                  "MTFCC": "G4020",
+                  "COUNTY": "319"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.17238773488,
+              "y": 32.811772494244
+            },
+            "addressComponents": {
+              "zip": "31042",
+              "streetName": "MAIN",
+              "preType": "",
+              "city": "IRWINTON",
+              "preDirection": "E",
+              "suffixDirection": "",
+              "fromAddress": "100",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "198",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "154 E MAIN ST, IRWINTON, GA, 31042"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R17.php": {
+    "query": "284 Milledgeville Highway West, Gordon, GA 31031",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "284 Milledgeville Highway West, Gordon, GA 31031"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": []
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R53.php": {
+    "query": "127 E Hancock Street,, Milledgeville, GA 31061",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "127 E Hancock Street,, Milledgeville, GA 31061"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "636363661"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13009",
+                  "CENTLAT": "+33.0692673",
+                  "AREAWATER": 24803187,
+                  "STATE": "13",
+                  "BASENAME": "Baldwin",
+                  "OID": "27590344758363",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+33.0594897",
+                  "NAME": "Baldwin County",
+                  "OBJECTID": 766,
+                  "CENTLON": "-083.2495723",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00345255",
+                  "AREALAND": 670028052,
+                  "INTPTLON": "-083.2554566",
+                  "MTFCC": "G4020",
+                  "COUNTY": "009"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.22660122215,
+              "y": 33.081261756125
+            },
+            "addressComponents": {
+              "zip": "31061",
+              "streetName": "HANCOCK",
+              "preType": "",
+              "city": "MILLEDGEVILLE",
+              "preDirection": "E",
+              "suffixDirection": "",
+              "fromAddress": "101",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "199",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "127 E HANCOCK ST, MILLEDGEVILLE, GA, 31061"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R10.php": {
+    "query": "146 Railroad Street, Gray, GA 31032",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "146 Railroad Street, Gray, GA 31032"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "611639620"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13169",
+                  "CENTLAT": "+33.0250973",
+                  "AREAWATER": 3820256,
+                  "STATE": "13",
+                  "BASENAME": "Jones",
+                  "OID": "27590438881128",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+33.0216636",
+                  "NAME": "Jones County",
+                  "OBJECTID": 1691,
+                  "CENTLON": "-083.5604871",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00345367",
+                  "AREALAND": 1020304148,
+                  "INTPTLON": "-083.5621958",
+                  "MTFCC": "G4020",
+                  "COUNTY": "169"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.534411145768,
+              "y": 33.007146477731
+            },
+            "addressComponents": {
+              "zip": "31032",
+              "streetName": "RAILROAD",
+              "preType": "",
+              "city": "GRAY",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "146",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "100",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "146 RAILROAD ST, GRAY, GA, 31032"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R58.php": {
+    "query": "130 Log Cabin Road,, Milledgeville, GA 31061",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "130 Log Cabin Road,, Milledgeville, GA 31061"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "652334735"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13009",
+                  "CENTLAT": "+33.0692673",
+                  "AREAWATER": 24803187,
+                  "STATE": "13",
+                  "BASENAME": "Baldwin",
+                  "OID": "27590344758363",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+33.0594897",
+                  "NAME": "Baldwin County",
+                  "OBJECTID": 766,
+                  "CENTLON": "-083.2495723",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00345255",
+                  "AREALAND": 670028052,
+                  "INTPTLON": "-083.2554566",
+                  "MTFCC": "G4020",
+                  "COUNTY": "009"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.269334057218,
+              "y": 33.150745394256
+            },
+            "addressComponents": {
+              "zip": "31061",
+              "streetName": "LOG CABIN",
+              "preType": "",
+              "city": "MILLEDGEVILLE",
+              "preDirection": "",
+              "suffixDirection": "NE",
+              "fromAddress": "100",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "140",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "130 LOG CABIN RD NE, MILLEDGEVILLE, GA, 31061"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R68.php": {
+    "query": "3661 Eisenhower Parkway, Macon, GA 31206",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "3661 Eisenhower Parkway, Macon, GA 31206"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81090046"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.694156547532,
+              "y": 32.815833255057
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "EISENHOWER",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "3699",
+              "state": "GA",
+              "suffixType": "PKWY",
+              "toAddress": "3601",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "3661 EISENHOWER PKWY, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R12.php": {
+    "query": "106 Camellia Boulevard, Marshallville, GA 31057",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "106 Camellia Boulevard, Marshallville, GA 31057"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "30526624"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13193",
+                  "CENTLAT": "+32.3583533",
+                  "AREAWATER": 13841916,
+                  "STATE": "13",
+                  "BASENAME": "Macon",
+                  "OID": "27590690410577",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.3626859",
+                  "NAME": "Macon County",
+                  "OBJECTID": 2059,
+                  "CENTLON": "-084.0425197",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00346957",
+                  "AREALAND": 1037709924,
+                  "INTPTLON": "-084.0512306",
+                  "MTFCC": "G4020",
+                  "COUNTY": "193"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.941627926476,
+              "y": 32.45696784051
+            },
+            "addressComponents": {
+              "zip": "31057",
+              "streetName": "CAMELLIA",
+              "preType": "",
+              "city": "MARSHALLVILLE",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "100",
+              "state": "GA",
+              "suffixType": "BLVD",
+              "toAddress": "118",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "106 CAMELLIA BLVD, MARSHALLVILLE, GA, 31057"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R59.php": {
+    "query": "151 S Jefferson St SE, Milledgeville, GA 31061",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "151 S Jefferson St SE, Milledgeville, GA 31061"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "65477921"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13169",
+                  "CENTLAT": "+33.0250973",
+                  "AREAWATER": 3820256,
+                  "STATE": "13",
+                  "BASENAME": "Jones",
+                  "OID": "27590438881128",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+33.0216636",
+                  "NAME": "Jones County",
+                  "OBJECTID": 1691,
+                  "CENTLON": "-083.5604871",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00345367",
+                  "AREALAND": 1020304148,
+                  "INTPTLON": "-083.5621958",
+                  "MTFCC": "G4020",
+                  "COUNTY": "169"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.535942424442,
+              "y": 33.012019989808
+            },
+            "addressComponents": {
+              "zip": "31061",
+              "streetName": "JEFFERSON",
+              "preType": "",
+              "city": "MILLEDGEVILLE",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "131",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "199",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "151 JEFFERSON ST, MILLEDGEVILLE, GA, 31061"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R13.php": {
+    "query": "506 North Dooly Street, Montezuma, GA 31063",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "506 North Dooly Street, Montezuma, GA 31063"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "30524944"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13193",
+                  "CENTLAT": "+32.3583533",
+                  "AREAWATER": 13841916,
+                  "STATE": "13",
+                  "BASENAME": "Macon",
+                  "OID": "27590690410577",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.3626859",
+                  "NAME": "Macon County",
+                  "OBJECTID": 2059,
+                  "CENTLON": "-084.0425197",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00346957",
+                  "AREALAND": 1037709924,
+                  "INTPTLON": "-084.0512306",
+                  "MTFCC": "G4020",
+                  "COUNTY": "193"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -84.025663114734,
+              "y": 32.309139706932
+            },
+            "addressComponents": {
+              "zip": "31063",
+              "streetName": "DOOLY",
+              "preType": "",
+              "city": "MONTEZUMA",
+              "preDirection": "N",
+              "suffixDirection": "",
+              "fromAddress": "500",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "506",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "506 N DOOLY ST, MONTEZUMA, GA, 31063"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R14.php": {
+    "query": "115 Chatham Street, Oglethorpe, GA 31068",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "115 Chatham Street, Oglethorpe, GA 31068"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "30525157"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13193",
+                  "CENTLAT": "+32.3583533",
+                  "AREAWATER": 13841916,
+                  "STATE": "13",
+                  "BASENAME": "Macon",
+                  "OID": "27590690410577",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.3626859",
+                  "NAME": "Macon County",
+                  "OBJECTID": 2059,
+                  "CENTLON": "-084.0425197",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00346957",
+                  "AREALAND": 1037709924,
+                  "INTPTLON": "-084.0512306",
+                  "MTFCC": "G4020",
+                  "COUNTY": "193"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -84.060903060995,
+              "y": 32.293653618353
+            },
+            "addressComponents": {
+              "zip": "31068",
+              "streetName": "CHATHAM",
+              "preType": "",
+              "city": "OGLETHORPE",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "199",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "101",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "115 CHATHAM ST, OGLETHORPE, GA, 31068"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R5.php": {
+    "query": "1769 Shurling Drive, Macon, GA 31211",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1769 Shurling Drive, Macon, GA 31211"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81064589"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.593035002774,
+              "y": 32.861456469094
+            },
+            "addressComponents": {
+              "zip": "31211",
+              "streetName": "SHURLING",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1769",
+              "state": "GA",
+              "suffixType": "DR",
+              "toAddress": "1899",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1769 SHURLING DR, MACON, GA, 31211"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R15.php": {
+    "query": "109 Main Street, Jeffersonville, GA 31044",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "109 Main Street, Jeffersonville, GA 31044"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "656683707"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13289",
+                  "CENTLAT": "+32.6671226",
+                  "AREAWATER": 8740235,
+                  "STATE": "13",
+                  "BASENAME": "Twiggs",
+                  "OID": "27590399890696",
+                  "LSADC": "06",
+                  "FUNCSTAT": "A",
+                  "INTPTLAT": "+32.6658469",
+                  "NAME": "Twiggs County",
+                  "OBJECTID": 1477,
+                  "CENTLON": "-083.4270673",
+                  "COUNTYCC": "H1",
+                  "COUNTYNS": "00345456",
+                  "AREALAND": 930478085,
+                  "INTPTLON": "-083.4258792",
+                  "MTFCC": "G4020",
+                  "COUNTY": "289"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.34220685923,
+              "y": 32.687274641734
+            },
+            "addressComponents": {
+              "zip": "31044",
+              "streetName": "MAIN",
+              "preType": "",
+              "city": "JEFFERSONVILLE",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "199",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "101",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "109 MAIN ST, JEFFERSONVILLE, GA, 31044"
+          }
+        ]
+      }
+    }
+  },
+  "https://bibblib.org/directory_page_T49_R2.php": {
+    "query": "1180 Washington Avenue, Macon, GA 31201",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1180 Washington Avenue, Macon, GA 31201"
+          },
+          "vintage": {
+            "isDefault": true,
+            "id": "4",
+            "vintageName": "Current_Current",
+            "vintageDescription": "Current Vintage - Current Benchmark"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81061810"
+            },
+            "geographies": {
+              "Counties": [
+                {
+                  "GEOID": "13021",
+                  "CENTLAT": "+32.8064908",
+                  "AREAWATER": 14304452,
+                  "STATE": "13",
+                  "BASENAME": "Bibb",
+                  "OID": "27590541828540",
+                  "LSADC": "06",
+                  "FUNCSTAT": "C",
+                  "INTPTLAT": "+32.8089954",
+                  "NAME": "Bibb County",
+                  "OBJECTID": 2296,
+                  "CENTLON": "-083.6974026",
+                  "COUNTYCC": "H6",
+                  "COUNTYNS": "01672039",
+                  "AREALAND": 645898848,
+                  "INTPTLON": "-083.6940515",
+                  "MTFCC": "G4020",
+                  "COUNTY": "021"
+                }
+              ]
+            },
+            "coordinates": {
+              "x": -83.638724069788,
+              "y": 32.839030371962
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "WASHINGTON",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1100",
+              "state": "GA",
+              "suffixType": "AVE",
+              "toAddress": "1198",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1180 WASHINGTON AVE, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  }
+}

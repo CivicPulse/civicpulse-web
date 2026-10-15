@@ -3,24 +3,30 @@ import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import EventItem from '../components/EventItem.astro';
 import { events } from '../lib/events';
+import { organizations, calendars } from '../lib/calendars';
 const categories = [...new Set(events.map(event => event.category))];
 ---
-<Layout title="Community calendar" description="Browse a sample calendar of Macon–Bibb community events. Filter by category, explore dates and download events.">
+<Layout title="Community calendar" description="Browse a calendar of Macon–Bibb community events. Filter by category, explore dates and download events.">
   <main id="main">
     <div class="page-intro"><h1>Good things happen together.</h1><p>Find a reason to get out, meet your neighbors, and be part of Macon–Bibb.</p></div>
-    <p class="sample-notice"><strong>Demonstration calendar.</strong> Every event below is fictional sample content. These are not scheduled gatherings. Times use America/New_York.</p>
     <div class="calendar-toolbar">
       <label class="calendar-search"><span>Find an event</span><input type="search" id="event-search" placeholder="Search events or places" /></label>
+      <label><span id="organization-label">Organization</span><select id="event-organization" aria-labelledby="organization-label"><option value="all">All organizations</option>{organizations.map(org => <option value={org.id}>{org.name}</option>)}</select></label>
       <label><span id="category-label">Category</span><select id="event-category" aria-labelledby="category-label"><option value="all">All categories</option>{categories.map(category => <option>{category}</option>)}</select></label>
-      <a class="download-calendar text-link" href="/events.ics" download><Icon name="download" size={18} /> Download sample calendar</a>
+      <a class="download-calendar text-link" href="/events.ics" download><Icon name="download" size={18} /> Download calendar</a>
     </div>
+    <section class="calendar-filters" aria-label="Calendar filters">
+      <div class="calendar-filter-heading"><h2>Calendars</h2><div class="calendar-filter-actions"><button id="select-calendars" type="button">Show all</button><button id="hide-calendars" type="button">Hide all</button><label><span id="color-by-label">Color by</span><select id="event-color-by" aria-labelledby="color-by-label"><option value="calendar">Calendar</option><option value="organization">Organization</option></select></label></div></div>
+      <div class="calendar-groups">{organizations.map(org => <fieldset data-calendar-organization={org.id}><legend><span class="source-dot" style={`--source-color:${org.color}`} aria-hidden="true"/>{org.name}</legend>{calendars.filter(calendar => calendar.organizationId === org.id).map(calendar => <label class="calendar-toggle"><input type="checkbox" value={calendar.id} checked /><span class="source-dot calendar-swatch" data-calendar={calendar.id} style={`--source-color:${calendar.color}`} aria-hidden="true"/><span>{calendar.name}<small>{events.filter(event => event.calendarIds?.includes(calendar.id)).length} saved events</small></span></label>)}</fieldset>)}</div>
+      <p class="calendar-filter-hint">Show several calendars together. Events shared by calendars appear once; labels identify every calendar.</p>
+    </section>
     <div class="calendar-layout">
       <section class="month-panel" aria-labelledby="month-title">
         <div class="month-heading"><h2 id="month-title" aria-live="polite">Community calendar</h2><div class="month-controls"><button id="previous-month" aria-label="Previous month"><Icon name="chevron-left" size={18}/></button><button id="today">Today</button><button id="next-month" aria-label="Next month"><Icon name="chevron-right" size={18}/></button></div></div>
         <div class="view-switch" role="group" aria-label="Calendar view"><button data-view="month" aria-pressed="true">Month</button><button data-view="agenda" aria-pressed="false">Agenda</button></div>
-        <div id="month-view"><div class="weekdays" aria-hidden="true">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(day => <span>{day}</span>)}</div><div id="calendar-grid" aria-label="Choose a day"></div><p class="month-hint">A dot marks a day with sample events. Select a day to see its events.</p></div>
+        <div id="month-view"><div class="weekdays" aria-hidden="true">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(day => <span>{day}</span>)}</div><div id="calendar-grid" aria-label="Choose a day"></div><p class="month-hint">Colored dots match the selected calendars or organizations. Select a day to see its events.</p></div>
         <div id="agenda-summary" hidden><p>All matching events for this month appear in the event list.</p></div>
-        <div class="calendar-key"><span class="calendar-key-dot" aria-hidden="true"></span> Sample event <span class="today-key" aria-hidden="true"></span> Today</div>
+        <div class="calendar-key">Colors match the filters <span aria-hidden="true">·</span> <span class="today-key" aria-hidden="true"></span> Today</div>
       </section>
       <section class="event-list-panel" aria-labelledby="list-heading">
         <div class="list-heading"><h2 id="list-heading">Events this month</h2><button id="clear-day" hidden>Show whole month</button></div>
@@ -29,7 +35,7 @@ const categories = [...new Set(events.map(event => event.category))];
         <div id="events-empty" class="empty-state" hidden><h3>No events to show.</h3><p id="empty-explanation">Try another month or clear your filters.</p><button id="reset-filters">Clear filters</button></div>
       </section>
     </div>
-    <noscript><p class="sample-notice">JavaScript is off. All sample events are listed above, and event details and calendar downloads still work.</p></noscript>
+    <noscript><p class="sample-notice">JavaScript is off. All events are listed above, and event details and calendar downloads still work.</p></noscript>
   </main>
 </Layout>
 <script>import '../scripts/calendar';</script>
@@ -39,4 +45,12 @@ const categories = [...new Set(events.map(event => event.category))];
 </style>
 <style is:global>
 .day-cell{border:0;background:transparent;border-radius:0;min-height:64px;position:relative;padding:10px 4px;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:7px;font-variant-numeric:tabular-nums}.day-cell:disabled{opacity:1;background:transparent}.day-cell .day-number{width:29px;height:29px;display:grid;place-items:center;border:1px solid transparent;border-radius:50%}.day-cell.is-today .day-number{border-color:var(--ink)}.day-cell.has-events{background:#f0eee4}.day-cell[aria-pressed=true]{background:var(--ink);color:var(--paper)}.event-dot{width:5px;height:5px;border-radius:50%;background:var(--rust)}.day-cell[aria-pressed=true] .event-dot{background:var(--paper)}.calendar-event{display:grid;grid-template-columns:58px 1fr;gap:18px;border-top:1px solid var(--line);padding:22px 0;scroll-margin-top:24px}.list-date{display:flex;flex-direction:column;align-items:center;color:var(--rust);padding-top:2px;font-variant-numeric:tabular-nums}.list-date span{font-size:13px;text-transform:uppercase}.list-date strong{font:52px/1 var(--serif)}.event-category{font-size:11px;margin-top:8px;margin-bottom:0;color:var(--rust-dark)}.event-category span{color:var(--muted)}.event-body h3{font-size:29px;line-height:1.08}.event-meta{font-size:12px;margin-top:10px;line-height:1.6}.event-place{font-size:13px;color:var(--muted);margin-top:3px}.event-body details{font-size:13px;margin-top:12px}.event-body summary{min-height:44px;padding:11px 0;text-underline-offset:4px;text-decoration:underline}.event-body details p{margin:10px 0;line-height:1.6}.fictional-note{color:var(--rust-dark);font-size:12px}.event-actions{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:12px}.event-actions a{min-height:44px;display:flex;align-items:center;font-size:12px}.calendar-event:target{background:#eeeddf}@media(max-width:450px){.day-cell{min-height:54px;font-size:13px}.day-cell .day-number{width:26px;height:26px}.calendar-event{gap:12px;grid-template-columns:45px 1fr}.event-body h3{font-size:27px}.list-date strong{font-size:46px}}
+</style>
+<style>
+.calendar-filters{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:28px}.calendar-filter-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}.calendar-filter-heading h2{font-size:28px}.calendar-filter-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.calendar-filter-actions button,.calendar-filter-actions label{font-size:12px}.calendar-filter-actions label{display:flex;align-items:center;gap:8px}.calendar-filter-actions select{font-size:12px}.calendar-groups{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}.calendar-groups fieldset{border:0;padding:0;margin:0;min-width:0}.calendar-groups legend{font:600 14px var(--sans);margin-bottom:6px;display:flex;align-items:center;gap:8px}.calendar-toggle{display:flex;align-items:center;gap:9px;min-height:44px;font-size:13px;cursor:pointer}.calendar-toggle input{margin:0;flex:none}.calendar-toggle small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.calendar-filter-hint{font-size:12px;color:var(--muted);margin-top:12px}.calendar-toolbar{flex-wrap:wrap}.calendar-toolbar select{min-width:150px}.calendar-search{min-width:200px}
+@media(max-width:850px){.calendar-groups{grid-template-columns:1fr 1fr}.calendar-filter-actions{gap:8px}.calendar-search{flex-basis:100%}.calendar-toolbar label{flex:1}.calendar-toolbar select{width:100%}}
+@media(max-width:450px){.calendar-groups{grid-template-columns:1fr;gap:16px}.calendar-toolbar label{flex-basis:100%}.calendar-filter-actions{width:100%}.calendar-filter-actions label{margin-left:auto}}
+</style>
+<style is:global>
+.source-dot{display:inline-block;width:9px;height:9px;flex:none;border-radius:50%;background:var(--source-color)}.event-calendars{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:8px 0 0}.event-calendars li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}.calendar-event .list-date{color:var(--event-color)}.day-source-dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;max-width:100%}.day-cell .event-dot{width:6px;height:6px;box-shadow:0 0 0 1px var(--paper)}
 </style>

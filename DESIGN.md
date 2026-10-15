@@ -1,6 +1,6 @@
 ---
 name: Macon–Bibb community prototype
-description: A neighborhood noticeboard for sample community maps and events.
+description: A neighborhood noticeboard for voting maps and community events.
 colors:
   canvas: "#f6f1e7"
   paper: "#fffcf6"
@@ -132,7 +132,7 @@ The palette feels like warm stationery with natural greens and a fired-clay acce
 
 Voting symbology follows the visible `polling_places` and `voting_precincts` renderers from `polling_locations.qgz`, persisted in `src/data/qgis-style.json`: magenta #c51b7d, teal #1b9e77, blue #2166ac, orange #e66101 and gray #4d4d4d; early voting is gold #f5a400. Precinct fill opacity is 89/255, with #374151 outlines at 185/255 opacity. Polling locations reuse the configurable ballot-pin SVG in `styles/polling-place.svg`, sized from the QGIS symbol. Directory symbols match the geographic features. These are data encodings, not global interface accents.
 
-Other map categories carry additional data colors in `src/data/maps.ts`: parks, community spaces, libraries, neighborhoods, trails and events. Those swatches encode feature categories rather than a new interface accent hierarchy. Sample notices use warm sand and brown for a distinct informational surface.
+
 
 ## Typography
 
@@ -161,7 +161,7 @@ Recurring spacing steps are captured in frontmatter. Dates occupy an aligned nar
 
 ## Elevation & Depth
 
-Application panels are flat: paper, sage and terracotta surfaces, thin borders and separators carry depth without card shadows. The map illustration and actual Leaflet map provide visual texture. Leaflet retains its library popup/control elevation; this is distinct from application panel styling. A calendar-view underline uses an inset box shadow as a selection rule, not raised elevation.
+Application panels are flat: paper, sage and terracotta surfaces, thin borders and separators carry depth without card shadows. The data-driven voting preview and actual Leaflet map provide geographic detail. Leaflet retains its library popup/control elevation; this is distinct from application panel styling. A calendar-view underline uses an inset box shadow as a selection rule, not raised elevation.
 
 **The Flat Surface Rule.** Use borders and changes of background to separate application panels; reserve map-library popup shadows for the map overlay.
 
@@ -191,7 +191,7 @@ Month and agenda selectors use a terracotta underline for the pressed view. Cale
 
 ### Panels and notices
 
-The calendar month panel uses paper, a thin border and generous padding; the map workspace uses the same flat vocabulary. Events are separated rows rather than individual floating cards. Sample-content notices use sand fill, brown text and a fine warm border. The home map image carries an illustrative-content label; it is not the interactive map itself.
+The calendar month panel uses paper, a thin border and generous padding; the map workspace uses the same flat vocabulary. Events are separated rows rather than individual floating cards. Sample-content notices use sand fill, brown text and a fine warm border. The homepage SVG preview renders the actual voting GeoJSON and links to the interactive map.
 
 ## Do's and Don'ts
 

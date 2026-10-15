@@ -1,11 +1,37 @@
 import data from '../data/events.json';
-export type CommunityEvent = (typeof data)[number];
-export const events = data.toSorted((a, b) => a.start.localeCompare(b.start));
+import mgdsa from '../data/mgdsa-events.json';
+import mobilize from '../data/mobilize-events.json';
+import mgrls from '../data/mgrls-events.json';
+import { calendars, organizations } from './calendars';
+export interface CommunityEvent {
+  id: string; title: string; start: string; end: string; category: string;
+  location: string; address: string; description: string; note: string;
+  sample: boolean; coordinates?: number[]; sourceUrl?: string;
+  sourceChecked?: string; organizer?: string; sourceLabel?: string;
+  allDay?: boolean; sourceGroup?: string; venueId?: string;
+  endTimeUnknown?: boolean; libraryBranchId?: string; sourceCategories?: string[]; sourceLocation?: string;
+  organizationId?: string; calendarIds?: string[]; sourceCalendar?: string;
+  mapMarker?: { fill?: string; border?: string };
+  sourceEventId?: string; sourceCity?: string; isVirtual?: boolean; addressPrivate?: boolean;
+}
+// Fresh captured listings replace their earlier manual imports, retaining the same IDs.
+const refreshedMobilizeUrls = new Set(mobilize.map(event => event.sourceUrl));
+export const events: CommunityEvent[] = [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls].map((item: CommunityEvent) => {
+  const organizationId = item.organizationId || (item.sample ? 'sample' : item.sourceGroup === 'mgdsa' ? 'mgdsa' : undefined);
+  const inferred = calendars.find(calendar => 'sourceCalendar' in calendar && calendar.sourceCalendar === item.sourceCalendar) || calendars.find(calendar => calendar.organizationId === organizationId);
+  const calendarIds = [...new Set(item.calendarIds || (inferred ? [inferred.id] : []))];
+  if (!organizations.some(organization => organization.id === organizationId) || !calendarIds.length || calendarIds.some(id => !calendars.some(calendar => calendar.id === id && calendar.organizationId === organizationId))) {
+    throw new Error(`Invalid organization/calendar membership for event ${item.id}`);
+  }
+  return { ...item, organizationId, calendarIds };
+}).toSorted((a, b) => a.start.localeCompare(b.start));
 export const timeZone = 'America/New_York';
 export function eventDate(value: string, options: Intl.DateTimeFormatOptions) {
   return new Intl.DateTimeFormat('en-US', { timeZone, ...options }).format(new Date(value));
 }
 export function eventTime(event: CommunityEvent) {
+  if (event.allDay) return 'All day';
+  if (event.endTimeUnknown) return eventDate(event.start, { hour: 'numeric', minute: '2-digit' });
   return `${eventDate(event.start, { hour: 'numeric', minute: '2-digit' })} – ${eventDate(event.end, { hour: 'numeric', minute: '2-digit' })}`;
 }
 export function escapeICS(value: string) {
@@ -13,8 +39,8 @@ export function escapeICS(value: string) {
 }
 function utc(value: string) { return new Date(value).toISOString().replaceAll(/[-:]/g, '').replace('.000', ''); }
 export function calendarFile(items: CommunityEvent[]) {
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Macon-Bibb Community Preview//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Macon-Bibb sample events'];
-  for (const item of items) lines.push('BEGIN:VEVENT', `UID:${item.id}@maconbibb-sample.invalid`, 'DTSTAMP:20261015T120000Z', `DTSTART:${utc(item.start)}`, `DTEND:${utc(item.end)}`, `SUMMARY:${escapeICS('[SAMPLE] ' + item.title)}`, `LOCATION:${escapeICS(item.address)}`, `DESCRIPTION:${escapeICS(item.note + '\n' + item.description)}`, 'STATUS:TENTATIVE', 'END:VEVENT');
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CivicPulse//Macon-Bibb Events//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Macon-Bibb community events'];
+  for (const item of items) lines.push('BEGIN:VEVENT', `UID:${item.id}@civicpulse`, 'DTSTAMP:20261015T120000Z', item.allDay ? `DTSTART;VALUE=DATE:${item.start.slice(0, 10).replaceAll('-', '')}` : `DTSTART:${utc(item.start)}`, ...(item.endTimeUnknown ? [] : [item.allDay ? `DTEND;VALUE=DATE:${item.end.slice(0, 10).replaceAll('-', '')}` : `DTEND:${utc(item.end)}`]), `SUMMARY:${escapeICS((item.sample ? '[SAMPLE] ' : '') + item.title)}`, `LOCATION:${escapeICS(item.address)}`, `DESCRIPTION:${escapeICS([item.note, item.description, item.organizer, item.sourceUrl].filter(Boolean).join('\n'))}`, ...(item.sourceUrl ? [`URL:${item.sourceUrl}`] : []), ...(item.sample ? ['STATUS:TENTATIVE'] : []), 'END:VEVENT');
   lines.push('END:VCALENDAR');
   // RFC 5545 folds at 75 octets; continuation begins with a space.
   return lines.map(line => {

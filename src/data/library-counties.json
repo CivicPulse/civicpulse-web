@@ -1,0 +1,44 @@
+[
+  {
+    "id": "baldwin",
+    "name": "Baldwin County",
+    "color": "#387b8e",
+    "icon": "/icons/libraries/library-baldwin.svg"
+  },
+  {
+    "id": "bibb",
+    "name": "Bibb County",
+    "color": "#2166ac",
+    "icon": "/icons/libraries/library-bibb.svg"
+  },
+  {
+    "id": "crawford",
+    "name": "Crawford County",
+    "color": "#66508c",
+    "icon": "/icons/libraries/library-crawford.svg"
+  },
+  {
+    "id": "jones",
+    "name": "Jones County",
+    "color": "#387759",
+    "icon": "/icons/libraries/library-jones.svg"
+  },
+  {
+    "id": "macon",
+    "name": "Macon County",
+    "color": "#a26a32",
+    "icon": "/icons/libraries/library-macon.svg"
+  },
+  {
+    "id": "twiggs",
+    "name": "Twiggs County",
+    "color": "#9b5062",
+    "icon": "/icons/libraries/library-twiggs.svg"
+  },
+  {
+    "id": "wilkinson",
+    "name": "Wilkinson County",
+    "color": "#51687f",
+    "icon": "/icons/libraries/library-wilkinson.svg"
+  }
+]

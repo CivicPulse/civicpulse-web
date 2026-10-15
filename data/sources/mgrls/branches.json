@@ -1,0 +1,437 @@
+[
+  {
+    "name": "Bloomfield Library",
+    "county": "Bibb County",
+    "address": "Bloomfield-Gilead Recreation Center 1931 Rocky Creek Rd, Macon, GA 31206",
+    "phone": "(478) 310-4741",
+    "url": "https://bibblib.org/directory_page_T49_R55.php",
+    "id": "mgrls-55",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 11:00 am - 6:30 pm",
+          "Tuesday: 11:00 am - 6:30 pm",
+          "Wednesday: 11:00 am - 6:30 pm",
+          "Thursday: 11:00 am - 6:30 pm",
+          "Friday: 11:00 am - 6:30 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cathy Ivey Community Library",
+    "county": "Bibb County",
+    "address": "5494 Forsyth Road, Macon, GA 31210",
+    "phone": "(478) 757-8900",
+    "url": "https://bibblib.org/directory_page_T49_R73.php",
+    "id": "mgrls-73",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 9:30 am - 6:00 pm",
+          "Tuesday: 9:30 am - 6:00 pm",
+          "Wednesday: 9:30 am - 6:00 pm",
+          "Thursday: 10:30 am - 7:00 pm",
+          "Friday: 9:30 am - 6:00 pm",
+          "Saturday: Closed",
+          "Sunday: 1:00 pm - 5:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Charles A. Lanford, M.D. Library",
+    "county": "Bibb County",
+    "address": "6504 Houston Road, Macon, GA 31216",
+    "phone": "(478) 300-6760",
+    "url": "https://bibblib.org/directory_page_T49_R3.php",
+    "id": "mgrls-3",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 9:30 am - 6:00 pm",
+          "Tuesday: 9:30 am - 6:00 pm",
+          "Wednesday: 9:30 am - 6:00 pm",
+          "Thursday: 10:30 am - 7:00 pm",
+          "Friday: 9:30 am - 6:00 pm",
+          "Saturday: Closed",
+          "Sunday: 1:00 pm - 5:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Crawford County Public Library",
+    "county": "Crawford County",
+    "address": "144 McCrary Avenue, Roberta, GA 31078-0580",
+    "phone": "(478) 836-4478",
+    "url": "https://bibblib.org/directory_page_T49_R8.php",
+    "id": "mgrls-8",
+    "sourceCategory": "Crawford County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 1:00 pm - 7:00 pm",
+          "Tuesday-Thursday: 10:00 am - 7:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Downtown Bus Station Book Locker",
+    "county": "Bibb County",
+    "address": "200 Cherry Street, Macon, GA 31201",
+    "phone": "",
+    "url": "https://bibblib.org/directory_page_T49_R83.php",
+    "id": "mgrls-83",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "book-locker",
+    "hours": [
+      {
+        "label": "Self-service access",
+        "lines": [
+          "Available any time of day, according to MGRLS."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "East Wilkinson County Public Library",
+    "county": "Wilkinson County",
+    "address": "154 East Main Street, Irwinton, GA 31042-0546",
+    "phone": "(478) 946-2778",
+    "url": "https://bibblib.org/directory_page_T49_R16.php",
+    "id": "mgrls-16",
+    "sourceCategory": "Wilkinson County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday-Wednesday: 10:00 am - 6:00 pm",
+          "Thursday: 12:00 pm - 8:00 pm",
+          "Friday: 10:00 am - 5:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Gordon Public Library",
+    "county": "Wilkinson County",
+    "address": "284 Milledgeville Highway West, Gordon, GA 31031-0336",
+    "phone": "(478) 628-5352",
+    "url": "https://bibblib.org/directory_page_T49_R17.php",
+    "id": "mgrls-17",
+    "sourceCategory": "Wilkinson County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday-Friday: 9:00 am - 6:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Hancock Branch",
+    "county": "Baldwin County",
+    "address": "127 E Hancock Street, Ste C, Milledgeville, GA 31061-3413",
+    "phone": "(478) 452-0677",
+    "url": "https://bibblib.org/directory_page_T49_R53.php",
+    "id": "mgrls-53",
+    "sourceCategory": "Twin Lakes/ Baldwin",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday - Friday: 12:00 PM - 6:00 PM"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Jones County Public Library",
+    "county": "Jones County",
+    "address": "146 Railroad Street, Gray, GA 31032-0156",
+    "phone": "(478) 986-6626",
+    "url": "https://bibblib.org/directory_page_T49_R10.php",
+    "id": "mgrls-10",
+    "sourceCategory": "Jones County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday, Wednesday, Thursday: 9:00 am - 6:00 pm",
+          "Tuesday: 9:00 am - 7:00 pm",
+          "Friday: 8:00 am - 5:00 pm",
+          "Saturday: 10:00 AM - 2:00 PM"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Lake Sinclair Library",
+    "county": "Baldwin County",
+    "address": "130 Log Cabin Road, Unit D, Milledgeville, GA 31061-0917",
+    "phone": "(478) 452-6522",
+    "url": "https://bibblib.org/directory_page_T49_R58.php",
+    "id": "mgrls-58",
+    "sourceCategory": "Twin Lakes/ Baldwin",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday-Saturday: 9:00 am - 2:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Library Annex",
+    "county": "Bibb County",
+    "address": "3661 Eisenhower Parkway Suite #103, Macon, Georgia 31206",
+    "phone": "(478) 300-6745",
+    "url": "https://bibblib.org/directory_page_T49_R68.php",
+    "id": "mgrls-68",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday - Friday: 9:00 am to 5:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Library Wow",
+    "county": "Bibb County",
+    "address": "",
+    "phone": "(478) 310-2163",
+    "url": "https://bibblib.org/directory_page_T49_R56.php",
+    "id": "mgrls-56",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "mobile",
+    "hours": [
+      {
+        "label": "Mobile service",
+        "lines": [
+          "Contact MGRLS to arrange a visit."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Marshallville Public Library",
+    "county": "Macon County",
+    "address": "106 Camellia Boulevard, Marshallville, GA 31057-0201",
+    "phone": "(478) 967-1163",
+    "url": "https://bibblib.org/directory_page_T49_R12.php",
+    "id": "mgrls-12",
+    "sourceCategory": "Macon County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 9 AM -1 PM & 2 PM-5 PM",
+          "Tuesday: 9 AM -12 PM & 2 PM - 5 PM",
+          "Wednesday: 9 AM - 1 PM & 2 PM-5 PM",
+          "Thursday: 9 AM -12 PM & 2 PM - 5 PM",
+          "Friday: 9 AM - 1 PM & 2 PM-5 PM",
+          "CLOSED: Saturday and Sunday"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Mary Vinson Memorial",
+    "county": "Baldwin County",
+    "address": "151 S Jefferson St SE, Milledgeville, GA 31061-3419",
+    "phone": "(478) 452-0677",
+    "url": "https://bibblib.org/directory_page_T49_R59.php",
+    "id": "mgrls-59",
+    "sourceCategory": "Twin Lakes/ Baldwin",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 9:00 am - 5:00 pm",
+          "Tuesday: 9:00 am - 7:00 pm",
+          "Wednesday: 9:00 am - 5:00 pm",
+          "Thursday: 9:00 am - 7:00 pm",
+          "Friday: 9:00 am - 5:00 pm",
+          "Saturday: 10:00 am - 2:00 pm",
+          "Sunday: Closed"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Montezuma Public Library",
+    "county": "Macon County",
+    "address": "506 North Dooly Street, Montezuma, GA 31063-1308",
+    "phone": "(478) 472-6095",
+    "url": "https://bibblib.org/directory_page_T49_R13.php",
+    "id": "mgrls-13",
+    "sourceCategory": "Macon County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday-Tuesday: 9:30 am - 7:00 pm",
+          "Wednesday-Thursday: 9:30 am - 6:00 pm",
+          "Friday: 10:00 am - 1:30 pm",
+          "* Closed Saturday - Sunday"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Oglethorpe Public Library",
+    "county": "Macon County",
+    "address": "115 Chatham Street, Oglethorpe, GA 31068-0425",
+    "phone": "(478) 472-9526",
+    "url": "https://bibblib.org/directory_page_T49_R14.php",
+    "id": "mgrls-14",
+    "sourceCategory": "Macon County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday-Thursday: 8:00 am - 6:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Shurling Library",
+    "county": "Bibb County",
+    "address": "Shurlington Plaza 1769 Shurling Drive, Macon, GA 31211-2152",
+    "phone": "(478) 300-6743",
+    "url": "https://bibblib.org/directory_page_T49_R5.php",
+    "id": "mgrls-5",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday: 9:30 am - 6:00 pm",
+          "Tuesday: 9:30 am - 6:00 pm",
+          "Wednesday: 9:30 am - 6:00 pm",
+          "Thursday: 10:30 am - 7:00 pm",
+          "Friday: 9:30 am - 6:00 pm",
+          "Saturday: Closed",
+          "Sunday: 1:00 pm - 5:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Twiggs County Public Library",
+    "county": "Twiggs County",
+    "address": "109 Main Street, Jeffersonville, GA 31044-0305",
+    "phone": "(478) 945-3814",
+    "url": "https://bibblib.org/directory_page_T49_R15.php",
+    "id": "mgrls-15",
+    "sourceCategory": "Twiggs County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Published hours",
+        "lines": [
+          "Monday, Wednesday: 9:00 am - 5:00 pm",
+          "Tuesday, Thursday: 10:00 am - 6:00 pm",
+          "Friday: 9:00 am - 1:00 pm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Washington Memorial Library",
+    "county": "Bibb County",
+    "address": "1180 Washington Avenue, Macon, GA 31201-1790",
+    "phone": "(478) 300-6744",
+    "url": "https://bibblib.org/directory_page_T49_R2.php",
+    "id": "mgrls-2",
+    "sourceCategory": "Bibb County",
+    "sourceChecked": "2026-10-15",
+    "kind": "library",
+    "hours": [
+      {
+        "label": "Main Library",
+        "lines": [
+          "Monday: 9:00 am - 8:00 pm",
+          "Tuesday: 9:00 am - 8:00 pm",
+          "Wednesday: 9:00 am - 8:00 pm",
+          "Thursday: 9:00 am - 8:00 pm",
+          "Friday: 9:00 am - 6:00 pm",
+          "Saturday: 9:00 am - 6:00 pm",
+          "Sunday ( Open Access only): 1:00pm - 5:00pm"
+        ]
+      },
+      {
+        "label": "Genealogical & Historical Room",
+        "lines": [
+          "Monday: 9:00 am - 8:00 pm",
+          "Tuesday: 9:00 am - 6:00 pm",
+          "Wednesday: 9:00 am - 6:00 pm",
+          "Thursday: 9:00 am - 6:00 pm",
+          "Friday: 9:00 am - 6:00 pm",
+          "Saturday: 9:00 am - 6:00 pm",
+          "Sunday: Closed"
+        ]
+      },
+      {
+        "label": "Computer Lab",
+        "lines": [
+          "Monday: 9:00 am - 7:45 pm",
+          "Tuesday: 9:00 am - 7:45 pm",
+          "Wednesday: 9:00 am - 7:45 pm",
+          "Thursday: 9:00 am - 7:45 pm",
+          "Friday: 9:00 am - 5:45 pm",
+          "Saturday: 9:00am - 5:45 pm",
+          "Sunday: Closed"
+        ]
+      }
+    ]
+  }
+]

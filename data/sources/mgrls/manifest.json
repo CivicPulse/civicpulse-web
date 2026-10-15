@@ -1,0 +1,11 @@
+{
+  "source": "https://bibblib.org/locations_hours.php",
+  "captured": "2026-10-15",
+  "directoryRecords": 19,
+  "fixedLocations": 18,
+  "counties": 7,
+  "mobileService": "Library WOW is listed with a source link, without a fixed marker.",
+  "geocoding": "US Census address interpolation, except three reviewed OSM library features. Wrong-county and ambiguous matches are rejected.",
+  "hours": "Only published hours are retained. Missing days are not assumed closed. Washington Memorial includes separate main, genealogy, and computer lab schedules.",
+  "redactions": "Public Google Maps embed API keys are redacted from saved HTML."
+}

@@ -1,11 +1,14 @@
 ---
 import { eventDate, eventTime, type CommunityEvent } from '../lib/events';
+import { organizationFor, calendarsFor } from '../lib/calendars';
 interface Props { event: CommunityEvent; }
 const { event } = Astro.props;
+const organization = organizationFor(event.organizationId);
+const memberships = calendarsFor(event);
 ---
-<article class="calendar-event" id={`event-${event.id}`} data-event={event.id}>
+<article class="calendar-event" id={`event-${event.id}`} data-event={event.id} style={`--event-color:${memberships[0]?.color || organization.color}`}>
   <time class="list-date" datetime={event.start}><span>{eventDate(event.start, { month:'short' })}</span><strong>{eventDate(event.start, { day:'2-digit' })}</strong></time>
-  <div class="event-body"><h3>{event.title}</h3><p class="event-category">{event.category} <span>· Sample event</span></p><p class="event-meta">{eventDate(event.start, { weekday:'long',month:'long',day:'numeric' })} · {eventTime(event)} ET</p><p class="event-place">{event.location}</p>
-    <details><summary>Event details</summary><p>{event.description}</p><p class="detail-address">{event.address}</p><p class="fictional-note">{event.note}</p><div class="event-actions"><a href={`/events/${event.id}.ics`} download>Add to calendar</a><a href={`/maps/?map=gatherings&event=${event.id}`}>View sample location</a></div></details>
+  <div class="event-body"><h3>{event.title}</h3><p class="event-category">{event.category} <span>· {event.sample ? 'Sample event' : organization.name}</span></p><ul class="event-calendars" aria-label="Calendars">{memberships.map(calendar => <li><span class="source-dot event-calendar-dot" data-calendar={calendar.id} style={`--source-color:${calendar.color}`} aria-hidden="true"/>{calendar.name}</li>)}</ul><p class="event-meta">{eventDate(event.start, { weekday:'long',month:'long',day:'numeric' })} · {eventTime(event)}{!event.allDay && ' ET'}</p><p class="event-place">{event.location}</p>
+    <details><summary>Event details</summary><p>{event.description}</p><p class="detail-address">{event.address}</p><p class="fictional-note">{event.note}</p>{event.sourceChecked && <p>Source checked {event.sourceChecked}. {event.organizer}</p>}<div class="event-actions">{event.sourceUrl && <a href={event.sourceUrl}>{event.sourceLabel || 'Details & sign up on Mobilize'}</a>}{event.coordinates && !event.sample && <a href={`/maps/?map=events&layers=event-locations&event=${event.id}`}>View on map</a>}<a href={`/events/${event.id}.ics`} download>Add to calendar</a></div></details>
   </div>
 </article>

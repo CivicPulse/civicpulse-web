@@ -1,0 +1,278 @@
+[
+  {
+    "address": "1290 College St, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1290+College+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1290 College St, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81061733"
+            },
+            "coordinates": {
+              "x": -83.646628244557,
+              "y": 32.831546380209
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "COLLEGE",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1200",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "1298",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1290 COLLEGE ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "488 1st St, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=488+1st+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "488 1st St, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81082527"
+            },
+            "coordinates": {
+              "x": -83.631511089351,
+              "y": 32.83617126136
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "1ST",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "486",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "498",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "488 1ST ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "664 2nd St, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=664+2nd+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "664 2nd St, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81062858"
+            },
+            "coordinates": {
+              "x": -83.631886254715,
+              "y": 32.833086800021
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "2ND",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "650",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "698",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "664 2ND ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "530 Poplar St, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=530+Poplar+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "530 Poplar St, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81062871"
+            },
+            "coordinates": {
+              "x": -83.62924058101,
+              "y": 32.834490488543
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "POPLAR",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "498",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "548",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "530 POPLAR ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "1335 Ball St, Perry, GA 31069",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1335+Ball+St%2C+Perry%2C+GA+31069&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1335 Ball St, Perry, GA 31069"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "217633135"
+            },
+            "coordinates": {
+              "x": -83.737140157747,
+              "y": 32.464629924554
+            },
+            "addressComponents": {
+              "zip": "31069",
+              "streetName": "BALL",
+              "preType": "",
+              "city": "PERRY",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1335",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "1399",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1335 BALL ST, PERRY, GA, 31069"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "6600 Moseley Dixon Rd, Macon, GA 31220",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=6600+Moseley+Dixon+Rd%2C+Macon%2C+GA+31220&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "6600 Moseley Dixon Rd, Macon, GA 31220"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81077674"
+            },
+            "coordinates": {
+              "x": -83.775612306349,
+              "y": 32.83129169285
+            },
+            "addressComponents": {
+              "zip": "31220",
+              "streetName": "MOSELEY DIXON",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "6698",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "6500",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "6600 MOSELEY DIXON RD, MACON, GA, 31220"
+          }
+        ]
+      }
+    }
+  }
+]

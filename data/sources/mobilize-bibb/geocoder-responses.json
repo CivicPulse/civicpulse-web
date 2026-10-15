@@ -1,0 +1,416 @@
+[
+  {
+    "address": "1305 Hardeman Ave, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1305+Hardeman+Ave%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1305 Hardeman Ave, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81061699"
+            },
+            "coordinates": {
+              "x": -83.641491548851,
+              "y": 32.839971185247
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "HARDEMAN",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1301",
+              "state": "GA",
+              "suffixType": "AVE",
+              "toAddress": "1305",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1305 HARDEMAN AVE, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "530 Poplar St, Macon, GA 31201",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=530+Poplar+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "530 Poplar St, Macon, GA 31201"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81062871"
+            },
+            "coordinates": {
+              "x": -83.62924058101,
+              "y": 32.834490488543
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "POPLAR",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "498",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "548",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "530 POPLAR ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "2656 Napier Ave, Macon, GA 31204",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=2656+Napier+Ave%2C+Macon%2C+GA+31204&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "2656 Napier Ave, Macon, GA 31204"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81059524"
+            },
+            "coordinates": {
+              "x": -83.66401068879,
+              "y": 32.836049015647
+            },
+            "addressComponents": {
+              "zip": "31204",
+              "streetName": "NAPIER",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "2656",
+              "state": "GA",
+              "suffixType": "AVE",
+              "toAddress": "2698",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "2656 NAPIER AVE, MACON, GA, 31204"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "1552 Eisenhower Pkwy, Macon, GA 31206",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1552+Eisenhower+Pkwy%2C+Macon%2C+GA+31206&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1552 Eisenhower Pkwy, Macon, GA 31206"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81090098"
+            },
+            "coordinates": {
+              "x": -83.667729558111,
+              "y": 32.814405895017
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "EISENHOWER",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1300",
+              "state": "GA",
+              "suffixType": "PKWY",
+              "toAddress": "1564",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1552 EISENHOWER PKWY, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "3661 Eisenhower Pkwy, Macon, GA 31206",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=3661+Eisenhower+Pkwy%2C+Macon%2C+GA+31206&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "3661 Eisenhower Pkwy, Macon, GA 31206"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81090046"
+            },
+            "coordinates": {
+              "x": -83.694156547532,
+              "y": 32.815833255057
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "EISENHOWER",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "3699",
+              "state": "GA",
+              "suffixType": "PKWY",
+              "toAddress": "3601",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "3661 EISENHOWER PKWY, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "233 N Houston Rd, Warner Robins, GA 31093",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=233+N+Houston+Rd%2C+Warner+Robins%2C+GA+31093&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "233 N Houston Rd, Warner Robins, GA 31093"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "91218411"
+            },
+            "coordinates": {
+              "x": -83.641612918962,
+              "y": 32.620982638545
+            },
+            "addressComponents": {
+              "zip": "31093",
+              "streetName": "HOUSTON",
+              "preType": "",
+              "city": "WARNER ROBINS",
+              "preDirection": "N",
+              "suffixDirection": "",
+              "fromAddress": "201",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "299",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "233 N HOUSTON RD, WARNER ROBINS, GA, 31093"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "1302 Watson Blvd, Warner Robins, GA 31093",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1302+Watson+Blvd%2C+Warner+Robins%2C+GA+31093&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1302 Watson Blvd, Warner Robins, GA 31093"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "91220103"
+            },
+            "coordinates": {
+              "x": -83.621857163425,
+              "y": 32.618289291603
+            },
+            "addressComponents": {
+              "zip": "31093",
+              "streetName": "WATSON",
+              "preType": "",
+              "city": "WARNER ROBINS",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1244",
+              "state": "GA",
+              "suffixType": "BLVD",
+              "toAddress": "1304",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1302 WATSON BLVD, WARNER ROBINS, GA, 31093"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "738 Russell Pkwy, Warner Robins, GA 31088",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=738+Russell+Pkwy%2C+Warner+Robins%2C+GA+31088&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "738 Russell Pkwy, Warner Robins, GA 31088"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "91253444"
+            },
+            "coordinates": {
+              "x": -83.635381103855,
+              "y": 32.594003221295
+            },
+            "addressComponents": {
+              "zip": "31088",
+              "streetName": "RUSSELL",
+              "preType": "",
+              "city": "WARNER ROBINS",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "700",
+              "state": "GA",
+              "suffixType": "PKWY",
+              "toAddress": "798",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "738 RUSSELL PKWY, WARNER ROBINS, GA, 31088"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "address": "837 Hillsboro St, Monticello, GA 31064",
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=837+Hillsboro+St%2C+Monticello%2C+GA+31064&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "837 Hillsboro St, Monticello, GA 31064"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "66626652"
+            },
+            "coordinates": {
+              "x": -83.681399714749,
+              "y": 33.297018014311
+            },
+            "addressComponents": {
+              "zip": "31064",
+              "streetName": "HILLSBORO",
+              "preType": "",
+              "city": "MONTICELLO",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "899",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "801",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "837 HILLSBORO ST, MONTICELLO, GA, 31064"
+          }
+        ]
+      }
+    }
+  }
+]

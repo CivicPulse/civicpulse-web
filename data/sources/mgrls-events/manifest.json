@@ -1,0 +1,25 @@
+{
+  "captured": "2026-10-15",
+  "sourceUrl": "https://www.calendarwiz.com/calendars/week.php?crd=mgrl",
+  "windowStart": "2026-10-15T00:00:00-04:00",
+  "windowEndExclusive": "2027-10-16T00:00:00-04:00",
+  "method": "13 saved monthly pages plus a compressed original detail page for every imported occurrence. The RSS feed was capped at 200 and was not used as the complete import.",
+  "events": 446,
+  "firstStart": "2026-10-15T00:00:00-04:00",
+  "lastStart": "2026-11-30T17:00:00-05:00",
+  "mappedEvents": 424,
+  "mappedVenues": 18,
+  "allDayEvents": 7,
+  "endTimeUnknown": 0,
+  "categories": {
+    "Family": 15,
+    "Adults": 75,
+    "Children": 203,
+    "General Interest": 51,
+    "Teens/ Young Adults": 55,
+    "Technology Classes": 43,
+    "Business and Nonprofit Center": 4
+  },
+  "coordinateSource": "Existing verified MGRLS branch GeoJSON, plus explicitly reviewed off-site locations; mobile/unknown locations are not guessed.",
+  "descriptionPolicy": "Short attributed excerpts; complete original descriptions remain in the saved detail pages and linked source listings."
+}

@@ -1,0 +1,22 @@
+---
+import precinctRaw from '../../public/data/voting_precincts.geojson?raw';
+import pollingRaw from '../../public/data/polling_places.geojson?raw';
+import type { FeatureCollection, MultiPolygon, Point } from 'geojson';
+import qgis from '../data/qgis-style.json';
+const precincts = JSON.parse(precinctRaw) as FeatureCollection<MultiPolygon>;
+const polling = JSON.parse(pollingRaw) as FeatureCollection<Point>;
+const project = ([lon,lat]: number[]) => [lon * Math.PI / 180, Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360))];
+const points = precincts.features.flatMap(feature => feature.geometry.coordinates.flat(2)).map(project);
+const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
+const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+const scale = Math.min(700 / (maxX-minX), 490 / (maxY-minY));
+function position(coordinates: number[]) { const [x,y]=project(coordinates); return [(x-(minX+maxX)/2)*scale+400, ((minY+maxY)/2-y)*scale+300]; }
+const styles: Record<string, (typeof qgis.layers.voting_precincts)['EM1']> = qgis.layers.voting_precincts;
+const pins: Record<string, (typeof qgis.layers.polling_places)['EM1']> = qgis.layers.polling_places;
+function path(coordinates: number[][][][]) { return coordinates.flatMap(polygon => polygon.map(ring => ring.map((point,index) => `${index ? 'L':'M'}${position(point).map(value => value.toFixed(2)).join(',')}`).join(' ')+'Z')).join(' '); }
+---
+<svg viewBox="0 0 800 600" role="img" aria-label={`${polling.features.length} polling places and ${precincts.features.length} voting precincts in Macon–Bibb`} xmlns="http://www.w3.org/2000/svg">
+  <g aria-hidden="true">{precincts.features.map(feature => {const style=styles[String(feature.properties?.precinctid)];return <path d={path(feature.geometry.coordinates)} fill={style?.color || '#c7d0b5'} fill-opacity={style?.fillOpacity || .35} stroke={style?.outline || '#374151'} stroke-opacity={style?.outlineOpacity || .73} stroke-width="1" fill-rule="evenodd"/>;})}
+  {polling.features.map(feature => { const [x,y]=position(feature.geometry.coordinates);return <image href={pins[String(feature.properties?.pollingid)]?.icon} x={x-11} y={y-25} width="22" height="25"/>;})}</g>
+</svg>
+<style>svg{position:absolute;inset:0;width:100%;height:100%;display:block;background:#e4e8d9}</style>

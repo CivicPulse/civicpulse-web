@@ -1,0 +1,8 @@
+{
+  "url": "https://www.calendarwiz.com/calendars/rssfeeder.xml?crd=mgrl&len=100000&days=365&events=10000&title=Calendar%20Events&cat=all&pdate=o",
+  "captured": "2026-10-15",
+  "contentType": "text/xml;charset=ISO-8859-1",
+  "requestedDays": 365,
+  "requestedLimit": 10000,
+  "items": 200
+}

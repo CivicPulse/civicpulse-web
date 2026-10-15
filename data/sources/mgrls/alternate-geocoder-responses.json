@@ -1,0 +1,159 @@
+{
+  "Mary Vinson Memorial Library, Milledgeville, Georgia": {
+    "url": "https://nominatim.openstreetmap.org/search?q=Mary+Vinson+Memorial+Library%2C+Milledgeville%2C+Georgia&format=jsonv2&addressdetails=1&limit=3",
+    "response": [
+      {
+        "place_id": 343131630,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 485752043,
+        "lat": "33.0804315",
+        "lon": "-83.2255193",
+        "category": "amenity",
+        "type": "library",
+        "place_rank": 30,
+        "importance": 5.470588235289567e-05,
+        "addresstype": "amenity",
+        "name": "Mary Vinson Memorial Library",
+        "display_name": "Mary Vinson Memorial Library, 151, South Jefferson Street, Downtown Milledgeville, Milledgeville, Baldwin County, Georgia, 31061, United States",
+        "address": {
+          "amenity": "Mary Vinson Memorial Library",
+          "house_number": "151",
+          "road": "South Jefferson Street",
+          "commercial": "Downtown Milledgeville",
+          "town": "Milledgeville",
+          "county": "Baldwin County",
+          "state": "Georgia",
+          "ISO3166-2-lvl4": "US-GA",
+          "postcode": "31061",
+          "country": "United States",
+          "country_code": "us"
+        },
+        "boundingbox": [
+          "33.0802056",
+          "33.0806572",
+          "-83.2257018",
+          "-83.2253368"
+        ]
+      }
+    ]
+  },
+  "Gordon Public Library, Gordon, Georgia": {
+    "url": "https://nominatim.openstreetmap.org/search?q=Gordon+Public+Library%2C+Gordon%2C+Georgia&format=jsonv2&addressdetails=1&limit=3",
+    "response": [
+      {
+        "place_id": 343014861,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 978245252,
+        "lat": "32.8825980",
+        "lon": "-83.3347500",
+        "category": "amenity",
+        "type": "library",
+        "place_rank": 30,
+        "importance": 4.89791714350655e-05,
+        "addresstype": "amenity",
+        "name": "Gordon Public Library",
+        "display_name": "Gordon Public Library, 284, Frazier Alley, Gordon, Wilkinson County, Georgia, 31031, United States",
+        "address": {
+          "amenity": "Gordon Public Library",
+          "house_number": "284",
+          "road": "Frazier Alley",
+          "village": "Gordon",
+          "county": "Wilkinson County",
+          "state": "Georgia",
+          "ISO3166-2-lvl4": "US-GA",
+          "postcode": "31031",
+          "country": "United States",
+          "country_code": "us"
+        },
+        "boundingbox": [
+          "32.8825228",
+          "32.8826846",
+          "-83.3348874",
+          "-83.3346101"
+        ]
+      }
+    ]
+  },
+  "East Wilkinson County Public Library, Irwinton, Georgia": {
+    "url": "https://nominatim.openstreetmap.org/search?q=East+Wilkinson+County+Public+Library%2C+Irwinton%2C+Georgia&format=jsonv2&addressdetails=1&limit=3",
+    "response": []
+  },
+  "154 East Main Street, Irwinton, Georgia": {
+    "url": "https://nominatim.openstreetmap.org/search?q=154+East+Main+Street%2C+Irwinton%2C+Georgia&format=jsonv2&addressdetails=1&limit=3",
+    "response": [
+      {
+        "place_id": 343019163,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 691738921,
+        "lat": "32.8157712",
+        "lon": "-83.1689869",
+        "category": "amenity",
+        "type": "library",
+        "place_rank": 30,
+        "importance": 5.043793392838968e-05,
+        "addresstype": "amenity",
+        "name": "East Wilkinson County Library",
+        "display_name": "East Wilkinson County Library, 154, East Main Street, Irwinton, Wilkinson County, Georgia, 31042, United States",
+        "address": {
+          "amenity": "East Wilkinson County Library",
+          "house_number": "154",
+          "road": "East Main Street",
+          "village": "Irwinton",
+          "county": "Wilkinson County",
+          "state": "Georgia",
+          "ISO3166-2-lvl4": "US-GA",
+          "postcode": "31042",
+          "country": "United States",
+          "country_code": "us"
+        },
+        "boundingbox": [
+          "32.8156557",
+          "32.8159041",
+          "-83.1690974",
+          "-83.1688505"
+        ]
+      }
+    ]
+  },
+  "library, Irwinton, Georgia": {
+    "url": "https://nominatim.openstreetmap.org/search?q=library%2C+Irwinton%2C+Georgia&format=jsonv2&addressdetails=1&limit=3",
+    "response": [
+      {
+        "place_id": 343019163,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 691738921,
+        "lat": "32.8157712",
+        "lon": "-83.1689869",
+        "category": "amenity",
+        "type": "library",
+        "place_rank": 30,
+        "importance": 5.043793392838968e-05,
+        "addresstype": "amenity",
+        "name": "East Wilkinson County Library",
+        "display_name": "East Wilkinson County Library, 154, East Main Street, Irwinton, Wilkinson County, Georgia, 31042, United States",
+        "address": {
+          "amenity": "East Wilkinson County Library",
+          "house_number": "154",
+          "road": "East Main Street",
+          "village": "Irwinton",
+          "county": "Wilkinson County",
+          "state": "Georgia",
+          "ISO3166-2-lvl4": "US-GA",
+          "postcode": "31042",
+          "country": "United States",
+          "country_code": "us"
+        },
+        "boundingbox": [
+          "32.8156557",
+          "32.8159041",
+          "-83.1690974",
+          "-83.1688505"
+        ]
+      }
+    ]
+  }
+}

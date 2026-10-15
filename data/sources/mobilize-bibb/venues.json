@@ -1,0 +1,110 @@
+[
+  {
+    "id": "mobilize-venue-1305-hardeman",
+    "match": "1305 Hardeman",
+    "address": "1305 Hardeman Ave, Macon, GA 31201",
+    "coordinates": [
+      -83.641491548851,
+      32.839971185247
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1305+Hardeman+Ave%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-530-poplar",
+    "match": "530 Poplar St",
+    "address": "530 Poplar St, Macon, GA 31201",
+    "coordinates": [
+      -83.62924058101,
+      32.834490488543
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=530+Poplar+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-2656-napier",
+    "match": "2656 Napier Ave",
+    "address": "2656 Napier Ave, Macon, GA 31204",
+    "coordinates": [
+      -83.66401068879,
+      32.836049015647
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=2656+Napier+Ave%2C+Macon%2C+GA+31204&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-1552-eisenhower",
+    "match": "1552 Eisenhower Pkwy",
+    "address": "1552 Eisenhower Pkwy, Macon, GA 31206",
+    "coordinates": [
+      -83.667729558111,
+      32.814405895017
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1552+Eisenhower+Pkwy%2C+Macon%2C+GA+31206&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-3661-eisenhower",
+    "match": "3661 Eisenhower Pkwy",
+    "address": "3661 Eisenhower Pkwy, Macon, GA 31206",
+    "coordinates": [
+      -83.694156547532,
+      32.815833255057
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=3661+Eisenhower+Pkwy%2C+Macon%2C+GA+31206&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-233-n",
+    "match": "233 N Houston Rd",
+    "address": "233 N Houston Rd, Warner Robins, GA 31093",
+    "coordinates": [
+      -83.641612918962,
+      32.620982638545
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=233+N+Houston+Rd%2C+Warner+Robins%2C+GA+31093&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-1302-watson",
+    "match": "1302 Watson Blvd",
+    "address": "1302 Watson Blvd, Warner Robins, GA 31093",
+    "coordinates": [
+      -83.621857163425,
+      32.618289291603
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1302+Watson+Blvd%2C+Warner+Robins%2C+GA+31093&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-738-russell",
+    "match": "738 Russell",
+    "address": "738 Russell Pkwy, Warner Robins, GA 31088",
+    "coordinates": [
+      -83.635381103855,
+      32.594003221295
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=738+Russell+Pkwy%2C+Warner+Robins%2C+GA+31088&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "mobilize-venue-837-hillsboro",
+    "match": "837 Hillsboro St",
+    "address": "837 Hillsboro St, Monticello, GA 31064",
+    "coordinates": [
+      -83.681399714749,
+      33.297018014311
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=837+Hillsboro+St%2C+Monticello%2C+GA+31064&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not a confirmed entrance or meeting point",
+    "checked": "2026-10-15"
+  }
+]

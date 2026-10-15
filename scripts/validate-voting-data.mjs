@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const sources = [
+  ['recreation-centers', 'recreation-centers', 'Point', 'id'],
   ['polling_places', 'polling-places', 'Point', 'pollingid'],
   ['voting_precincts', 'voting-precincts', 'MultiPolygon', 'precinctid'],
 ];

@@ -142,3 +142,7 @@ vite.config.ts.timestamp-*
 .astro/
 .impeccable/review/
 .DS_Store
+.wrangler/
+
+# Python import/test caches
+__pycache__/

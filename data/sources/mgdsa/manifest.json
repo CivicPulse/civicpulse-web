@@ -1,0 +1,43 @@
+{
+  "sourcePage": "https://www.mgdsa.org/events/calendar",
+  "captured": "2026-10-15",
+  "windowStart": "2026-01-01",
+  "windowEndExclusive": "2027-10-16",
+  "feeds": [
+    {
+      "calendarId": "3db092d8a7510cda5ec97db88a8b4c9331be746eb883fddf7002baacf08ab7d3@group.calendar.google.com",
+      "file": "sandwich-making.ics",
+      "url": "https://calendar.google.com/calendar/ical/3db092d8a7510cda5ec97db88a8b4c9331be746eb883fddf7002baacf08ab7d3%40group.calendar.google.com/public/basic.ics",
+      "eventComponents": 3
+    },
+    {
+      "calendarId": "56672f2f49fb30dd1c5522ba9a3e4196288d041337250c49f6f727f563d01c32@group.calendar.google.com",
+      "file": "labor-committee.ics",
+      "url": "https://calendar.google.com/calendar/ical/56672f2f49fb30dd1c5522ba9a3e4196288d041337250c49f6f727f563d01c32%40group.calendar.google.com/public/basic.ics",
+      "eventComponents": 3
+    },
+    {
+      "calendarId": "62818f27c54bcb0daa426992067b4c9fd023ed3ea332e615aab53861517698fb@group.calendar.google.com",
+      "file": "free-community-meals.ics",
+      "url": "https://calendar.google.com/calendar/ical/62818f27c54bcb0daa426992067b4c9fd023ed3ea332e615aab53861517698fb%40group.calendar.google.com/public/basic.ics",
+      "eventComponents": 0
+    },
+    {
+      "calendarId": "684b7e515abb57c68b5123752354105e79fdcb39920ef8d7b3627a0f70ad7787@group.calendar.google.com",
+      "file": "upcoming-events.ics",
+      "url": "https://calendar.google.com/calendar/ical/684b7e515abb57c68b5123752354105e79fdcb39920ef8d7b3627a0f70ad7787%40group.calendar.google.com/public/basic.ics",
+      "eventComponents": 25
+    }
+  ],
+  "unavailable": [
+    {
+      "calendarId": "1db006b301f63ef235b710e3e99b6b89b908a219861effc89fa04522fef9befb@group.calendar.google.com",
+      "status": 404
+    },
+    {
+      "calendarId": "5fc0f4811aa6414198160214548c60c4f4be527960e941e73372567d60d23728@group.calendar.google.com",
+      "status": 404
+    }
+  ],
+  "excludedCommunityCalendar": "be85180a8d3cee83f27ab3fc81ca0aea5f69c8c6df035512d762297d44a0bf97@group.calendar.google.com"
+}

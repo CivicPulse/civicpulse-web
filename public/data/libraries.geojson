@@ -3,32 +3,616 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {
-        "sample": true,
-        "name": "Washington Memorial Library",
-        "description": "Sample library marker; not a service directory."
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -83.6384,
-          32.8403
+          -83.684245225797,
+          32.785461702998
         ]
+      },
+      "properties": {
+        "id": "mgrls-55",
+        "name": "Bloomfield Library",
+        "county": "Bibb County",
+        "fulladd": "Bloomfield-Gilead Recreation Center 1931 Rocky Creek Rd, Macon, GA 31206",
+        "phone": "(478) 310-4741",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 11:00 am - 6:30 pm",
+              "Tuesday: 11:00 am - 6:30 pm",
+              "Wednesday: 11:00 am - 6:30 pm",
+              "Thursday: 11:00 am - 6:30 pm",
+              "Friday: 11:00 am - 6:30 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R55.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
       }
     },
     {
       "type": "Feature",
-      "properties": {
-        "sample": true,
-        "name": "Riverside Branch Library",
-        "description": "Illustrative location for the map demonstration."
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -83.6835,
-          32.887
+          -83.74199336229,
+          32.887933398599
         ]
+      },
+      "properties": {
+        "id": "mgrls-73",
+        "name": "Cathy Ivey Community Library",
+        "county": "Bibb County",
+        "fulladd": "5494 Forsyth Road, Macon, GA 31210",
+        "phone": "(478) 757-8900",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 9:30 am - 6:00 pm",
+              "Tuesday: 9:30 am - 6:00 pm",
+              "Wednesday: 9:30 am - 6:00 pm",
+              "Thursday: 10:30 am - 7:00 pm",
+              "Friday: 9:30 am - 6:00 pm",
+              "Saturday: Closed",
+              "Sunday: 1:00 pm - 5:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R73.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.685327477248,
+          32.723578029318
+        ]
+      },
+      "properties": {
+        "id": "mgrls-3",
+        "name": "Charles A. Lanford, M.D. Library",
+        "county": "Bibb County",
+        "fulladd": "6504 Houston Road, Macon, GA 31216",
+        "phone": "(478) 300-6760",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 9:30 am - 6:00 pm",
+              "Tuesday: 9:30 am - 6:00 pm",
+              "Wednesday: 9:30 am - 6:00 pm",
+              "Thursday: 10:30 am - 7:00 pm",
+              "Friday: 9:30 am - 6:00 pm",
+              "Saturday: Closed",
+              "Sunday: 1:00 pm - 5:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R3.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.011287589234,
+          32.72311185151
+        ]
+      },
+      "properties": {
+        "id": "mgrls-8",
+        "name": "Crawford County Public Library",
+        "county": "Crawford County",
+        "fulladd": "144 McCrary Avenue, Roberta, GA 31078-0580",
+        "phone": "(478) 836-4478",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 1:00 pm - 7:00 pm",
+              "Tuesday-Thursday: 10:00 am - 7:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R8.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.623750334547,
+          32.833360304463
+        ]
+      },
+      "properties": {
+        "id": "mgrls-83",
+        "name": "Downtown Bus Station Book Locker",
+        "county": "Bibb County",
+        "fulladd": "200 Cherry Street, Macon, GA 31201",
+        "phone": "",
+        "kind": "book-locker",
+        "hours": [
+          {
+            "label": "Self-service access",
+            "lines": [
+              "Available any time of day, according to MGRLS."
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R83.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.1689869,
+          32.8157712
+        ]
+      },
+      "properties": {
+        "id": "mgrls-16",
+        "name": "East Wilkinson County Public Library",
+        "county": "Wilkinson County",
+        "fulladd": "154 East Main Street, Irwinton, GA 31042-0546",
+        "phone": "(478) 946-2778",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday-Wednesday: 10:00 am - 6:00 pm",
+              "Thursday: 12:00 pm - 8:00 pm",
+              "Friday: 10:00 am - 5:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R16.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "OpenStreetMap library feature",
+        "geocodeSource": "https://www.openstreetmap.org/way/691738921"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.33475,
+          32.882598
+        ]
+      },
+      "properties": {
+        "id": "mgrls-17",
+        "name": "Gordon Public Library",
+        "county": "Wilkinson County",
+        "fulladd": "284 Milledgeville Highway West, Gordon, GA 31031-0336",
+        "phone": "(478) 628-5352",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday-Friday: 9:00 am - 6:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R17.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "OpenStreetMap library feature",
+        "geocodeSource": "https://www.openstreetmap.org/way/978245252"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.22660122215,
+          33.081261756125
+        ]
+      },
+      "properties": {
+        "id": "mgrls-53",
+        "name": "Hancock Branch",
+        "county": "Baldwin County",
+        "fulladd": "127 E Hancock Street, Ste C, Milledgeville, GA 31061-3413",
+        "phone": "(478) 452-0677",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday - Friday: 12:00 PM - 6:00 PM"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R53.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.534411145768,
+          33.007146477731
+        ]
+      },
+      "properties": {
+        "id": "mgrls-10",
+        "name": "Jones County Public Library",
+        "county": "Jones County",
+        "fulladd": "146 Railroad Street, Gray, GA 31032-0156",
+        "phone": "(478) 986-6626",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday, Wednesday, Thursday: 9:00 am - 6:00 pm",
+              "Tuesday: 9:00 am - 7:00 pm",
+              "Friday: 8:00 am - 5:00 pm",
+              "Saturday: 10:00 AM - 2:00 PM"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R10.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.269334057218,
+          33.150745394256
+        ]
+      },
+      "properties": {
+        "id": "mgrls-58",
+        "name": "Lake Sinclair Library",
+        "county": "Baldwin County",
+        "fulladd": "130 Log Cabin Road, Unit D, Milledgeville, GA 31061-0917",
+        "phone": "(478) 452-6522",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday-Saturday: 9:00 am - 2:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R58.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.694156547532,
+          32.815833255057
+        ]
+      },
+      "properties": {
+        "id": "mgrls-68",
+        "name": "Library Annex",
+        "county": "Bibb County",
+        "fulladd": "3661 Eisenhower Parkway Suite #103, Macon, Georgia 31206",
+        "phone": "(478) 300-6745",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday - Friday: 9:00 am to 5:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R68.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.941627926476,
+          32.45696784051
+        ]
+      },
+      "properties": {
+        "id": "mgrls-12",
+        "name": "Marshallville Public Library",
+        "county": "Macon County",
+        "fulladd": "106 Camellia Boulevard, Marshallville, GA 31057-0201",
+        "phone": "(478) 967-1163",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 9 AM -1 PM & 2 PM-5 PM",
+              "Tuesday: 9 AM -12 PM & 2 PM - 5 PM",
+              "Wednesday: 9 AM - 1 PM & 2 PM-5 PM",
+              "Thursday: 9 AM -12 PM & 2 PM - 5 PM",
+              "Friday: 9 AM - 1 PM & 2 PM-5 PM",
+              "CLOSED: Saturday and Sunday"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R12.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.2255193,
+          33.0804315
+        ]
+      },
+      "properties": {
+        "id": "mgrls-59",
+        "name": "Mary Vinson Memorial",
+        "county": "Baldwin County",
+        "fulladd": "151 S Jefferson St SE, Milledgeville, GA 31061-3419",
+        "phone": "(478) 452-0677",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 9:00 am - 5:00 pm",
+              "Tuesday: 9:00 am - 7:00 pm",
+              "Wednesday: 9:00 am - 5:00 pm",
+              "Thursday: 9:00 am - 7:00 pm",
+              "Friday: 9:00 am - 5:00 pm",
+              "Saturday: 10:00 am - 2:00 pm",
+              "Sunday: Closed"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R59.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "OpenStreetMap library feature",
+        "geocodeSource": "https://www.openstreetmap.org/way/485752043"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.025663114734,
+          32.309139706932
+        ]
+      },
+      "properties": {
+        "id": "mgrls-13",
+        "name": "Montezuma Public Library",
+        "county": "Macon County",
+        "fulladd": "506 North Dooly Street, Montezuma, GA 31063-1308",
+        "phone": "(478) 472-6095",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday-Tuesday: 9:30 am - 7:00 pm",
+              "Wednesday-Thursday: 9:30 am - 6:00 pm",
+              "Friday: 10:00 am - 1:30 pm",
+              "* Closed Saturday - Sunday"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R13.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.060903060995,
+          32.293653618353
+        ]
+      },
+      "properties": {
+        "id": "mgrls-14",
+        "name": "Oglethorpe Public Library",
+        "county": "Macon County",
+        "fulladd": "115 Chatham Street, Oglethorpe, GA 31068-0425",
+        "phone": "(478) 472-9526",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday-Thursday: 8:00 am - 6:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R14.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.593035002774,
+          32.861456469094
+        ]
+      },
+      "properties": {
+        "id": "mgrls-5",
+        "name": "Shurling Library",
+        "county": "Bibb County",
+        "fulladd": "Shurlington Plaza 1769 Shurling Drive, Macon, GA 31211-2152",
+        "phone": "(478) 300-6743",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday: 9:30 am - 6:00 pm",
+              "Tuesday: 9:30 am - 6:00 pm",
+              "Wednesday: 9:30 am - 6:00 pm",
+              "Thursday: 10:30 am - 7:00 pm",
+              "Friday: 9:30 am - 6:00 pm",
+              "Saturday: Closed",
+              "Sunday: 1:00 pm - 5:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R5.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.34220685923,
+          32.687274641734
+        ]
+      },
+      "properties": {
+        "id": "mgrls-15",
+        "name": "Twiggs County Public Library",
+        "county": "Twiggs County",
+        "fulladd": "109 Main Street, Jeffersonville, GA 31044-0305",
+        "phone": "(478) 945-3814",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Published hours",
+            "lines": [
+              "Monday, Wednesday: 9:00 am - 5:00 pm",
+              "Tuesday, Thursday: 10:00 am - 6:00 pm",
+              "Friday: 9:00 am - 1:00 pm"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R15.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.638724069788,
+          32.839030371962
+        ]
+      },
+      "properties": {
+        "id": "mgrls-2",
+        "name": "Washington Memorial Library",
+        "county": "Bibb County",
+        "fulladd": "1180 Washington Avenue, Macon, GA 31201-1790",
+        "phone": "(478) 300-6744",
+        "kind": "library",
+        "hours": [
+          {
+            "label": "Main Library",
+            "lines": [
+              "Monday: 9:00 am - 8:00 pm",
+              "Tuesday: 9:00 am - 8:00 pm",
+              "Wednesday: 9:00 am - 8:00 pm",
+              "Thursday: 9:00 am - 8:00 pm",
+              "Friday: 9:00 am - 6:00 pm",
+              "Saturday: 9:00 am - 6:00 pm",
+              "Sunday ( Open Access only): 1:00pm - 5:00pm"
+            ]
+          },
+          {
+            "label": "Genealogical & Historical Room",
+            "lines": [
+              "Monday: 9:00 am - 8:00 pm",
+              "Tuesday: 9:00 am - 6:00 pm",
+              "Wednesday: 9:00 am - 6:00 pm",
+              "Thursday: 9:00 am - 6:00 pm",
+              "Friday: 9:00 am - 6:00 pm",
+              "Saturday: 9:00 am - 6:00 pm",
+              "Sunday: Closed"
+            ]
+          },
+          {
+            "label": "Computer Lab",
+            "lines": [
+              "Monday: 9:00 am - 7:45 pm",
+              "Tuesday: 9:00 am - 7:45 pm",
+              "Wednesday: 9:00 am - 7:45 pm",
+              "Thursday: 9:00 am - 7:45 pm",
+              "Friday: 9:00 am - 5:45 pm",
+              "Saturday: 9:00am - 5:45 pm",
+              "Sunday: Closed"
+            ]
+          }
+        ],
+        "sourceUrl": "https://bibblib.org/directory_page_T49_R2.php",
+        "sourceChecked": "2026-10-15",
+        "geocoder": "US Census address interpolation",
+        "geocodeSource": "https://geocoding.geo.census.gov/"
       }
     }
   ]

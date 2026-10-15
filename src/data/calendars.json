@@ -1,0 +1,159 @@
+{
+  "organizations": [
+    {
+      "id": "mgdsa",
+      "name": "Mid GA DSA",
+      "color": "#854365"
+    },
+    {
+      "id": "macon-bibb-dems",
+      "name": "Macon-Bibb Dems",
+      "color": "#2166ac"
+    },
+    {
+      "id": "dpg26",
+      "name": "Democratic Party of Georgia 26",
+      "color": "#24616b"
+    },
+    {
+      "id": "houston-county-dems",
+      "name": "Houston County Democrats",
+      "color": "#655397"
+    },
+    {
+      "id": "jasper-county-dems",
+      "name": "Jasper County Democrats",
+      "color": "#8a592f"
+    },
+    {
+      "id": "mgrls",
+      "name": "Middle Georgia Regional Library",
+      "color": "#375f74"
+    },
+    {
+      "id": "sample",
+      "name": "Sample events",
+      "color": "#586358"
+    }
+  ],
+  "calendars": [
+    {
+      "id": "dsa-upcoming",
+      "organizationId": "mgdsa",
+      "name": "Upcoming MGDSA Events",
+      "color": "#854365",
+      "sourceCalendar": "684b7e515abb57c68b5123752354105e79fdcb39920ef8d7b3627a0f70ad7787@group.calendar.google.com"
+    },
+    {
+      "id": "dsa-sandwich-making",
+      "organizationId": "mgdsa",
+      "name": "Sandwich Making Days",
+      "color": "#287556",
+      "sourceCalendar": "3db092d8a7510cda5ec97db88a8b4c9331be746eb883fddf7002baacf08ab7d3@group.calendar.google.com"
+    },
+    {
+      "id": "dsa-labor",
+      "organizationId": "mgdsa",
+      "name": "MGDSA Labor Committee",
+      "color": "#a34e27",
+      "sourceCalendar": "56672f2f49fb30dd1c5522ba9a3e4196288d041337250c49f6f727f563d01c32@group.calendar.google.com"
+    },
+    {
+      "id": "dsa-community-meals",
+      "organizationId": "mgdsa",
+      "name": "Free Community Meals",
+      "color": "#6c599d",
+      "sourceCalendar": "62818f27c54bcb0daa426992067b4c9fd023ed3ea332e615aab53861517698fb@group.calendar.google.com"
+    },
+    {
+      "id": "dems-events",
+      "organizationId": "macon-bibb-dems",
+      "name": "Macon-Bibb Dems events",
+      "color": "#2166ac"
+    },
+    {
+      "id": "dems-outreach",
+      "organizationId": "macon-bibb-dems",
+      "name": "Voter outreach",
+      "color": "#2166ac"
+    },
+    {
+      "id": "dems-training",
+      "organizationId": "macon-bibb-dems",
+      "name": "Training",
+      "color": "#7a5a20"
+    },
+    {
+      "id": "dems-committees",
+      "organizationId": "macon-bibb-dems",
+      "name": "Committee meetings",
+      "color": "#286e78"
+    },
+    {
+      "id": "dpg26-nearby",
+      "organizationId": "dpg26",
+      "name": "Nearby Mobilize events",
+      "color": "#24616b"
+    },
+    {
+      "id": "houston-dems-events",
+      "organizationId": "houston-county-dems",
+      "name": "Houston County Democrats events",
+      "color": "#655397"
+    },
+    {
+      "id": "jasper-dems-events",
+      "organizationId": "jasper-county-dems",
+      "name": "Jasper County Democrats events",
+      "color": "#8a592f"
+    },
+    {
+      "id": "mgrls-adults",
+      "organizationId": "mgrls",
+      "name": "Adults",
+      "color": "#6b4e91"
+    },
+    {
+      "id": "mgrls-business",
+      "organizationId": "mgrls",
+      "name": "Business and Nonprofit Center",
+      "color": "#28746b"
+    },
+    {
+      "id": "mgrls-children",
+      "organizationId": "mgrls",
+      "name": "Children",
+      "color": "#a15b29"
+    },
+    {
+      "id": "mgrls-family",
+      "organizationId": "mgrls",
+      "name": "Family",
+      "color": "#35699b"
+    },
+    {
+      "id": "mgrls-general",
+      "organizationId": "mgrls",
+      "name": "General Interest",
+      "color": "#617340"
+    },
+    {
+      "id": "mgrls-technology",
+      "organizationId": "mgrls",
+      "name": "Technology Classes",
+      "color": "#9a466b"
+    },
+    {
+      "id": "mgrls-teens",
+      "organizationId": "mgrls",
+      "name": "Teens/ Young Adults",
+      "color": "#38667b"
+    },
+    {
+      "id": "sample-events",
+      "organizationId": "sample",
+      "name": "Demonstration events",
+      "color": "#586358"
+    }
+  ]
+}

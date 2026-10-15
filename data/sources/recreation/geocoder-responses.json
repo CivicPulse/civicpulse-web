@@ -1,0 +1,497 @@
+{
+  "elaine-h-lucas-senior-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=132+Willie+Smokie+Glover+Dr%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "132 Willie Smokie Glover Dr, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81073881"
+            },
+            "coordinates": {
+              "x": -83.615824598098,
+              "y": 32.832351847353
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "WILLIE SMOKIE GLOVER",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "198",
+              "state": "GA",
+              "suffixType": "DR",
+              "toAddress": "100",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "132 WILLIE SMOKIE GLOVER DR, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  "frank-johnson-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=2227+Mercer+University+Dr%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "2227 Mercer University Dr, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "636328000"
+            },
+            "coordinates": {
+              "x": -83.663081496327,
+              "y": 32.825930544644
+            },
+            "addressComponents": {
+              "zip": "31204",
+              "streetName": "MERCER UNIVERSITY",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "2201",
+              "state": "GA",
+              "suffixType": "DR",
+              "toAddress": "2299",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "2227 MERCER UNIVERSITY DR, MACON, GA, 31204"
+          }
+        ]
+      }
+    }
+  },
+  "bloomfield-gilead-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1931+Rocky+Creek+Rd%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1931 Rocky Creek Rd, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81060263"
+            },
+            "coordinates": {
+              "x": -83.684245225797,
+              "y": 32.785461702998
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "ROCKY CREEK",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1901",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "2099",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1931 ROCKY CREEK RD, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  "delores-a-brooks-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=3326+Ocmulgee+E+Blvd%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "3326 Ocmulgee E Blvd, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "640442090"
+            },
+            "coordinates": {
+              "x": -83.5741889924,
+              "y": 32.83185759337
+            },
+            "addressComponents": {
+              "zip": "31217",
+              "streetName": "OCMULGEE EAST",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "3100",
+              "state": "GA",
+              "suffixType": "BLVD",
+              "toAddress": "3656",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "3326 OCMULGEE EAST BLVD, MACON, GA, 31217"
+          }
+        ]
+      }
+    }
+  },
+  "memorial-park-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=2465+2nd+St%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "2465 2nd St, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81063743"
+            },
+            "coordinates": {
+              "x": -83.646265957612,
+              "y": 32.815289490147
+            },
+            "addressComponents": {
+              "zip": "31206",
+              "streetName": "2ND",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "2449",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "2465",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "2465 2ND ST, MACON, GA, 31206"
+          }
+        ]
+      }
+    }
+  },
+  "south-bibb-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=7035+Houston+Road%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "7035 Houston Road, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "L",
+              "tigerLineId": "81093165"
+            },
+            "coordinates": {
+              "x": -83.698213434969,
+              "y": 32.706534297572
+            },
+            "addressComponents": {
+              "zip": "31216",
+              "streetName": "HOUSTON",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "7099",
+              "state": "GA",
+              "suffixType": "RD",
+              "toAddress": "6793",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "7035 HOUSTON RD, MACON, GA, 31216"
+          }
+        ]
+      }
+    }
+  },
+  "rosa-jackson-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1211+Maynard+Street%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "1211 Maynard Street, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81062453"
+            },
+            "coordinates": {
+              "x": -83.610805536039,
+              "y": 32.856971003341
+            },
+            "addressComponents": {
+              "zip": "31217",
+              "streetName": "MAYNARD",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "1201",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "1299",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "1211 MAYNARD ST, MACON, GA, 31217"
+          }
+        ]
+      }
+    }
+  },
+  "kings-park-community-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=3283+Kingston+Court%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "3283 Kingston Court, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81065342"
+            },
+            "coordinates": {
+              "x": -83.553352770052,
+              "y": 32.84610147783
+            },
+            "addressComponents": {
+              "zip": "31217",
+              "streetName": "KINGSTON",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "3201",
+              "state": "GA",
+              "suffixType": "CT",
+              "toAddress": "3299",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "3283 KINGSTON CT, MACON, GA, 31217"
+          }
+        ]
+      }
+    }
+  },
+  "l-h-williams-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=325+Pursley+St.%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "325 Pursley St., Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81061117"
+            },
+            "coordinates": {
+              "x": -83.64666944656,
+              "y": 32.845093162159
+            },
+            "addressComponents": {
+              "zip": "31201",
+              "streetName": "PURSLEY",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "301",
+              "state": "GA",
+              "suffixType": "ST",
+              "toAddress": "325",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "325 PURSLEY ST, MACON, GA, 31201"
+          }
+        ]
+      }
+    }
+  },
+  "theron-ussery-park-recreation-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=815+N+Macon+Park+Dr%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "815 N Macon Park Dr, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81069174"
+            },
+            "coordinates": {
+              "x": -83.679203790271,
+              "y": 32.884445402844
+            },
+            "addressComponents": {
+              "zip": "31210",
+              "streetName": "MACON PARK",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "N",
+              "suffixDirection": "",
+              "fromAddress": "801",
+              "state": "GA",
+              "suffixType": "DR",
+              "toAddress": "999",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "815 N MACON PARK DR, MACON, GA, 31210"
+          }
+        ]
+      }
+    }
+  },
+  "freedom-park-boxing-center": {
+    "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=3301+Roff+Ave%2C+Macon%2C+GA&benchmark=Public_AR_Current&format=json",
+    "response": {
+      "result": {
+        "input": {
+          "address": {
+            "address": "3301 Roff Ave, Macon, GA"
+          },
+          "benchmark": {
+            "isDefault": true,
+            "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+            "id": "4",
+            "benchmarkName": "Public_AR_Current"
+          }
+        },
+        "addressMatches": [
+          {
+            "tigerLine": {
+              "side": "R",
+              "tigerLineId": "81058922"
+            },
+            "coordinates": {
+              "x": -83.678703902603,
+              "y": 32.849155365857
+            },
+            "addressComponents": {
+              "zip": "31204",
+              "streetName": "ROFF",
+              "preType": "",
+              "city": "MACON",
+              "preDirection": "",
+              "suffixDirection": "",
+              "fromAddress": "3199",
+              "state": "GA",
+              "suffixType": "AVE",
+              "toAddress": "3347",
+              "suffixQualifier": "",
+              "preQualifier": ""
+            },
+            "matchedAddress": "3301 ROFF AVE, MACON, GA, 31204"
+          }
+        ]
+      }
+    }
+  }
+}

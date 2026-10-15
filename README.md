@@ -41,7 +41,7 @@ Open http://localhost:4321. Run `npm run build` for TypeScript/Astro checks and 
 ## Features
 
 - Home page with equal map and calendar destinations, based on the approved noticeboard concept.
-- Four configurable map presets and eight independently controlled GeoJSON layers, using Leaflet.
+- Voting, commissioner, event and MGRLS library map presets with independently controlled GeoJSON layers, using Leaflet.
 - Searchable feature directory, keyboard controls, feature popups, layer-aware fit-to-bounds, and optional OpenStreetMap street tiles.
 - Month/agenda calendar, day selection, event/category search, native expandable event details, and static `.ics` downloads.
 - Mobile layouts, self-hosted fonts, reduced-motion support, skip link, sample-data notices, source downloads, and custom 404.
@@ -49,31 +49,35 @@ Open http://localhost:4321. Run `npm run build` for TypeScript/Astro checks and 
 
 ## Sample content
 
-**All event listings are fictional.** The community sample layers have approximate marker positions and illustrative polygons and trails. Voting layers preserve the uploaded data. They are not authoritative boundaries, routes or services. The home map image is an AI-generated illustration. Site copy does not claim official affiliation. The default voting view uses the uploaded GeoJSON files; sample community layers remain available separately.
+119 dated shifts from 25 nearby listings in the supplied Democratic Party of Georgia 26 feed on Mobilize were captured October 15, 2026. Imported entries include signup links and capture dates; this is a manual snapshot. **Entries marked “Sample event” are fictional.** Voting layers preserve the uploaded data. They are not authoritative boundaries, routes or services. The home map preview is rendered from the voting GeoJSON. Site copy does not claim official affiliation. The default voting view uses the uploaded GeoJSON files.
 
-Sample events are dated October–December 2026. The calendar opens to the visitor’s current month in America/New_York; a direct event link opens that event’s month. Later visitors can navigate back to the sample months. Do not use these files for actual event planning or navigation.
+Sample events are dated October–December 2026. The calendar opens to the visitor’s current month in America/New_York; a direct event link opens that event’s month. Later visitors can navigate back to the sample months. Confirm imported event arrangements through the linked organizer page.
 
-## Update maps
+## Update voting maps
 
-1. Put WGS84 GeoJSON FeatureCollections in `public/data/`, with coordinate order `[longitude, latitude]`. Polygon rings must close.
-2. Configure layers in `src/data/maps.ts`: `id` maps to `/data/<id>.geojson` for sample layers; `layerUrl()` keeps the underscore filenames for voting exports. Set name, color, description and geometry kind. Point, line and polygon layers are supported.
-3. Configure map presets in the same file; each preset lists its default layer IDs.
-4. Use `properties.name` and `properties.description` for readable popup and directory content. Optional `properties.id` supports event-location links. Values are inserted as text, not HTML.
-5. Replace source documentation in `/data/` and review sample notices when publishing verified content.
-
-`scripts/create-sample-data.py` regenerates the illustrative files. It overwrites the sample GeoJSON paths: do not run it over production data. Python is not required to build the website.
+Replace the two canonical GeoJSON files listed above with WGS84 FeatureCollections, keeping their supplied field names and polling/precinct identifiers. `scripts/validate-voting-data.mjs` checks them before each build. The homepage preview renders those same files at build time, and the interactive map fetches them directly. Update `map-sources.json` when provenance changes. QGIS colors and ballot icons are maintained through the symbology workflow below.
 
 ## Update events
 
-Edit `src/data/events.json`. Each record needs a unique `id`, `title`, ISO `start` and `end` with the correct UTC offset, `category`, `location`, `address`, `description`, `note`, and `[longitude, latitude]` `coordinates`.
+Edit `src/data/events.json`. Each record needs a unique `id`, `title`, ISO `start` and `end` with the correct UTC offset, `category`, `location`, `address`, `description`, `note`, and `sample` boolean. Sourced records also include `sourceUrl`, `sourceChecked`, and `organizer`. Coordinates are optional; only include verified `[longitude, latitude]` coordinates.
 
-Use the correct daylight-saving offset for each date. The frontend formats in America/New_York and `.ics` output uses UTC. Single-event files and the full calendar are generated at build time. When publishing verified events, update the explicit sample wording in `src/lib/events.ts`, the calendar page, event component, source page, and footer together. Set a real `PRODID` and UID domain in `src/lib/events.ts`.
+Use the correct daylight-saving offset for each date. The frontend formats in America/New_York and `.ics` output uses UTC. Single-event files and the full calendar are generated at build time. Only fictional entries receive sample labels in the UI and calendar exports. Keep source links and capture dates current when refreshing events.
 
-The homepage’s three featured event IDs are set in `src/pages/index.astro`; replace them along with the events. Event markers are a separate GeoJSON layer; keep `properties.id` aligned with event IDs.
+The homepage features the first three upcoming sourced occurrences in chronological order. Imported IDs combine the Mobilize event ID and occurrence date. Events are shown only in the calendar; there is no sample event-location map layer.
 
 ## Cloudflare Pages
 
-Create a Pages project connected to this repository, with:
+Production is hosted at https://www.civpulse.org/ in the `civicpulse-web` Pages project (Kerry Personal account). The Pages fallback URL is https://civicpulse-web.pages.dev/. Deployment uses Direct Upload; Git pushes do not automatically publish changes.
+
+After authenticating Wrangler with `npx wrangler login`, publish the current working tree with:
+
+```sh
+npm run deploy
+```
+
+This validates and builds the site, then uploads `dist/` to the production `main` branch. `wrangler.jsonc` identifies the account and Pages project. Deployment credentials stay outside the repository. The custom domain has a proxied CNAME pointing to `civicpulse-web.pages.dev`.
+
+Build settings:
 
 | Setting | Value |
 | --- | --- |
@@ -83,7 +87,7 @@ Create a Pages project connected to this repository, with:
 | Build output directory | `dist` |
 | Node version | 22.12+; `.nvmrc` selects Node 22 |
 
-No Cloudflare adapter is needed for this static output. No secrets are required. `public/_headers` supplies basic response headers and immutable caching for fingerprinted Astro assets. `404.html` is generated for Pages’ not-found handling. The site is prepared locally; it has not been deployed.
+No Cloudflare adapter is needed for this static output. No runtime secrets are required. `public/_headers` supplies basic response headers and immutable caching for fingerprinted Astro assets. `404.html` is generated for Pages’ not-found handling.
 
 Reference: https://developers.cloudflare.com/pages/framework-guides/deploy-an-astro-site/ and https://developers.cloudflare.com/pages/configuration/build-configuration/.
 
@@ -91,20 +95,94 @@ For direct upload, build locally and upload the contents of `dist/` through Clou
 
 ## Assets & design
 
-Fonts: self-hosted Unna and DM Sans via Fontsource (SIL Open Font License). Leaflet and OpenStreetMap attribution remains visible. The generated preview asset is `public/images/map-preview.webp`; its generation prompt is stored in `.impeccable/map-prompt.txt` and embedded into the source asset. It is explicitly illustrative.
 
 Product requirements, visual tokens, approved comp and direction record live in `PRODUCT.md`, `DESIGN.md`, and `.impeccable/`.
 
 ## Verification
 
-`npm run build` runs the Astro/TypeScript diagnostics and static build. With a local server running, use `npm run test:e2e` for desktop/mobile browser smoke checks. Set `TEST_BASE_URL` to another preview URL and `CHROME_EXECUTABLE_PATH` to an installed Chrome binary if needed. Playwright otherwise uses its installed Chromium. Checks include map presets/layers/search/popups, calendar filters and deep links, partial layer failure, no-JavaScript event details, and ICS formatting. Screenshot evidence is written to the gitignored `.impeccable/review/`.
+`npm run build` runs the Astro/TypeScript diagnostics and static build. With a local server running, use `npm run test:e2e` for desktop/mobile browser smoke checks. Set `TEST_BASE_URL` to another preview URL and `CHROME_EXECUTABLE_PATH` to an installed Chrome binary if needed. Playwright otherwise uses its installed Chromium. Checks include map layers/search/popups, calendar filters and deep links, partial layer failure, no-JavaScript event details, and ICS formatting. Screenshot evidence is written to the gitignored `.impeccable/review/`.
 
 ## Uploaded voting data
 
-The default voting preset uses `public/data/polling_places.geojson` (34 points) and `public/data/voting_precincts.geojson` (31 MultiPolygons). `scripts/validate-voting-data.mjs` checks expected geometry, identifiers, and longitude/latitude ranges before `npm run dev` and `npm run build`. Replace these canonical public files to update the voting layers, and keep `map-sources.json` provenance current. The sample generator does not overwrite voting datasets.
+Replace `public/data/polling_places.geojson` and `public/data/voting_precincts.geojson` to update the voting map. Builds validate their geometry and identifiers; keep `public/data/map-sources.json` provenance current.
+
 
 All supplied records remain available, including 17 Active, 11 Historical, and 6 without activity status. Record activity remains in the directory and popups; marker colors follow the QGIS precinct categories. Popup hours and accessibility values are explicitly labeled as values from the dataset. Precinct popups link to associated polling records using `pollingid`; polling popups link back to their precinct. Search supports names, precinct IDs, addresses and activity values. This integration does not assert current election eligibility or assign a voter to a polling place.
 
 ## QGIS symbology
 
 Voting layers use the saved visible `polling_places` and `voting_precincts` renderers in `polling_locations.qgz` in the companion GIS project, exported to `src/data/qgis-style.json`. Polling pins reuse `styles/polling-place.svg` with each category’s fill and outline; early-voting records use the QGIS gold category. Precinct fills preserve category colors, opacity and outlines. Directory markers use those same colors/icons. After saving QGIS style changes, run `python scripts/sync-qgis-style.py /path/to/polling_locations.qgz`, then rebuild. This does not modify the QGIS project or the GeoJSON.
+
+## Mid GA DSA calendar import
+
+Original public ICS downloads, the source page, feed status manifest, and US Census geocoding responses are preserved in `data/sources/mgdsa/`. Four of six embedded chapter feeds were accessible on October 15, 2026; two returned 404. The separate community calendar is excluded. The raw files preserve history, recurrence rules, exceptions, and all-day dates.
+
+To regenerate offline, install `scripts/requirements-events.txt` in a Python environment and run `python scripts/import-mgdsa.py`. The manifest defines the bounded expansion window (January 1, 2026 through October 15, 2027). Generated output is `src/data/mgdsa-events.json` plus `public/data/event-locations.geojson`. Re-running replaces generated records without duplicating events or changing the Mobilize/sample records. Builds use these saved files and make no calendar requests. Refresh the raw files and manifest deliberately before regenerating; no automatic polling is configured.
+
+Event venue markers group occurrences by address and link back to calendar details. Coordinates are address interpolations from the US Census geocoder, with responses saved for review. Virtual and unspecified locations are not mapped. All-day exports use DATE values with exclusive end dates.
+
+The map selector offers voting and community-event presets; visitors can combine all three layers. The event layer is generated at build time as `/data/calendar-events.geojson` from the same records used by the calendar, grouping sourced events with valid coordinates at their venues. Fictional sample events remain calendar-only. Event titles and venue addresses are searchable, and calendar/map links open the matching event. The imported `public/data/event-locations.geojson` is retained as source output; the displayed layer uses the calendar-derived file.
+
+## Organizations and calendars
+
+`src/data/calendars.json` defines organizations and their calendars, including display colors and source Google Calendar IDs. Every event has an `organizationId` and a `calendarIds` array; calendar IDs must belong to the event's organization. Events may belong to several calendars and appear only once when any matching calendar is selected. Builds reject unknown or cross-organization memberships.
+
+The DSA importer preserves source calendar membership and merges memberships when the same occurrence appears in several feeds. Saved Mobilize listings belong to Macon-Bibb Dems and its main events calendar plus a training, voter outreach, or committee calendar. These subcalendars are site groupings based on the saved event categories. Sample events have their own organization and calendar.
+
+Calendar visitors can combine organization, calendars, category, date and text search. Organization and selected calendars are combined with AND; selected calendars match with OR. Show all/Hide all act on the currently selected organization's calendars. Color by switches between organization and calendar; multiple membership labels remain visible. Calendar selections, organization and color mode are stored in the URL.
+
+## Nearby Mobilize import
+
+`data/sources/mobilize-bibb/` preserves public rendered event text, expanded available times, the first two search-result pages, neutral editorial summaries, venue coordinates and Census responses. `manifest.json` records the source, the requested 35-mile straight-line radius centered on Macon, and per-listing import counts. This covers the supplied Democratic Party of Georgia 26 feed, including locally hosted virtual events; it does not claim platform-wide coverage of all Mobilize organizations. Later reviewed suggestions were in towns outside the nearby area.
+
+Run `python scripts/import-mobilize.py` to rebuild `src/data/mobilize-events.json` offline with Python 3.9+ and standard-library modules only. The saved snapshot contains 25 listings and 119 dated shifts, of which 29 have public street addresses at nine venues. Private signup-only addresses, virtual events and city-only locations remain calendar-only. Census coordinates are approximate street-address locations. Notes retain the organizer’s requirement to confirm sign-waving locations and the poll-watcher training deadline.
+
+The importer validates time-zone offsets, weekday/date agreement and expanded recurring shifts. Each occurrence has a unique source-event/start-time identity, so multiple shifts on one day are preserved. Earlier manually imported dates retain their existing event IDs; the event library suppresses their old records when that listing is present in the newer snapshot. Distinct Mobilize event IDs are preserved even when titles and some shifts match. No credentials, registrations, or participant data are used; direct HTTP/API access was unavailable, so this snapshot comes from the public browser UI. No automatic refresh is configured.
+
+
+## Commission district source
+
+`public/data/commission_districts.geojson` contains all nine polygons and source attributes from the public CountyCommissioners2024 feature layer, exported October 15, 2026 as WGS84 GeoJSON. The map explorer registers this source as `commission-districts`, with a Find your commissioner preset, contact popups and name search.
+
+Attribution: **Macon-Bibb County Government IT GIS**. The map credits the county while its GIS layers are visible, and the Data & sources page documents the district source. The source catalog preserves the original service and app URLs. This is a saved snapshot, with no automatic refresh.
+
+## DSA map markers
+
+`public/icons/dsa/marker.svg` combines the official white DSA rose-and-hands vector with a geographic pin. Provenance is recorded in `public/icons/dsa/SOURCE.md`; `logo-white.svg` preserves the converted original. The marker's `--marker-fill` and `--marker-border` variables are editable in the SVG, with a black outline by default.
+
+Map rendering uses `src/lib/dsa-marker.ts` and `src/data/map-markers.json`. DSA calendar colors come from `src/data/calendars.json`; shared venues show segments for each associated calendar. Calendar deep links use the focused event's colors. The same symbols appear in the directory and event popup links. Other organizations retain their existing symbols.
+
+An individual event can override its map symbol colors using `"mapMarker": { "fill": "#123456", "border": "#000000" }`. Both fields accept six-digit hex colors. `map-markers.json` sets the default outline and fallback fill; changing the original white logo artwork is not needed.
+
+## Organization map markers
+
+All five sourced organizations use `src/lib/organization-marker.ts`: DSA, Macon-Bibb Dems, Democratic Party of Georgia 26, Houston County Democrats, and Jasper County Democrats. Official logo assets are stored under `public/icons/organizations/` with provenance in `SOURCES.md`. Jasper uses an authored JC monogram pending a verified Georgia committee logo; it does not borrow another state's logo. Original logo colors are preserved inside the pins.
+
+Calendar colors set the pin background, with segments for multiple memberships. Black outlines and fallback fills are configurable per organization in `src/data/map-markers.json`. Event `mapMarker.fill` and `mapMarker.border` overrides work for every organization. Shared venues have separate organization records so one group's logo never labels another group's events. The key is expandable, and directory and popup symbols match the map.
+
+Use `npm run test:markers` for DSA-specific coverage or `npm run test:organization-markers` for every organization, including per-record overrides. Set `TEST_BASE_URL` to a running preview and `CHROME_EXECUTABLE_PATH` if needed.
+
+## MGRLS library map
+
+The `libraries` preset/layer serves `public/data/libraries.geojson`: 18 fixed locations in seven counties, including the Downtown Bus Station Book Locker. Branch names, postal addresses, phone numbers and published hours come from https://bibblib.org/locations_hours.php and individual branch pages captured October 15, 2026. Library WOW has no fixed address and is linked as a mobile service rather than pinned.
+
+Reviewed source records and HTML are saved in `data/sources/mgrls/`. Public Google Maps embed keys were redacted from saved pages. `python scripts/import-libraries.py` regenerates the GeoJSON offline. It rejects unresolved or ambiguous geocodes and county mismatches. Three reviewed OpenStreetMap library features supplement Census matches: Mary Vinson Memorial, Gordon, and East Wilkinson. Their provenance is preserved with the records. Map points are approximate.
+
+`src/data/library-counties.json` defines county colors and the matching SVG open-book pins under `public/icons/libraries/`. Directory icons, the expandable county key, and map markers use the same assets. Search supports county names. Popup hours preserve separate schedules and published gaps without inferring missing days as closed. Refresh source pages and geocoder responses deliberately, review changes, regenerate, and deploy.
+
+
+## Recreation center source
+
+The Recreation centers layer and Macon-Bibb recreation centers map preset use `public/data/recreation-centers.geojson`. All 11 facilities on the county recreation directory are included, with source names, addresses, published hours, amenities and source links. Snapshot and attribution: Macon-Bibb County Government Recreation Department, October 15, 2026.
+
+`data/sources/recreation/` preserves the county HTML, extracted records, manifest and US Census Geocoder responses. All street/city/state queries returned single matches. Some county ZIP codes differ from Census results; source addresses remain unchanged, and `geocodedAddress` records the match. Points are approximate street-address locations, not verified entrances.
+
+Run `python3 scripts/import-recreation.py` to regenerate the GeoJSON offline. The map supports name, street address and amenity search, center popups, directions, source links and independent layer selection. No automatic source refresh is configured.
+
+## MGRLS program events
+
+Original CalendarWiz snapshots are in `data/sources/mgrls-events/`: 13 complete monthly pages covering October 2026–October 2027, a compressed original HTML detail page for each imported occurrence, RSS evidence, download manifests and reviewed off-site location overrides. The 365-day RSS request returned only 200 items; the complete import therefore uses the month pages and all detail pages. All events from the supplied MGRLS system calendar are included, across branches and counties; the earlier Mobilize radius is not applied to this separate organization import.
+
+Run `python scripts/import-mgrls-events.py` to regenerate `src/data/mgrls-events.json` offline using Python 3.9+ and the standard library. The saved October 15, 2026 snapshot contains 446 events through November 30. Later months through October 2027 were checked and have no published events. The importer validates month response identity, complete row/detail coverage, matching detail and month dates/times, timezone offsets and stable source IDs. It preserves all-day dates, uses explicit end times, and supports source listings without an end time without inventing a duration.
+
+Events belong to the MGRLS organization and the publisher’s seven program-category calendars. Short source excerpts appear on event cards; complete original descriptions remain in the raw HTML and source links. The map includes 424 occurrences at 18 venues. Coordinates reuse `public/data/libraries.geojson`; the bring-your-own-book event uses the explicitly published Sweet Eleanor’s address, with existing Census coordinate evidence. Library Without Walls visits and the Preschool-building book sale have no guessed markers. Location overrides and the review list document these decisions. Builds use saved files only; no automatic calendar refresh or deployment is configured by this import.

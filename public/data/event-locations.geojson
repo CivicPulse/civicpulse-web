@@ -1,0 +1,1043 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.646628244557,
+          32.831546380209
+        ]
+      },
+      "properties": {
+        "id": "centenary",
+        "name": "Centenary United Methodist Church",
+        "fulladd": "1290 College St, Macon, GA 31201",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-6fe0a7070297ecb3bc57",
+            "title": "Thursday Meal Making",
+            "start": "2026-01-01T11:00:00-05:00",
+            "end": "2026-01-01T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-282b99ebc344d387a370",
+            "title": "Thursday Meal Making",
+            "start": "2026-01-08T11:00:00-05:00",
+            "end": "2026-01-08T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-40649d11398326c2ce28",
+            "title": "Thursday Meal Making",
+            "start": "2026-01-15T11:00:00-05:00",
+            "end": "2026-01-15T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-59b68c3dc2f80edd5ff4",
+            "title": "Thursday Meal Making",
+            "start": "2026-01-22T11:00:00-05:00",
+            "end": "2026-01-22T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-4d561b4aa2f80e6ca7be",
+            "title": "Thursday Meal Making",
+            "start": "2026-01-29T11:00:00-05:00",
+            "end": "2026-01-29T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-449c2fb4c2a344ec03a3",
+            "title": "Thursday Meal Making",
+            "start": "2026-02-05T11:00:00-05:00",
+            "end": "2026-02-05T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-33a9cfbc71bd4298763c",
+            "title": "Thursday Meal Making",
+            "start": "2026-02-12T11:00:00-05:00",
+            "end": "2026-02-12T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-79149cad38c446948c97",
+            "title": "Thursday Meal Making",
+            "start": "2026-02-19T11:00:00-05:00",
+            "end": "2026-02-19T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-ff542f7c2b3ffb463b52",
+            "title": "Thursday Meal Making",
+            "start": "2026-02-26T11:00:00-05:00",
+            "end": "2026-02-26T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-e8203d1d09d31b3bf5a0",
+            "title": "Thursday Meal Making",
+            "start": "2026-03-05T11:00:00-05:00",
+            "end": "2026-03-05T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-67848f81056cd2457594",
+            "title": "Thursday Meal Making",
+            "start": "2026-03-19T11:00:00-04:00",
+            "end": "2026-03-19T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-86b157e8119cac2c82d4",
+            "title": "Thursday Meal Making",
+            "start": "2026-03-26T11:00:00-04:00",
+            "end": "2026-03-26T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-229d955a0c875aeef0cd",
+            "title": "Thursday Meal Making",
+            "start": "2026-04-02T11:00:00-04:00",
+            "end": "2026-04-02T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-296075b8526531824035",
+            "title": "Thursday Meal Making",
+            "start": "2026-04-09T11:00:00-04:00",
+            "end": "2026-04-09T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-e68c3a5fb94a70cf553e",
+            "title": "Thursday Meal Making",
+            "start": "2026-04-16T11:00:00-04:00",
+            "end": "2026-04-16T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-bc8b4ddc8a56b99f1e67",
+            "title": "Thursday Meal Making",
+            "start": "2026-04-23T11:00:00-04:00",
+            "end": "2026-04-23T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-4561968870e1040afb77",
+            "title": "Thursday Meal Making",
+            "start": "2026-04-30T11:00:00-04:00",
+            "end": "2026-04-30T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-12a2361169195eaa3ca0",
+            "title": "Thursday Meal Making",
+            "start": "2026-05-07T11:00:00-04:00",
+            "end": "2026-05-07T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-c93b5edf2ab09e845681",
+            "title": "Thursday Meal Making",
+            "start": "2026-05-14T11:00:00-04:00",
+            "end": "2026-05-14T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-d1b0126286813bd2cf0a",
+            "title": "Thursday Meal Making",
+            "start": "2026-05-21T11:00:00-04:00",
+            "end": "2026-05-21T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-185cf872932e7cd51ddc",
+            "title": "Thursday Meal Making",
+            "start": "2026-05-28T11:00:00-04:00",
+            "end": "2026-05-28T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-bef09c7ab73a9c305dc9",
+            "title": "Thursday Meal Making",
+            "start": "2026-06-04T11:00:00-04:00",
+            "end": "2026-06-04T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-fdc2402ea54a81d615f3",
+            "title": "Thursday Meal Making",
+            "start": "2026-06-11T11:00:00-04:00",
+            "end": "2026-06-11T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-32c5830e6e8b654dfee9",
+            "title": "Thursday Meal Making",
+            "start": "2026-06-18T11:00:00-04:00",
+            "end": "2026-06-18T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-16cc4559f77ea124e058",
+            "title": "Garden Party",
+            "start": "2026-06-20T17:00:00-04:00",
+            "end": "2026-06-20T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-603f0ddd96f50c6cfb9d",
+            "title": "Thursday Meal Making",
+            "start": "2026-06-25T11:00:00-04:00",
+            "end": "2026-06-25T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-9532a3fccac6f2ef9e10",
+            "title": "Thursday Meal Making",
+            "start": "2026-07-02T11:00:00-04:00",
+            "end": "2026-07-02T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-3daf1b4d08409df587f3",
+            "title": "Thursday Meal Making",
+            "start": "2026-07-09T11:00:00-04:00",
+            "end": "2026-07-09T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-8695ad5f6778c10faae0",
+            "title": "Thursday Meal Making",
+            "start": "2026-07-16T11:00:00-04:00",
+            "end": "2026-07-16T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-710fba89ef0d57d4845e",
+            "title": "Thursday Meal Making",
+            "start": "2026-07-23T11:00:00-04:00",
+            "end": "2026-07-23T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-6c0cd2d79c0120e1c63d",
+            "title": "Thursday Meal Making",
+            "start": "2026-07-30T11:00:00-04:00",
+            "end": "2026-07-30T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-6b6fce9e9ed234f9d8de",
+            "title": "Thursday Meal Making",
+            "start": "2026-08-06T11:00:00-04:00",
+            "end": "2026-08-06T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-2df1154727a28ac33e72",
+            "title": "Thursday Meal Making",
+            "start": "2026-08-13T11:00:00-04:00",
+            "end": "2026-08-13T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-d472b76111922cda8820",
+            "title": "Thursday Meal Making",
+            "start": "2026-08-20T11:00:00-04:00",
+            "end": "2026-08-20T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-1d6fc5866425dda5ab00",
+            "title": "Thursday Meal Making",
+            "start": "2026-08-27T11:00:00-04:00",
+            "end": "2026-08-27T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-fda47804f2e2b8109daa",
+            "title": "Thursday Meal Making",
+            "start": "2026-09-03T11:00:00-04:00",
+            "end": "2026-09-03T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-7f877b559bbbd89cdd8b",
+            "title": "Thursday Meal Making",
+            "start": "2026-09-10T11:00:00-04:00",
+            "end": "2026-09-10T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-02458f017d3429d3f517",
+            "title": "Thursday Meal Making",
+            "start": "2026-09-17T11:00:00-04:00",
+            "end": "2026-09-17T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-0d4ec99ba160fb1cfeeb",
+            "title": "Thursday Meal Making",
+            "start": "2026-09-24T11:00:00-04:00",
+            "end": "2026-09-24T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-fd650706629059f63e0a",
+            "title": "Thursday Meal Making",
+            "start": "2026-10-01T11:00:00-04:00",
+            "end": "2026-10-01T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-80ff18a94f61560121f0",
+            "title": "Thursday Meal Making",
+            "start": "2026-10-08T11:00:00-04:00",
+            "end": "2026-10-08T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-2f21eba5b91b6a523060",
+            "title": "Thursday Meal Making",
+            "start": "2026-10-15T11:00:00-04:00",
+            "end": "2026-10-15T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-029111cae52e13718691",
+            "title": "Thursday Meal Making",
+            "start": "2026-10-22T11:00:00-04:00",
+            "end": "2026-10-22T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-0a008df03cbef9e59a33",
+            "title": "Thursday Meal Making",
+            "start": "2026-10-29T11:00:00-04:00",
+            "end": "2026-10-29T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-065351bacf719212f77d",
+            "title": "Thursday Meal Making",
+            "start": "2026-11-05T11:00:00-05:00",
+            "end": "2026-11-05T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-bcd6ce25906bef944634",
+            "title": "Thursday Meal Making",
+            "start": "2026-11-12T11:00:00-05:00",
+            "end": "2026-11-12T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-0842f64c4a10bfa70ad5",
+            "title": "Thursday Meal Making",
+            "start": "2026-11-19T11:00:00-05:00",
+            "end": "2026-11-19T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-855e9b48835847561db3",
+            "title": "Thursday Meal Making",
+            "start": "2026-11-26T11:00:00-05:00",
+            "end": "2026-11-26T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-6ef4af258d2aaba7472f",
+            "title": "Thursday Meal Making",
+            "start": "2026-12-03T11:00:00-05:00",
+            "end": "2026-12-03T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-e5a9570a771790e653cd",
+            "title": "Thursday Meal Making",
+            "start": "2026-12-10T11:00:00-05:00",
+            "end": "2026-12-10T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-5e842b82393c4ba4159e",
+            "title": "Thursday Meal Making",
+            "start": "2026-12-17T11:00:00-05:00",
+            "end": "2026-12-17T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-aaee215a3a7653a80768",
+            "title": "Thursday Meal Making",
+            "start": "2026-12-24T11:00:00-05:00",
+            "end": "2026-12-24T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-8542d60bf118888525b7",
+            "title": "Thursday Meal Making",
+            "start": "2026-12-31T11:00:00-05:00",
+            "end": "2026-12-31T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-b8c291d77099a0d622ea",
+            "title": "Thursday Meal Making",
+            "start": "2027-01-07T11:00:00-05:00",
+            "end": "2027-01-07T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-c4ea481823a75880e92e",
+            "title": "Thursday Meal Making",
+            "start": "2027-01-14T11:00:00-05:00",
+            "end": "2027-01-14T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-9c368b8f6f5d20407cc3",
+            "title": "Thursday Meal Making",
+            "start": "2027-01-21T11:00:00-05:00",
+            "end": "2027-01-21T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-0f8a8f8fadd98a3e2d92",
+            "title": "Thursday Meal Making",
+            "start": "2027-01-28T11:00:00-05:00",
+            "end": "2027-01-28T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-f1547f8ebd3e887188f7",
+            "title": "Thursday Meal Making",
+            "start": "2027-02-04T11:00:00-05:00",
+            "end": "2027-02-04T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-25419900be5ef805fe9d",
+            "title": "Thursday Meal Making",
+            "start": "2027-02-11T11:00:00-05:00",
+            "end": "2027-02-11T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-2a17503b4d24eaf134bf",
+            "title": "Thursday Meal Making",
+            "start": "2027-02-18T11:00:00-05:00",
+            "end": "2027-02-18T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-0ef3dfe0f4a2a5a9bc7c",
+            "title": "Thursday Meal Making",
+            "start": "2027-02-25T11:00:00-05:00",
+            "end": "2027-02-25T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-2461ac85caaeca9e6f3e",
+            "title": "Thursday Meal Making",
+            "start": "2027-03-04T11:00:00-05:00",
+            "end": "2027-03-04T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-0d722cb255c5ba6adfe0",
+            "title": "Thursday Meal Making",
+            "start": "2027-03-11T11:00:00-05:00",
+            "end": "2027-03-11T12:30:00-05:00"
+          },
+          {
+            "id": "mgdsa-b04a73102462b72ad832",
+            "title": "Thursday Meal Making",
+            "start": "2027-03-18T11:00:00-04:00",
+            "end": "2027-03-18T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-3fee753037f9921bc31e",
+            "title": "Thursday Meal Making",
+            "start": "2027-03-25T11:00:00-04:00",
+            "end": "2027-03-25T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-dfa60c39e6a724a40cbe",
+            "title": "Thursday Meal Making",
+            "start": "2027-04-01T11:00:00-04:00",
+            "end": "2027-04-01T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-e1f4b416621fa1890426",
+            "title": "Thursday Meal Making",
+            "start": "2027-04-08T11:00:00-04:00",
+            "end": "2027-04-08T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-1f02b1887064b6bba6b5",
+            "title": "Thursday Meal Making",
+            "start": "2027-04-15T11:00:00-04:00",
+            "end": "2027-04-15T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-dd6265e5160eb91b021f",
+            "title": "Thursday Meal Making",
+            "start": "2027-04-22T11:00:00-04:00",
+            "end": "2027-04-22T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-b3ad042037dcda5d10a7",
+            "title": "Thursday Meal Making",
+            "start": "2027-04-29T11:00:00-04:00",
+            "end": "2027-04-29T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-4d91540102c7522da144",
+            "title": "Thursday Meal Making",
+            "start": "2027-05-06T11:00:00-04:00",
+            "end": "2027-05-06T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-8df6143f1b65950a1cd4",
+            "title": "Thursday Meal Making",
+            "start": "2027-05-13T11:00:00-04:00",
+            "end": "2027-05-13T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-6862015997f461ffffda",
+            "title": "Thursday Meal Making",
+            "start": "2027-05-20T11:00:00-04:00",
+            "end": "2027-05-20T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-96d8c1957d49cdb9f87f",
+            "title": "Thursday Meal Making",
+            "start": "2027-05-27T11:00:00-04:00",
+            "end": "2027-05-27T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-5b62245a3491c0d76511",
+            "title": "Thursday Meal Making",
+            "start": "2027-06-03T11:00:00-04:00",
+            "end": "2027-06-03T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-382a601887e22d07be6c",
+            "title": "Thursday Meal Making",
+            "start": "2027-06-10T11:00:00-04:00",
+            "end": "2027-06-10T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-49ca34f46f2b06f9b0c8",
+            "title": "Thursday Meal Making",
+            "start": "2027-06-17T11:00:00-04:00",
+            "end": "2027-06-17T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-71d4812e38db9584aa24",
+            "title": "Thursday Meal Making",
+            "start": "2027-06-24T11:00:00-04:00",
+            "end": "2027-06-24T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-b24044341c255d4c2cd2",
+            "title": "Thursday Meal Making",
+            "start": "2027-07-01T11:00:00-04:00",
+            "end": "2027-07-01T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-fd6c9002d90addd33638",
+            "title": "Thursday Meal Making",
+            "start": "2027-07-08T11:00:00-04:00",
+            "end": "2027-07-08T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-edb9fb887a122195e46c",
+            "title": "Thursday Meal Making",
+            "start": "2027-07-15T11:00:00-04:00",
+            "end": "2027-07-15T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-09c4e828b4261ce6b942",
+            "title": "Thursday Meal Making",
+            "start": "2027-07-22T11:00:00-04:00",
+            "end": "2027-07-22T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-ae51f33618a727fae590",
+            "title": "Thursday Meal Making",
+            "start": "2027-07-29T11:00:00-04:00",
+            "end": "2027-07-29T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-da04059d0b08bc3d8c1d",
+            "title": "Thursday Meal Making",
+            "start": "2027-08-05T11:00:00-04:00",
+            "end": "2027-08-05T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-b236d46ca714791f0f90",
+            "title": "Thursday Meal Making",
+            "start": "2027-08-12T11:00:00-04:00",
+            "end": "2027-08-12T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-68a026398f1b94aaa6cc",
+            "title": "Thursday Meal Making",
+            "start": "2027-08-19T11:00:00-04:00",
+            "end": "2027-08-19T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-d2d7a51c16cc5095872c",
+            "title": "Thursday Meal Making",
+            "start": "2027-08-26T11:00:00-04:00",
+            "end": "2027-08-26T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-f968b12450175756b24e",
+            "title": "Thursday Meal Making",
+            "start": "2027-09-02T11:00:00-04:00",
+            "end": "2027-09-02T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-40d3b79b2a5d1bc6475a",
+            "title": "Thursday Meal Making",
+            "start": "2027-09-09T11:00:00-04:00",
+            "end": "2027-09-09T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-49c6a2fb48d3c504fe2b",
+            "title": "Thursday Meal Making",
+            "start": "2027-09-16T11:00:00-04:00",
+            "end": "2027-09-16T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-4e1374c82aa9cfa0e2dc",
+            "title": "Thursday Meal Making",
+            "start": "2027-09-23T11:00:00-04:00",
+            "end": "2027-09-23T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-1f1c88aaad08dea091de",
+            "title": "Thursday Meal Making",
+            "start": "2027-09-30T11:00:00-04:00",
+            "end": "2027-09-30T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-aeb6fc0637989c17020a",
+            "title": "Thursday Meal Making",
+            "start": "2027-10-07T11:00:00-04:00",
+            "end": "2027-10-07T12:30:00-04:00"
+          },
+          {
+            "id": "mgdsa-2cf4411f2f0a69ddc056",
+            "title": "Thursday Meal Making",
+            "start": "2027-10-14T11:00:00-04:00",
+            "end": "2027-10-14T12:30:00-04:00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.631511089351,
+          32.83617126136
+        ]
+      },
+      "properties": {
+        "id": "just-tapd",
+        "name": "Just Tap’d Macon",
+        "fulladd": "488 1st St, Macon, GA 31201",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-3a4572482fd5afb2ea9b",
+            "title": "Labor Committee Meeting",
+            "start": "2026-09-23T19:00:00-04:00",
+            "end": "2026-09-23T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-08178f899f03318ff4d8",
+            "title": "Labor Committee Meeting",
+            "start": "2026-09-30T19:00:00-04:00",
+            "end": "2026-09-30T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-b34a27a5bfc16ec231ea",
+            "title": "Labor Committee Meeting",
+            "start": "2026-10-07T19:00:00-04:00",
+            "end": "2026-10-07T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-8c6c1441a9ba227f7de8",
+            "title": "Labor Committee Meeting",
+            "start": "2026-10-14T19:00:00-04:00",
+            "end": "2026-10-14T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-b88105faa987298a6bcc",
+            "title": "Labor Committee Meeting",
+            "start": "2026-10-21T19:00:00-04:00",
+            "end": "2026-10-21T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-701a0f35a2170997f01f",
+            "title": "Labor Committee Meeting",
+            "start": "2026-10-28T19:00:00-04:00",
+            "end": "2026-10-28T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-b001b72b14e80fe4731f",
+            "title": "Labor Committee Meeting",
+            "start": "2026-11-04T19:00:00-05:00",
+            "end": "2026-11-04T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-ec7ae378d10ccf9d3161",
+            "title": "Labor Committee Meeting",
+            "start": "2026-11-11T19:00:00-05:00",
+            "end": "2026-11-11T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-b1c89d09918a85fbdc4f",
+            "title": "Labor Committee Meeting",
+            "start": "2026-11-18T19:00:00-05:00",
+            "end": "2026-11-18T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-51f81da851769a5b07a7",
+            "title": "Labor Committee Meeting",
+            "start": "2026-11-25T19:00:00-05:00",
+            "end": "2026-11-25T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-19d5d86c1d23214929c0",
+            "title": "Labor Committee Meeting",
+            "start": "2026-12-02T19:00:00-05:00",
+            "end": "2026-12-02T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-d1e450684c73f1d8ca31",
+            "title": "Labor Committee Meeting",
+            "start": "2026-12-09T19:00:00-05:00",
+            "end": "2026-12-09T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-8f53a055a8d1bda48762",
+            "title": "Labor Committee Meeting",
+            "start": "2026-12-16T19:00:00-05:00",
+            "end": "2026-12-16T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-a0fb3c99e49a844097a9",
+            "title": "Labor Committee Meeting",
+            "start": "2026-12-23T19:00:00-05:00",
+            "end": "2026-12-23T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-99733f90d4ece53a4225",
+            "title": "Labor Committee Meeting",
+            "start": "2026-12-30T19:00:00-05:00",
+            "end": "2026-12-30T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-9cc2168e88ad85ca97fc",
+            "title": "Labor Committee Meeting",
+            "start": "2027-01-06T19:00:00-05:00",
+            "end": "2027-01-06T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-363306e959233c408ad5",
+            "title": "Labor Committee Meeting",
+            "start": "2027-01-13T19:00:00-05:00",
+            "end": "2027-01-13T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-4a1976e21b643402cc91",
+            "title": "Labor Committee Meeting",
+            "start": "2027-01-20T19:00:00-05:00",
+            "end": "2027-01-20T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-9d4389e2224e9e33d305",
+            "title": "Labor Committee Meeting",
+            "start": "2027-01-27T19:00:00-05:00",
+            "end": "2027-01-27T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-458b93642eefbd523a5e",
+            "title": "Labor Committee Meeting",
+            "start": "2027-02-03T19:00:00-05:00",
+            "end": "2027-02-03T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-650811787d97fa65ebde",
+            "title": "Labor Committee Meeting",
+            "start": "2027-02-10T19:00:00-05:00",
+            "end": "2027-02-10T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-30208107c6d83bb5249a",
+            "title": "Labor Committee Meeting",
+            "start": "2027-02-17T19:00:00-05:00",
+            "end": "2027-02-17T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-ae112930959d4a3f7e61",
+            "title": "Labor Committee Meeting",
+            "start": "2027-02-24T19:00:00-05:00",
+            "end": "2027-02-24T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-a47c91abb513e3d97d3b",
+            "title": "Labor Committee Meeting",
+            "start": "2027-03-03T19:00:00-05:00",
+            "end": "2027-03-03T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-2c448b0ae841ab03760a",
+            "title": "Labor Committee Meeting",
+            "start": "2027-03-10T19:00:00-05:00",
+            "end": "2027-03-10T20:00:00-05:00"
+          },
+          {
+            "id": "mgdsa-6191308e3fad76ac3e0b",
+            "title": "Labor Committee Meeting",
+            "start": "2027-03-17T19:00:00-04:00",
+            "end": "2027-03-17T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-9bec3ae5fb5d9295e286",
+            "title": "Labor Committee Meeting",
+            "start": "2027-03-24T19:00:00-04:00",
+            "end": "2027-03-24T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-4590ff162676ac9e49c2",
+            "title": "Labor Committee Meeting",
+            "start": "2027-03-31T19:00:00-04:00",
+            "end": "2027-03-31T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-e5625777cfdccc470d6b",
+            "title": "Labor Committee Meeting",
+            "start": "2027-04-07T19:00:00-04:00",
+            "end": "2027-04-07T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-5eaac16718f88f6a7b09",
+            "title": "Labor Committee Meeting",
+            "start": "2027-04-14T19:00:00-04:00",
+            "end": "2027-04-14T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-072366333d8acb7c4743",
+            "title": "Labor Committee Meeting",
+            "start": "2027-04-21T19:00:00-04:00",
+            "end": "2027-04-21T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-ec4b40a683ae50bb42e3",
+            "title": "Labor Committee Meeting",
+            "start": "2027-04-28T19:00:00-04:00",
+            "end": "2027-04-28T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-bdcf39efee2704f757b0",
+            "title": "Labor Committee Meeting",
+            "start": "2027-05-05T19:00:00-04:00",
+            "end": "2027-05-05T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-9808fbb9b56cde9de63d",
+            "title": "Labor Committee Meeting",
+            "start": "2027-05-12T19:00:00-04:00",
+            "end": "2027-05-12T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-0d4513e10b52ed1085a7",
+            "title": "Labor Committee Meeting",
+            "start": "2027-05-19T19:00:00-04:00",
+            "end": "2027-05-19T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-140c94baecdb11fc081c",
+            "title": "Labor Committee Meeting",
+            "start": "2027-05-26T19:00:00-04:00",
+            "end": "2027-05-26T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-14af41b26e914d0c4a32",
+            "title": "Labor Committee Meeting",
+            "start": "2027-06-02T19:00:00-04:00",
+            "end": "2027-06-02T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-4ec1b5e29453ee8d9854",
+            "title": "Labor Committee Meeting",
+            "start": "2027-06-09T19:00:00-04:00",
+            "end": "2027-06-09T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-cdff87676682aa66885f",
+            "title": "Labor Committee Meeting",
+            "start": "2027-06-16T19:00:00-04:00",
+            "end": "2027-06-16T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-fbf14477af862abab243",
+            "title": "Labor Committee Meeting",
+            "start": "2027-06-23T19:00:00-04:00",
+            "end": "2027-06-23T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-f07284e5c8353626a21e",
+            "title": "Labor Committee Meeting",
+            "start": "2027-06-30T19:00:00-04:00",
+            "end": "2027-06-30T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-b17fb2b3ce755049d2cd",
+            "title": "Labor Committee Meeting",
+            "start": "2027-07-07T19:00:00-04:00",
+            "end": "2027-07-07T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-27203fc9ae3831ac78d1",
+            "title": "Labor Committee Meeting",
+            "start": "2027-07-14T19:00:00-04:00",
+            "end": "2027-07-14T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-949010d580f58a4634f3",
+            "title": "Labor Committee Meeting",
+            "start": "2027-07-21T19:00:00-04:00",
+            "end": "2027-07-21T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-fec1ca8d039a58847f0d",
+            "title": "Labor Committee Meeting",
+            "start": "2027-07-28T19:00:00-04:00",
+            "end": "2027-07-28T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-43e8d4b318b03071eeba",
+            "title": "Labor Committee Meeting",
+            "start": "2027-08-04T19:00:00-04:00",
+            "end": "2027-08-04T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-b4e957eca2bb02f44c90",
+            "title": "Labor Committee Meeting",
+            "start": "2027-08-11T19:00:00-04:00",
+            "end": "2027-08-11T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-34569e95b9fe7233c2bc",
+            "title": "Labor Committee Meeting",
+            "start": "2027-08-18T19:00:00-04:00",
+            "end": "2027-08-18T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-cebf59ea5c079646c722",
+            "title": "Labor Committee Meeting",
+            "start": "2027-08-25T19:00:00-04:00",
+            "end": "2027-08-25T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-5c4905e223640608cea3",
+            "title": "Labor Committee Meeting",
+            "start": "2027-09-01T19:00:00-04:00",
+            "end": "2027-09-01T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-ff528e1e3a7adf51e132",
+            "title": "Labor Committee Meeting",
+            "start": "2027-09-08T19:00:00-04:00",
+            "end": "2027-09-08T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-6d121c6a24f012101518",
+            "title": "Labor Committee Meeting",
+            "start": "2027-09-15T19:00:00-04:00",
+            "end": "2027-09-15T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-75e7c8ff7bbc753bbc3e",
+            "title": "Labor Committee Meeting",
+            "start": "2027-09-22T19:00:00-04:00",
+            "end": "2027-09-22T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-5b80340a95d07e19c346",
+            "title": "Labor Committee Meeting",
+            "start": "2027-09-29T19:00:00-04:00",
+            "end": "2027-09-29T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-a0c741da6c5095154e7e",
+            "title": "Labor Committee Meeting",
+            "start": "2027-10-06T19:00:00-04:00",
+            "end": "2027-10-06T20:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-eb9d2fa8a7f2e28b8b14",
+            "title": "Labor Committee Meeting",
+            "start": "2027-10-13T19:00:00-04:00",
+            "end": "2027-10-13T20:00:00-04:00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.631886254715,
+          32.833086800021
+        ]
+      },
+      "properties": {
+        "id": "longleaf",
+        "name": "Longleaf Distilling Co.",
+        "fulladd": "664 2nd St, Macon, GA 31201",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-d4f17d09deeca0e80729",
+            "title": "Labor Meeting",
+            "start": "2026-06-19T20:00:00-04:00",
+            "end": "2026-06-19T21:00:00-04:00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.62924058101,
+          32.834490488543
+        ]
+      },
+      "properties": {
+        "id": "sweet-eleanors",
+        "name": "Sweet Eleanor’s Divine Desserts",
+        "fulladd": "530 Poplar St, Macon, GA 31201",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-cbe14aeb39227d541f13",
+            "title": "Public Transit Improvement Meeting",
+            "start": "2026-07-11T13:00:00-04:00",
+            "end": "2026-07-11T14:00:00-04:00"
+          },
+          {
+            "id": "mgdsa-c45420ab329019fb1124",
+            "title": "PTIC Meeting",
+            "start": "2026-08-08T15:00:00-04:00",
+            "end": "2026-08-08T16:00:00-04:00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.737140157747,
+          32.464629924554
+        ]
+      },
+      "properties": {
+        "id": "perry-advance",
+        "name": "Perry Advance Auto Parts",
+        "fulladd": "1335 Ball St, Perry, GA 31069",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-4a0b5e541f9c6b4108bb",
+            "title": "Taillight Clinic @Perry Advance Auto Parts",
+            "start": "2026-10-03T11:00:00-04:00",
+            "end": "2026-10-03T13:00:00-04:00"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.775612306349,
+          32.83129169285
+        ]
+      },
+      "properties": {
+        "id": "lake-tobesofkee",
+        "name": "Lake Tobesofkee",
+        "fulladd": "6600 Moseley Dixon Rd, Macon, GA 31220",
+        "description": "Mid GA DSA event venue · address geocoded by US Census",
+        "events": [
+          {
+            "id": "mgdsa-cca750c5fb2a858d85e2",
+            "title": "Juneteenth",
+            "start": "2026-06-19T15:00:00-04:00",
+            "end": "2026-06-19T17:00:00-04:00"
+          }
+        ]
+      }
+    }
+  ]
+}

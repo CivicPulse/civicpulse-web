@@ -2,7 +2,7 @@
   "title": "Macon-Bibb election map data",
   "exportedAt": "2026-10-15T21:36:10.342548+00:00",
   "coordinateReferenceSystem": "EPSG:4326",
-  "attribution": "Macon-Bibb County GIS",
+  "attribution": "Macon-Bibb County Government IT GIS",
   "sources": {
     "polling_places": {
       "type": "geojson",
@@ -23,6 +23,29 @@
       "joinProperty": "pollingid",
       "sourceTable": "public.voting_precincts",
       "originalSource": "https://maconbibb.spatialitics.net/server/rest/services/Hosted/Voting_Precincts/FeatureServer/0"
+    },
+    "commission_districts": {
+      "type": "geojson",
+      "data": "/data/commission_districts.geojson",
+      "featureCount": 9,
+      "geometryType": "Polygon",
+      "idProperty": "objectid",
+      "districtProperty": "commdist",
+      "attribution": "Macon-Bibb County Government IT GIS",
+      "originalSource": "https://maconbibb.spatialitics.net/server/rest/services/Hosted/CountyCommissioners2024/FeatureServer/0",
+      "sourceApp": "https://maconbibb.spatialitics.net/portal/apps/experiencebuilder/experience/?id=e99cb8518e614f85932298aebe7f862f",
+      "exportedAt": "2026-10-15T22:24:25.477084+00:00"
+    },
+    "recreation_centers": {
+      "type": "geojson",
+      "data": "/data/recreation-centers.geojson",
+      "featureCount": 11,
+      "geometryType": "Point",
+      "idProperty": "id",
+      "attribution": "Macon-Bibb County Government Recreation Department; US Census Geocoder",
+      "originalSource": "https://www.maconbibb.us/recreation/recreation-center/",
+      "sourceChecked": "2026-10-15",
+      "coordinateMethod": "Approximate street-address interpolation; published addresses retained"
     }
   }
 }

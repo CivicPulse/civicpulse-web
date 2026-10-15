@@ -1,8 +1,322 @@
 [
-  {"id":"fall-cleanup","title":"Fall Clean-Up at Tattnall Square Park","start":"2026-10-17T09:00:00-04:00","end":"2026-10-17T12:00:00-04:00","category":"Outdoors","location":"Tattnall Square Park","address":"1155 College Street, Macon, GA","description":"Lend a hand to help keep our park beautiful. Gloves, bags and supplies provided.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.6491,32.8277]},
-  {"id":"resource-fair","title":"Community Resource Fair","start":"2026-10-24T10:00:00-04:00","end":"2026-10-24T14:00:00-04:00","category":"Community","location":"Macon Mall Community Room","address":"3661 Eisenhower Parkway, Macon, GA","description":"Connect with local organizations, health resources, and family services at the Macon Mall Community Room.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.6972,32.8142]},
-  {"id":"live-on-poplar","title":"Live on Poplar: A Neighborhood Music Night","start":"2026-11-07T18:00:00-05:00","end":"2026-11-07T21:00:00-05:00","category":"Arts & culture","location":"Historic Beall’s Hill","address":"Poplar Street, Macon, GA","description":"Local artists, food trucks and good neighbors in Historic Beall’s Hill.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.6390,32.8286]},
-  {"id":"neighborhood-walk","title":"A Saturday Neighborhood Walk","start":"2026-10-31T10:00:00-04:00","end":"2026-10-31T11:30:00-04:00","category":"Outdoors","location":"Downtown Macon","address":"Third Street, Macon, GA","description":"Explore the neighborhood at an easy pace and meet a few neighbors along the way.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.6298,32.8354]},
-  {"id":"library-makers","title":"Make Something Together","start":"2026-11-14T13:00:00-05:00","end":"2026-11-14T15:00:00-05:00","category":"Learning","location":"Washington Memorial Library","address":"1180 Washington Avenue, Macon, GA","description":"An afternoon of reading, making and sharing ideas for all ages.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.6384,32.8403]},
-  {"id":"winter-garden","title":"Community Garden Morning","start":"2026-12-05T09:00:00-05:00","end":"2026-12-05T11:00:00-05:00","category":"Community","location":"Sample neighborhood garden","address":"Macon, GA","description":"Share growing tips and help prepare the garden for a new season.","note":"Fictional demonstration event. No gathering is scheduled through this site.","coordinates":[-83.657,32.838]}
+  {
+    "id": "fall-cleanup",
+    "title": "Fall Clean-Up at Tattnall Square Park",
+    "start": "2026-10-17T09:00:00-04:00",
+    "end": "2026-10-17T12:00:00-04:00",
+    "category": "Outdoors",
+    "location": "Tattnall Square Park",
+    "address": "1155 College Street, Macon, GA",
+    "description": "Lend a hand to help keep our park beautiful. Gloves, bags and supplies provided.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.6491,
+      32.8277
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "resource-fair",
+    "title": "Community Resource Fair",
+    "start": "2026-10-24T10:00:00-04:00",
+    "end": "2026-10-24T14:00:00-04:00",
+    "category": "Community",
+    "location": "Macon Mall Community Room",
+    "address": "3661 Eisenhower Parkway, Macon, GA",
+    "description": "Connect with local organizations, health resources, and family services at the Macon Mall Community Room.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.6972,
+      32.8142
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "live-on-poplar",
+    "title": "Live on Poplar: A Neighborhood Music Night",
+    "start": "2026-11-07T18:00:00-05:00",
+    "end": "2026-11-07T21:00:00-05:00",
+    "category": "Arts & culture",
+    "location": "Historic Beall’s Hill",
+    "address": "Poplar Street, Macon, GA",
+    "description": "Local artists, food trucks and good neighbors in Historic Beall’s Hill.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.639,
+      32.8286
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "neighborhood-walk",
+    "title": "A Saturday Neighborhood Walk",
+    "start": "2026-10-31T10:00:00-04:00",
+    "end": "2026-10-31T11:30:00-04:00",
+    "category": "Outdoors",
+    "location": "Downtown Macon",
+    "address": "Third Street, Macon, GA",
+    "description": "Explore the neighborhood at an easy pace and meet a few neighbors along the way.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.6298,
+      32.8354
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "library-makers",
+    "title": "Make Something Together",
+    "start": "2026-11-14T13:00:00-05:00",
+    "end": "2026-11-14T15:00:00-05:00",
+    "category": "Learning",
+    "location": "Washington Memorial Library",
+    "address": "1180 Washington Avenue, Macon, GA",
+    "description": "An afternoon of reading, making and sharing ideas for all ages.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.6384,
+      32.8403
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "winter-garden",
+    "title": "Community Garden Morning",
+    "start": "2026-12-05T09:00:00-05:00",
+    "end": "2026-12-05T11:00:00-05:00",
+    "category": "Community",
+    "location": "Sample neighborhood garden",
+    "address": "Macon, GA",
+    "description": "Share growing tips and help prepare the garden for a new season.",
+    "note": "Fictional demonstration event. No gathering is scheduled through this site.",
+    "coordinates": [
+      -83.657,
+      32.838
+    ],
+    "sample": true,
+    "organizationId": "sample",
+    "calendarIds": [
+      "sample-events"
+    ]
+  },
+  {
+    "id": "mobilize-1061538-2026-11-09",
+    "title": "Macon-Bibb Democrats: Comms Subcommittee",
+    "start": "2026-11-09T18:00:00-05:00",
+    "end": "2026-11-09T19:00:00-05:00",
+    "category": "Virtual meeting",
+    "location": "Virtual event",
+    "address": "Online — hosted in Macon, GA 31210",
+    "description": "Discuss local party communications, messaging and outreach.",
+    "note": "Register on Mobilize for joining instructions.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1061538/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-committees"
+    ]
+  },
+  {
+    "id": "mobilize-1061538-2026-12-07",
+    "title": "Macon-Bibb Democrats: Comms Subcommittee",
+    "start": "2026-12-07T18:00:00-05:00",
+    "end": "2026-12-07T19:00:00-05:00",
+    "category": "Virtual meeting",
+    "location": "Virtual event",
+    "address": "Online — hosted in Macon, GA 31210",
+    "description": "Discuss local party communications, messaging and outreach.",
+    "note": "Register on Mobilize for joining instructions.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1061538/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-committees"
+    ]
+  },
+  {
+    "id": "mobilize-1033989-2026-10-20",
+    "title": "Sign Waving for Early Voting | Macon-Bibb Dems",
+    "start": "2026-10-20T08:30:00-04:00",
+    "end": "2026-10-20T17:30:00-04:00",
+    "category": "Volunteer",
+    "location": "Early voting sign waving",
+    "address": "3661 Eisenhower Pkwy, Macon, GA 31206",
+    "description": "Volunteer to wave signs and raise awareness of early voting.",
+    "note": "Confirm the sign-waving location with the organizer through Mobilize before attending.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033989/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  },
+  {
+    "id": "mobilize-1033989-2026-10-27",
+    "title": "Sign Waving for Early Voting | Macon-Bibb Dems",
+    "start": "2026-10-27T08:30:00-04:00",
+    "end": "2026-10-27T17:30:00-04:00",
+    "category": "Volunteer",
+    "location": "Early voting sign waving",
+    "address": "3661 Eisenhower Pkwy, Macon, GA 31206",
+    "description": "Volunteer to wave signs and raise awareness of early voting.",
+    "note": "Confirm the sign-waving location with the organizer through Mobilize before attending.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033989/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  },
+  {
+    "id": "mobilize-1033981-2026-10-19",
+    "title": "Become a Poll Watcher! | Macon-Bibb Dems",
+    "start": "2026-10-19T09:00:00-04:00",
+    "end": "2026-10-19T23:00:00-04:00",
+    "category": "Training",
+    "location": "Macon — training details on Mobilize",
+    "address": "Macon, GA 31216",
+    "description": "Poll watcher recruitment with live online or self-paced training options.",
+    "note": "The listing shows October 19, 9am–11pm, and identifies October 19 as the Election Day training deadline. Confirm training times and requirements on Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033981/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-training"
+    ]
+  },
+  {
+    "id": "mobilize-1033976-2026-10-20",
+    "title": "Rides to the Polls: Macon-Bibb Dems",
+    "start": "2026-10-20T09:00:00-04:00",
+    "end": "2026-10-20T17:30:00-04:00",
+    "category": "Volunteer",
+    "location": "Macon — coordinate with organizer",
+    "address": "Macon, GA 31216",
+    "description": "Volunteer as a driver to help community members reach the polls.",
+    "note": "Coordinate pickup locations and volunteer arrangements with the organizer through Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033976/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  },
+  {
+    "id": "mobilize-1033976-2026-10-27",
+    "title": "Rides to the Polls: Macon-Bibb Dems",
+    "start": "2026-10-27T09:00:00-04:00",
+    "end": "2026-10-27T17:30:00-04:00",
+    "category": "Volunteer",
+    "location": "Macon — coordinate with organizer",
+    "address": "Macon, GA 31216",
+    "description": "Volunteer as a driver to help community members reach the polls.",
+    "note": "Coordinate pickup locations and volunteer arrangements with the organizer through Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033976/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  },
+  {
+    "id": "mobilize-1033976-2026-11-03",
+    "title": "Rides to the Polls: Macon-Bibb Dems",
+    "start": "2026-11-03T09:00:00-05:00",
+    "end": "2026-11-03T17:30:00-05:00",
+    "category": "Volunteer",
+    "location": "Macon — coordinate with organizer",
+    "address": "Macon, GA 31216",
+    "description": "Volunteer as a driver to help community members reach the polls.",
+    "note": "Coordinate pickup locations and volunteer arrangements with the organizer through Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1033976/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  },
+  {
+    "id": "mobilize-1065301-2026-11-12",
+    "title": "Macon-Bibb Democrats: Policy & Legislative Subcommittee",
+    "start": "2026-11-12T18:00:00-05:00",
+    "end": "2026-11-12T19:00:00-05:00",
+    "category": "Meeting",
+    "location": "The Office at College Hill",
+    "address": "1305 Hardeman Ave, Suite 100, Macon, GA 31201",
+    "description": "Monthly discussion of issues affecting Bibb County and policy advocacy at local, state and national levels.",
+    "note": "Register and confirm the latest meeting details on Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1065301/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-committees"
+    ]
+  },
+  {
+    "id": "mobilize-1066323-2026-10-23",
+    "title": "Bars & Ballots: Macon-Bibb Dems Canvassing Bar Crawl",
+    "start": "2026-10-23T19:30:00-04:00",
+    "end": "2026-10-23T22:00:00-04:00",
+    "category": "Canvass",
+    "location": "Sweet Eleanor’s Divine Desserts",
+    "address": "530 Poplar St, Macon, GA 31201",
+    "description": "Meet at Sweet Eleanor’s at 7:30pm before downtown canvassing begins at 8pm.",
+    "note": "Register and confirm arrangements on Mobilize.",
+    "sample": false,
+    "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/event/1066323/",
+    "sourceChecked": "2026-10-15",
+    "organizer": "Macon-Bibb Democrats · Volunteer organized for Democratic Party of Georgia",
+    "organizationId": "macon-bibb-dems",
+    "calendarIds": [
+      "dems-events",
+      "dems-outreach"
+    ]
+  }
 ]

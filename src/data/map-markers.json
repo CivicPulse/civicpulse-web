@@ -1,0 +1,28 @@
+{
+  "dsa": {
+    "fill": "#854365",
+    "border": "#000000"
+  },
+  "organizations": {
+    "macon-bibb-dems": {
+      "fill": "#2166ac",
+      "border": "#000000"
+    },
+    "dpg26": {
+      "fill": "#24616b",
+      "border": "#000000"
+    },
+    "houston-county-dems": {
+      "fill": "#655397",
+      "border": "#000000"
+    },
+    "jasper-county-dems": {
+      "fill": "#8a592f",
+      "border": "#000000"
+    },
+    "mgrls": {
+      "fill": "#375f74",
+      "border": "#000000"
+    }
+  }
+}

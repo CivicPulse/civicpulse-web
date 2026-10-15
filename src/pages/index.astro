@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import VotingPreview from '../components/VotingPreview.astro';
 import { events, eventDate, eventTime } from '../lib/events';
-const featured = ['fall-cleanup', 'resource-fair', 'live-on-poplar'].map(id => events.find(event => event.id === id)!);
+const featured = events.filter(event => !event.sample && new Date(event.end).getTime() >= Date.now()).slice(0, 3);
 ---
 <Layout title="Our community, a little closer">
   <main id="main">
@@ -12,12 +13,11 @@ const featured = ['fall-cleanup', 'resource-fair', 'live-on-poplar'].map(id => e
     </section>
     <div class="home-destinations">
       <section class="destination maps-destination" aria-labelledby="maps-title">
-        <header class="destination-heading"><h2 id="maps-title">Explore maps</h2><p>Polling places, precincts and community layers across Macon–Bibb.</p></header>
-        <a class="map-preview" href="/maps/" aria-label="Explore interactive community maps. Preview image is illustrative.">
-          <img src="/images/map-preview.webp" alt="Illustrative sage-green map with a blue river and place markers" width="1499" height="1049" fetchpriority="high" />
-          <span class="map-label label-riverside">Riverside</span><span class="map-label label-college">College Hill</span><span class="map-label label-vineville">Vineville</span><span class="map-label label-downtown">Downtown<span>Macon</span></span><span class="map-label label-bealls">Beall’s Hill</span><span class="map-label label-pleasant">Pleasant Hill</span>
-          <span class="preview-legend" aria-hidden="true"><span><i style="--swatch:#3d704c"></i>Parks</span><span><i style="--swatch:#ae583b"></i>Community spaces</span><span><i style="--swatch:#335e78"></i>Libraries</span><span><i style="--swatch:#8a7045"></i>Points of interest</span></span>
-          <span class="illustration-note">Illustrative map · Sample places</span>
+        <header class="destination-heading"><h2 id="maps-title">Explore maps</h2><p>Polling places and voting precincts across Macon–Bibb.</p></header>
+        <a class="map-preview" href="/maps/" aria-label="Explore polling places and voting precincts">
+          <VotingPreview />
+          <span class="preview-legend" aria-hidden="true"><span><i style="--swatch:#f5a400"></i>Polling places</span><span><i style="--swatch:#2166ac"></i>Voting precincts</span></span>
+          <span class="illustration-note">34 polling places · 31 voting precincts</span>
         </a>
         <a class="destination-link map-cta" href="/maps/">Open map explorer <Icon /></a>
       </section>

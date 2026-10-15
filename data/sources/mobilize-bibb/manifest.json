@@ -1,0 +1,245 @@
+{
+  "captured": "2026-10-15",
+  "sourceFeed": "Democratic Party of Georgia 26",
+  "sourceUrl": "https://www.mobilize.us/democraticpartyofgeorgia26/?address=659%20Arlington%20Place%2C%20Macon%2C%20GA%2C%20USA&from_map=true&lat=32.837643&lon=-83.6420021&zoom=12",
+  "center": [
+    -83.6420021,
+    32.837643
+  ],
+  "radiusMiles": 35,
+  "method": "Public rendered page capture; all available-times controls expanded. API and direct HTTP access returned 403; public API navigation was blocked by browser.",
+  "scope": "Nearby listings from the supplied Democratic Party of Georgia 26 feed, plus locally hosted virtual events. This does not claim coverage of other Mobilize organization feeds.",
+  "searchPagesReviewed": 2,
+  "coverage": "First 25 search results were in Macon, Warner Robins or Monticello. Public venue distances use a straight-line radius from the supplied Macon map center. Subsequent reviewed results were in Hawkinsville, Griffin, Dublin, Locust Grove, Madison, Covington, Stockbridge or Conyers, outside the requested nearby area.",
+  "listings": 25,
+  "occurrences": 119,
+  "mappedOccurrences": 29,
+  "mappedVenues": 9,
+  "records": [
+    {
+      "sourceId": "1032004",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 26,
+      "mapped": false,
+      "addressPrivate": true,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1065301",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1066323",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1061541",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": true
+    },
+    {
+      "sourceId": "954502",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "954503",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "954505",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1032025",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 25,
+      "mapped": false,
+      "addressPrivate": true,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1066318",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 6,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1055236",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": false,
+      "addressPrivate": true,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1033986",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1061527",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": true
+    },
+    {
+      "sourceId": "1061538",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 2,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": true
+    },
+    {
+      "sourceId": "1033989",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 2,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1033981",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 1,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1033976",
+      "included": true,
+      "city": "Macon",
+      "timeslots": 3,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1061865",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 1,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1032032",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 29,
+      "mapped": false,
+      "addressPrivate": true,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1009922",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 3,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1035517",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 3,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1009909",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 2,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "573583",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 2,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "772371",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 2,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    },
+    {
+      "sourceId": "1061124",
+      "included": true,
+      "city": "Warner Robins",
+      "timeslots": 1,
+      "mapped": false,
+      "addressPrivate": false,
+      "isVirtual": true
+    },
+    {
+      "sourceId": "1040006",
+      "included": true,
+      "city": "Monticello",
+      "timeslots": 2,
+      "mapped": true,
+      "addressPrivate": false,
+      "isVirtual": false
+    }
+  ]
+}

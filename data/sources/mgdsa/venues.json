@@ -1,0 +1,80 @@
+[
+  {
+    "id": "centenary",
+    "name": "Centenary United Methodist Church",
+    "match": "1290 College St",
+    "address": "1290 College St, Macon, GA 31201",
+    "coordinates": [
+      -83.646628244557,
+      32.831546380209
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1290+College+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "just-tapd",
+    "name": "Just Tap’d Macon",
+    "match": "488 1st St",
+    "address": "488 1st St, Macon, GA 31201",
+    "coordinates": [
+      -83.631511089351,
+      32.83617126136
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=488+1st+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "longleaf",
+    "name": "Longleaf Distilling Co.",
+    "match": "664 2nd St",
+    "address": "664 2nd St, Macon, GA 31201",
+    "coordinates": [
+      -83.631886254715,
+      32.833086800021
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=664+2nd+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "sweet-eleanors",
+    "name": "Sweet Eleanor’s Divine Desserts",
+    "match": "530 Poplar St",
+    "address": "530 Poplar St, Macon, GA 31201",
+    "coordinates": [
+      -83.62924058101,
+      32.834490488543
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=530+Poplar+St%2C+Macon%2C+GA+31201&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "perry-advance",
+    "name": "Perry Advance Auto Parts",
+    "match": "1335 Ball St",
+    "address": "1335 Ball St, Perry, GA 31069",
+    "coordinates": [
+      -83.737140157747,
+      32.464629924554
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=1335+Ball+St%2C+Perry%2C+GA+31069&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  },
+  {
+    "id": "lake-tobesofkee",
+    "name": "Lake Tobesofkee",
+    "match": "6600 Moseley Dixon Rd",
+    "address": "6600 Moseley Dixon Rd, Macon, GA 31220",
+    "coordinates": [
+      -83.775612306349,
+      32.83129169285
+    ],
+    "coordinateSource": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=6600+Moseley+Dixon+Rd%2C+Macon%2C+GA+31220&benchmark=Public_AR_Current&format=json",
+    "accuracy": "US Census address interpolation; not an entrance or meeting point",
+    "checked": "2026-10-15"
+  }
+]
