@@ -1,0 +1,28 @@
+{
+  "title": "Macon-Bibb election map data",
+  "exportedAt": "2026-10-15T21:36:10.342548+00:00",
+  "coordinateReferenceSystem": "EPSG:4326",
+  "attribution": "Macon-Bibb County GIS",
+  "sources": {
+    "polling_places": {
+      "type": "geojson",
+      "data": "/data/polling_places.geojson",
+      "featureCount": 34,
+      "geometryType": "Point",
+      "idProperty": "objectid",
+      "joinProperty": "pollingid",
+      "sourceTable": "public.polling_places",
+      "originalSource": "https://maconbibb.spatialitics.net/server/rest/services/Hosted/ElectionPollingPlaces/FeatureServer/0"
+    },
+    "voting_precincts": {
+      "type": "geojson",
+      "data": "/data/voting_precincts.geojson",
+      "featureCount": 31,
+      "geometryType": "MultiPolygon",
+      "idProperty": "objectid",
+      "joinProperty": "pollingid",
+      "sourceTable": "public.voting_precincts",
+      "originalSource": "https://maconbibb.spatialitics.net/server/rest/services/Hosted/Voting_Precincts/FeatureServer/0"
+    }
+  }
+}

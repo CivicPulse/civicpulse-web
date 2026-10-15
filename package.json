@@ -1,0 +1,28 @@
+{
+  "name": "civicpulse-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro check && astro build",
+    "preview": "astro preview --host 0.0.0.0",
+    "check": "astro check",
+    "test:e2e": "node tests/smoke.mjs",
+    "prebuild": "node scripts/validate-voting-data.mjs",
+    "predev": "node scripts/validate-voting-data.mjs"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.2.0",
+    "@fontsource/lora": "^5.2.0",
+    "@fontsource/unna": "^5.3.0",
+    "astro": "^7.4.0",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "@playwright/test": "^1.56.0",
+    "@types/leaflet": "^1.9.0",
+    "typescript": "^5.9.0"
+  }
+}

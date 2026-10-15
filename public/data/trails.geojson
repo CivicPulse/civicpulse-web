@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Sample riverside connection",
+        "description": "Illustrative line only. Not a navigable route or official trail."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -83.666,
+            32.877
+          ],
+          [
+            -83.65,
+            32.866
+          ],
+          [
+            -83.635,
+            32.852
+          ],
+          [
+            -83.628,
+            32.843
+          ],
+          [
+            -83.615,
+            32.833
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,577 @@
+{
+  "source": "polling_locations.qgz",
+  "layers": {
+    "polling_places": {
+      "EM1": {
+        "label": "EM1 \u2014 East Macon 1",
+        "color": "#c51b7d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-c51b7d.svg",
+        "size": 26.45669291338583
+      },
+      "EM2": {
+        "label": "EM2 \u2014 East Macon 2",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "EM3": {
+        "label": "EM3 \u2014 East Macon 3",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "EM4": {
+        "label": "EM4 \u2014 East Macon 4",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "EM5": {
+        "label": "EM5 \u2014 East Macon 5",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "GF1": {
+        "label": "GF1 \u2014 Godfrey 1",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "GF2": {
+        "label": "GF2 \u2014 Godfrey 2",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "GF3": {
+        "label": "GF3 \u2014 Godfrey 3",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "GF4": {
+        "label": "GF4 \u2014 Godfrey 4",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "GF5": {
+        "label": "GF5 \u2014 Godfrey 5",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "HA1": {
+        "label": "HA1 \u2014 Hazzard 1",
+        "color": "#c51b7d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-c51b7d.svg",
+        "size": 26.45669291338583
+      },
+      "HA2": {
+        "label": "HA2 \u2014 Hazzard 2",
+        "color": "#4d4d4d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-4d4d4d.svg",
+        "size": 26.45669291338583
+      },
+      "HA3": {
+        "label": "HA3 \u2014 Hazzard 3",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "HA4": {
+        "label": "HA4 \u2014 Hazzard 4",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "HO1": {
+        "label": "HO1 \u2014 Howard 1",
+        "color": "#c51b7d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-c51b7d.svg",
+        "size": 26.45669291338583
+      },
+      "HO2": {
+        "label": "HO2 \u2014 Howard 2",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "HO3": {
+        "label": "HO3 \u2014 Howard 3",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "HO4": {
+        "label": "HO4 \u2014 Howard 4",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "HO5": {
+        "label": "HO5 \u2014 Howard 5",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "HO6": {
+        "label": "HO6 \u2014 Howard 6",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "HO7": {
+        "label": "HO7 \u2014 Howard 7",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "RU1": {
+        "label": "RU1 \u2014 Rutland 1",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "RU2": {
+        "label": "RU2 \u2014 Rutland 2",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "VV1": {
+        "label": "VV1 \u2014 Vineville 1",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "VV2": {
+        "label": "VV2 \u2014 Vineville 2",
+        "color": "#c51b7d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-c51b7d.svg",
+        "size": 26.45669291338583
+      },
+      "VV3": {
+        "label": "VV3 \u2014 Vineville 3",
+        "color": "#c51b7d",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-c51b7d.svg",
+        "size": 26.45669291338583
+      },
+      "VV4": {
+        "label": "VV4 \u2014 Vineville 4",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "VV5": {
+        "label": "VV5 \u2014 Vineville 5",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "VV6": {
+        "label": "VV6 \u2014 Vineville 6",
+        "color": "#e66101",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-e66101.svg",
+        "size": 26.45669291338583
+      },
+      "WA1": {
+        "label": "WA1 \u2014 Warrior 1",
+        "color": "#2166ac",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-2166ac.svg",
+        "size": 26.45669291338583
+      },
+      "WA2": {
+        "label": "WA2 \u2014 Warrior 2",
+        "color": "#1b9e77",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-1b9e77.svg",
+        "size": 26.45669291338583
+      },
+      "EarlyVote": {
+        "label": "Early voting \u2014 all precincts",
+        "color": "#f5a400",
+        "fillOpacity": 1.0,
+        "outline": "#ffffff",
+        "outlineOpacity": 1.0,
+        "outlineWidth": 1.8897637795275593,
+        "icon": "/icons/polling/ballot-f5a400.svg",
+        "size": 26.45669291338583
+      }
+    },
+    "voting_precincts": {
+      "EM1": {
+        "label": "EM1 \u2014 East Macon 1",
+        "color": "#c51b7d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "EM2": {
+        "label": "EM2 \u2014 East Macon 2",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "EM3": {
+        "label": "EM3 \u2014 East Macon 3",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "EM4": {
+        "label": "EM4 \u2014 East Macon 4",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "EM5": {
+        "label": "EM5 \u2014 East Macon 5",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "GF1": {
+        "label": "GF1 \u2014 Godfrey 1",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "GF2": {
+        "label": "GF2 \u2014 Godfrey 2",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "GF3": {
+        "label": "GF3 \u2014 Godfrey 3",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "GF4": {
+        "label": "GF4 \u2014 Godfrey 4",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "GF5": {
+        "label": "GF5 \u2014 Godfrey 5",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HA1": {
+        "label": "HA1 \u2014 Hazzard 1",
+        "color": "#c51b7d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HA2": {
+        "label": "HA2 \u2014 Hazzard 2",
+        "color": "#4d4d4d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HA3": {
+        "label": "HA3 \u2014 Hazzard 3",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HA4": {
+        "label": "HA4 \u2014 Hazzard 4",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO1": {
+        "label": "HO1 \u2014 Howard 1",
+        "color": "#c51b7d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO2": {
+        "label": "HO2 \u2014 Howard 2",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO3": {
+        "label": "HO3 \u2014 Howard 3",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO4": {
+        "label": "HO4 \u2014 Howard 4",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO5": {
+        "label": "HO5 \u2014 Howard 5",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO6": {
+        "label": "HO6 \u2014 Howard 6",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "HO7": {
+        "label": "HO7 \u2014 Howard 7",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "RU1": {
+        "label": "RU1 \u2014 Rutland 1",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "RU2": {
+        "label": "RU2 \u2014 Rutland 2",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV1": {
+        "label": "VV1 \u2014 Vineville 1",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV2": {
+        "label": "VV2 \u2014 Vineville 2",
+        "color": "#c51b7d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV3": {
+        "label": "VV3 \u2014 Vineville 3",
+        "color": "#c51b7d",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV4": {
+        "label": "VV4 \u2014 Vineville 4",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV5": {
+        "label": "VV5 \u2014 Vineville 5",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "VV6": {
+        "label": "VV6 \u2014 Vineville 6",
+        "color": "#e66101",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "WA1": {
+        "label": "WA1 \u2014 Warrior 1",
+        "color": "#2166ac",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      },
+      "WA2": {
+        "label": "WA2 \u2014 Warrior 2",
+        "color": "#1b9e77",
+        "fillOpacity": 0.34901960784313724,
+        "outline": "#374151",
+        "outlineOpacity": 0.7254901960784313,
+        "outlineWidth": 0.8314960629921261
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Tattnall Square Park",
+        "description": "Sample park marker; location is approximate."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6491,
+          32.8277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Amerson River Park",
+        "description": "Sample park marker; location is approximate."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6695,
+          32.8767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Central City Park",
+        "description": "Sample park marker; location is approximate."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6187,
+          32.8326
+        ]
+      }
+    }
+  ]
+}

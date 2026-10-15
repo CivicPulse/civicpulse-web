@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Washington Memorial Library",
+        "description": "Sample library marker; not a service directory."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6384,
+          32.8403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Riverside Branch Library",
+        "description": "Illustrative location for the map demonstration."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6835,
+          32.887
+        ]
+      }
+    }
+  ]
+}

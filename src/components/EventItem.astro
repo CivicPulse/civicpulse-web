@@ -1,0 +1,11 @@
+---
+import { eventDate, eventTime, type CommunityEvent } from '../lib/events';
+interface Props { event: CommunityEvent; }
+const { event } = Astro.props;
+---
+<article class="calendar-event" id={`event-${event.id}`} data-event={event.id}>
+  <time class="list-date" datetime={event.start}><span>{eventDate(event.start, { month:'short' })}</span><strong>{eventDate(event.start, { day:'2-digit' })}</strong></time>
+  <div class="event-body"><h3>{event.title}</h3><p class="event-category">{event.category} <span>· Sample event</span></p><p class="event-meta">{eventDate(event.start, { weekday:'long',month:'long',day:'numeric' })} · {eventTime(event)} ET</p><p class="event-place">{event.location}</p>
+    <details><summary>Event details</summary><p>{event.description}</p><p class="detail-address">{event.address}</p><p class="fictional-note">{event.note}</p><div class="event-actions"><a href={`/events/${event.id}.ics`} download>Add to calendar</a><a href={`/maps/?map=gatherings&event=${event.id}`}>View sample location</a></div></details>
+  </div>
+</article>

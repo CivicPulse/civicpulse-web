@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { events, eventDate, eventTime } from '../lib/events';
+const featured = ['fall-cleanup', 'resource-fair', 'live-on-poplar'].map(id => events.find(event => event.id === id)!);
+---
+<Layout title="Our community, a little closer">
+  <main id="main">
+    <section class="home-intro" aria-labelledby="home-title">
+      <h1 id="home-title">A closer look at our community.</h1>
+      <p>Explore the places around you. Find something to be part of.</p>
+    </section>
+    <div class="home-destinations">
+      <section class="destination maps-destination" aria-labelledby="maps-title">
+        <header class="destination-heading"><h2 id="maps-title">Explore maps</h2><p>Polling places, precincts and community layers across Macon–Bibb.</p></header>
+        <a class="map-preview" href="/maps/" aria-label="Explore interactive community maps. Preview image is illustrative.">
+          <img src="/images/map-preview.webp" alt="Illustrative sage-green map with a blue river and place markers" width="1499" height="1049" fetchpriority="high" />
+          <span class="map-label label-riverside">Riverside</span><span class="map-label label-college">College Hill</span><span class="map-label label-vineville">Vineville</span><span class="map-label label-downtown">Downtown<span>Macon</span></span><span class="map-label label-bealls">Beall’s Hill</span><span class="map-label label-pleasant">Pleasant Hill</span>
+          <span class="preview-legend" aria-hidden="true"><span><i style="--swatch:#3d704c"></i>Parks</span><span><i style="--swatch:#ae583b"></i>Community spaces</span><span><i style="--swatch:#335e78"></i>Libraries</span><span><i style="--swatch:#8a7045"></i>Points of interest</span></span>
+          <span class="illustration-note">Illustrative map · Sample places</span>
+        </a>
+        <a class="destination-link map-cta" href="/maps/">Open map explorer <Icon /></a>
+      </section>
+      <section class="destination calendar-destination" aria-labelledby="calendar-title">
+        <header class="destination-heading"><h2 id="calendar-title">Community calendar</h2><p>Local events, programs and gatherings in Macon–Bibb.</p></header>
+        <div class="featured-events">
+          {featured.map(event => <article class="featured-event">
+            <time datetime={event.start}><span>{eventDate(event.start,{month:'short'})}</span><strong>{eventDate(event.start,{day:'2-digit'})}</strong></time>
+            <div><h3><a href={`/calendar/?event=${event.id}`}>{event.title}</a></h3><p class="event-time">{eventTime(event)}</p><p class="event-description">{event.description}</p></div>
+          </article>)}
+        </div>
+        <a class="destination-link calendar-cta" href="/calendar/">View the calendar <Icon /></a>
+      </section>
+    </div>
+
+  </main>
+</Layout>
+<style>
+.home-intro{text-align:center;padding:34px 0 20px}.home-intro h1{font-size:clamp(42px,6.15vw,94px);letter-spacing:-.025em;line-height:1;white-space:nowrap}.home-intro p{font-size:clamp(18px,2.2vw,34px);margin-top:6px;line-height:1.5}.home-destinations{display:grid;grid-template-columns:1fr 1fr;gap:24px}.destination{display:flex;flex-direction:column;min-width:0}.destination-heading{display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:80px;padding:16px 24px;background:var(--sage)}.destination-heading h2{font-size:44px;letter-spacing:-.025em;white-space:nowrap}.destination-heading p{font-size:14px;line-height:1.45;max-width:33ch}.calendar-destination .destination-heading{background:var(--rust);color:var(--paper)}.map-preview{display:block;position:relative;flex:1;min-height:484px;overflow:hidden}.map-preview img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover}.map-label{position:absolute;font-size:12px;text-transform:uppercase;letter-spacing:.08em;text-shadow:0 1px 3px var(--paper);pointer-events:none}.label-riverside{left:15%;top:8%}.label-college{left:58%;top:16%}.label-vineville{left:5%;top:49%}.label-downtown{left:41%;top:51%;text-align:center}.label-downtown span{display:block;font:32px var(--serif);text-transform:none;letter-spacing:0;margin-top:8px}.label-bealls{left:8%;bottom:16%}.label-pleasant{right:9%;bottom:13%}.preview-legend{position:absolute;top:14px;right:14px;padding:12px;background:var(--paper);display:grid;gap:9px;font-size:11px;border-radius:3px}.preview-legend span{display:flex;align-items:center;gap:8px}.preview-legend i{display:block;width:11px;height:11px;border-radius:50%;background:var(--swatch)}.illustration-note{position:absolute;bottom:10px;left:12px;padding:4px 7px;font-size:11px;background:var(--paper);color:var(--ink)}.map-preview:focus-visible{outline-offset:-5px}.destination-link{padding:14px 28px;display:flex;align-items:center;gap:10px;font:27px/1.1 var(--serif);min-height:56px;text-decoration:none;color:var(--paper);transition:background 160ms ease}.map-cta{background:var(--ink)}.map-cta:hover{background:#2a594b}.calendar-cta{background:var(--rust)}.calendar-cta:hover{background:var(--rust-dark)}.featured-events{background:var(--paper);padding:0 24px;flex:1;display:flex;flex-direction:column}.featured-event{display:grid;grid-template-columns:122px 1fr;gap:18px;padding:25px 0;flex:1;align-items:start}.featured-event+.featured-event{border-top:1px solid var(--line)}.featured-event time{border-right:1px solid var(--line);color:var(--rust);display:flex;align-items:center;flex-direction:column;min-height:105px;margin-top:5px}.featured-event time span{text-transform:uppercase;font-size:20px;line-height:1.3;font-weight:500}.featured-event time strong{font:68px/1 var(--serif);font-variant-numeric:tabular-nums}.featured-event h3{font-size:27px;line-height:1.05}.featured-event h3 a{text-decoration:none}.featured-event h3 a:hover{text-decoration:underline}.event-time{font-size:17px;line-height:1.5;margin-top:4px}.event-description{font-size:17px;line-height:1.45;color:var(--muted);margin-top:4px}.home-sample{font-size:12px;color:var(--muted);margin-top:14px}.home-sample+.site-footer{margin-top:20px}
+@media(max-width:1250px) and (min-width:851px){.destination-heading{align-items:flex-start;flex-direction:column;gap:8px}.destination-heading h2{font-size:34px}.destination-heading p{max-width:none}.featured-event{grid-template-columns:80px 1fr;gap:14px}.featured-event h3{font-size:25px}.event-description{font-size:15px}.featured-event time strong{font-size:58px}.event-time{font-size:15px}}
+@media(max-width:850px){.home-intro{padding:30px 0}.home-intro h1{white-space:normal;font-size:clamp(42px,7vw,66px)}.home-intro p{font-size:20px;max-width:42ch;margin:16px auto 0}.home-destinations{grid-template-columns:1fr;gap:32px}.map-preview{min-height:440px}.destination-heading h2{font-size:36px}.featured-event{grid-template-columns:100px 1fr}.featured-event h3{font-size:28px}}
+@media(max-width:500px){.home-intro{padding:28px 0}.home-intro h1{font-size:45px;line-height:1.04}.home-intro p{font-size:17px;line-height:1.5;max-width:32ch}.destination-heading{padding:18px;display:block;min-height:0}.destination-heading h2{font-size:34px}.destination-heading p{margin-top:8px;font-size:13px;max-width:36ch}.map-preview{min-height:350px}.map-label{font-size:9px}.label-college{left:56%;top:32%}.preview-legend{font-size:9px;gap:7px;top:10px;right:10px;padding:10px}.preview-legend i{height:9px;width:9px}.destination-link{font-size:25px;padding:15px 20px}.featured-events{padding:0 18px}.featured-event{grid-template-columns:58px 1fr;gap:14px;padding:22px 0}.featured-event time{min-height:90px;align-items:start}.featured-event time span{font-size:14px}.featured-event time strong{font-size:48px}.featured-event h3{font-size:24px}.event-time{font-size:13px}.event-description{font-size:14px}.home-sample{font-size:11px}}
+</style>

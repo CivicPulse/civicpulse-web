@@ -1,0 +1,4 @@
+{
+  "prompt": "Use case: ui-mockup asset. Edit the provided sample map preview reference into a clean standalone illustrative map image, landscape 1400x980. Preserve the flat sage land, white fine street lines, muted blue winding river, warm pale background, composition and full map extent. Remove the checkbox legend/control at top right and remove all text labels and highway shields so no UI or text is rasterized. Keep four simple location pins using forest green and terracotta circles with small white tree/building/book/heart symbols, near their reference positions. This is an illustrative sample map, not an authoritative map. Fill the removed legend area with continuous map streets. No borders, no title, no navigation, no shadows, no typography. Clean high resolution professional cartography.\n",
+  "createdAt": "2026-10-15T21:27:29.840Z"
+}

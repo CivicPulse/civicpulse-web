@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T21:33:06.813196+00:00",
+  "title": "Design System: Macon\u2013Bibb community prototype",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Warm canvas",
+        "tonalRamp": [
+          "oklch(15% 0.0143 84.58)",
+          "oklch(27% 0.0143 84.58)",
+          "oklch(38% 0.0143 84.58)",
+          "oklch(50% 0.0143 84.58)",
+          "oklch(61% 0.0143 84.58)",
+          "oklch(73% 0.0143 84.58)",
+          "oklch(84% 0.0143 84.58)",
+          "oklch(95% 0.0143 84.58)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0085 84.57)",
+          "oklch(27% 0.0085 84.57)",
+          "oklch(38% 0.0085 84.57)",
+          "oklch(50% 0.0085 84.57)",
+          "oklch(61% 0.0085 84.57)",
+          "oklch(73% 0.0085 84.57)",
+          "oklch(84% 0.0085 84.57)",
+          "oklch(95% 0.0085 84.57)"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Forest ink",
+        "tonalRamp": [
+          "oklch(15% 0.0479 173.92)",
+          "oklch(27% 0.0479 173.92)",
+          "oklch(38% 0.0479 173.92)",
+          "oklch(50% 0.0479 173.92)",
+          "oklch(61% 0.0479 173.92)",
+          "oklch(73% 0.0479 173.92)",
+          "oklch(84% 0.0479 173.92)",
+          "oklch(95% 0.0479 173.92)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted forest",
+        "tonalRamp": [
+          "oklch(15% 0.0285 169.86)",
+          "oklch(27% 0.0285 169.86)",
+          "oklch(38% 0.0285 169.86)",
+          "oklch(50% 0.0285 169.86)",
+          "oklch(61% 0.0285 169.86)",
+          "oklch(73% 0.0285 169.86)",
+          "oklch(84% 0.0285 169.86)",
+          "oklch(95% 0.0285 169.86)"
+        ]
+      },
+      "sage": {
+        "role": "secondary",
+        "displayName": "Sage",
+        "tonalRamp": [
+          "oklch(15% 0.0379 122.22)",
+          "oklch(27% 0.0379 122.22)",
+          "oklch(38% 0.0379 122.22)",
+          "oklch(50% 0.0379 122.22)",
+          "oklch(61% 0.0379 122.22)",
+          "oklch(73% 0.0379 122.22)",
+          "oklch(84% 0.0379 122.22)",
+          "oklch(95% 0.0379 122.22)"
+        ]
+      },
+      "rust": {
+        "role": "primary",
+        "displayName": "Terracotta",
+        "tonalRamp": [
+          "oklch(15% 0.1203 39.13)",
+          "oklch(27% 0.1203 39.13)",
+          "oklch(38% 0.1203 39.13)",
+          "oklch(50% 0.1203 39.13)",
+          "oklch(61% 0.1203 39.13)",
+          "oklch(73% 0.1203 39.13)",
+          "oklch(84% 0.1203 39.13)",
+          "oklch(95% 0.1203 39.13)"
+        ]
+      },
+      "rust-dark": {
+        "role": "primary",
+        "displayName": "Deep terracotta",
+        "tonalRamp": [
+          "oklch(15% 0.1090 37.55)",
+          "oklch(27% 0.1090 37.55)",
+          "oklch(38% 0.1090 37.55)",
+          "oklch(50% 0.1090 37.55)",
+          "oklch(61% 0.1090 37.55)",
+          "oklch(73% 0.1090 37.55)",
+          "oklch(84% 0.1090 37.55)",
+          "oklch(95% 0.1090 37.55)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Soft rule",
+        "tonalRamp": [
+          "oklch(15% 0.0172 121.85)",
+          "oklch(27% 0.0172 121.85)",
+          "oklch(38% 0.0172 121.85)",
+          "oklch(50% 0.0172 121.85)",
+          "oklch(61% 0.0172 121.85)",
+          "oklch(73% 0.0172 121.85)",
+          "oklch(84% 0.0172 121.85)",
+          "oklch(95% 0.0172 121.85)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus forest",
+        "tonalRamp": [
+          "oklch(15% 0.0652 168.80)",
+          "oklch(27% 0.0652 168.80)",
+          "oklch(38% 0.0652 168.80)",
+          "oklch(50% 0.0652 168.80)",
+          "oklch(61% 0.0652 168.80)",
+          "oklch(73% 0.0652 168.80)",
+          "oklch(84% 0.0652 168.80)",
+          "oklch(95% 0.0652 168.80)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Home display",
+        "purpose": "Primary home heading."
+      },
+      "headline": {
+        "displayName": "Page headline",
+        "purpose": "Interior page introductions."
+      },
+      "title": {
+        "displayName": "Event title",
+        "purpose": "Event-list headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions and long-form content."
+      },
+      "label": {
+        "displayName": "Field label",
+        "purpose": "Search and category labels."
+      },
+      "destination": {
+        "displayName": "Destination link",
+        "purpose": "Full-width home destination bars."
+      },
+      "date": {
+        "displayName": "Date numeral",
+        "purpose": "Event-list dates with tabular numerals."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "navigation-underline",
+        "value": "transform 180ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "Reveal navigation current/hover underline."
+      },
+      {
+        "name": "destination-background",
+        "value": "background 160ms ease",
+        "purpose": "Destination hover feedback."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-shell",
+        "value": "1537px"
+      },
+      {
+        "name": "home-heading-wrap",
+        "value": "1250px"
+      },
+      {
+        "name": "calendar-tight",
+        "value": "1100px"
+      },
+      {
+        "name": "navigation-compact",
+        "value": "1000px"
+      },
+      {
+        "name": "destinations-stack",
+        "value": "850px"
+      },
+      {
+        "name": "map-sidebar-compact",
+        "value": "800px"
+      },
+      {
+        "name": "masthead-wrap",
+        "value": "650px"
+      },
+      {
+        "name": "map-stack",
+        "value": "600px"
+      },
+      {
+        "name": "home-compact",
+        "value": "500px"
+      },
+      {
+        "name": "calendar-compact",
+        "value": "450px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Default button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Native action for fitting maps and changing dates.",
+      "html": "<button class=\"ds-button\">Fit map to visible layers</button>",
+      "css": ".ds-button{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);min-height:44px;background:var(--paper,#fffcf6);border:1px solid var(--line,#b8bcb0);border-radius:var(--radius,4px);padding:10px 14px;font-size:16px;cursor:pointer}.ds-button:hover{background:var(--sage,#c7d0b5)}.ds-button:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}"
+    },
+    {
+      "name": "Primary link",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Compact forest link for a primary action.",
+      "html": "<a class=\"ds-primary\" href=\"#\">Explore maps</a>",
+      "css": ".ds-primary{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid var(--ink,#173e34);border-radius:var(--radius,4px);background:var(--ink,#173e34);color:var(--paper,#fffcf6);font-weight:500;text-decoration:none}.ds-primary:hover{background:#295b4b;color:white}.ds-primary:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Paper-filled search control.",
+      "html": "<input class=\"ds-input\" type=\"search\" aria-label=\"Search visible places\" placeholder=\"Search visible places\">",
+      "css": ".ds-input{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);font-size:16px;min-height:44px;max-width:100%;padding:10px 12px;border:1px solid var(--line,#b8bcb0);border-radius:var(--radius,4px);background:var(--paper,#fffcf6);caret-color:var(--rust,#ae583b)}.ds-input::placeholder{color:var(--muted,#4c6159)}.ds-input:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}"
+    },
+    {
+      "name": "Main navigation",
+      "kind": "nav",
+      "description": "Sans links with a terracotta current-page underline.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"#\" aria-current=\"page\">Home</a><a href=\"#\">Explore maps</a></nav>",
+      "css": ".ds-nav{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);display:flex;gap:44px}.ds-nav a{position:relative;display:flex;align-items:center;min-height:44px;font-size:18px;text-decoration:none;color:inherit}.ds-nav a:after{content:'';position:absolute;bottom:4px;left:0;right:0;height:2px;background:var(--rust,#ae583b);transform:scaleX(0);transform-origin:left;transition:transform 180ms cubic-bezier(.16,1,.3,1)}.ds-nav a:hover:after,.ds-nav a[aria-current=page]:after{transform:scaleX(1)}.ds-nav a:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-nav a:after{transition:none}}"
+    },
+    {
+      "name": "Map destination",
+      "kind": "button",
+      "refersTo": "map-destination",
+      "description": "Full-width serif doorway to a community destination.",
+      "html": "<a class=\"ds-map-destination\" href=\"#\">Open map explorer <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><path d=\"M4 12h16m-6-6 6 6-6 6\"/></svg></a>",
+      "css": ".ds-map-destination{display:flex;align-items:center;gap:10px;min-height:56px;padding:14px 28px;font:27px/1.1 var(--serif,Unna,Georgia,serif);text-decoration:none;background:var(--ink,#173e34);color:var(--paper,#fffcf6);transition:background 160ms ease}.ds-map-destination:hover{background:#2a594b}.ds-map-destination:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-map-destination{transition:none}}"
+    },
+    {
+      "name": "Calendar destination",
+      "kind": "button",
+      "refersTo": "calendar-destination",
+      "description": "Full-width serif doorway to a community destination.",
+      "html": "<a class=\"ds-calendar-destination\" href=\"#\">View the calendar <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" aria-hidden=\"true\"><path d=\"M4 12h16m-6-6 6 6-6 6\"/></svg></a>",
+      "css": ".ds-calendar-destination{display:flex;align-items:center;gap:10px;min-height:56px;padding:14px 28px;font:27px/1.1 var(--serif,Unna,Georgia,serif);text-decoration:none;background:var(--rust,#ae583b);color:var(--paper,#fffcf6);transition:background 160ms ease}.ds-calendar-destination:hover{background:#91452e}.ds-calendar-destination:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-calendar-destination{transition:none}}"
+    },
+    {
+      "name": "Calendar panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat bordered content surface used by the month view.",
+      "html": "<section class=\"ds-panel\"><h2>Community calendar</h2><p>Sample events for this month.</p></section>",
+      "css": ".ds-panel{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);padding:26px;background:var(--paper,#fffcf6);border:1px solid var(--line,#b8bcb0)}.ds-panel h2{font:700 34px/1.08 var(--serif,Unna,Georgia,serif);margin:0}.ds-panel p{font-size:14px;line-height:1.6;color:var(--muted,#4c6159);margin:14px 0 0}"
+    },
+    {
+      "name": "Layer row",
+      "kind": "custom",
+      "description": "Native checkbox plus geometry swatch and descriptive text.",
+      "html": "<label class=\"ds-layer\"><input type=\"checkbox\" checked><span class=\"ds-swatch\" aria-hidden=\"true\"></span><span><strong>Parks</strong><small>Sample green spaces</small></span></label>",
+      "css": ".ds-layer{font-family:var(--sans,'DM Sans',sans-serif);color:var(--ink,#173e34);display:flex;gap:10px;align-items:center;padding:10px 0;min-height:55px;line-height:1.4;cursor:pointer}.ds-layer input{width:18px;height:18px;margin:0;accent-color:var(--ink,#173e34)}.ds-layer input:focus-visible{outline:3px solid var(--focus,#285e4c);outline-offset:5px}.ds-swatch{height:11px;width:11px;border-radius:50%;background:#3d704c}.ds-layer strong{display:block;font-size:14px;font-weight:500}.ds-layer small{display:block;font-size:11px;color:var(--muted,#4c6159);margin-top:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Neighborhood noticeboard",
+    "overview": "The neighborhood noticeboard pairs generous editorial headings with practical, readable controls. Cream paper, forest ink, sage geography and terracotta dates give the community prototype a warm, local character without implying official affiliation.\n\nRectangular panels and fine dividers organize content. Date columns and map-layer swatches provide useful structure; typography and restrained color carry the hierarchy.",
+    "keyCharacteristics": [
+      "Warm paper and forest ink.",
+      "Unna headings with DM Sans controls and prose.",
+      "Flat rectangular panels and fine dividing rules.",
+      "Geographic layers and event dates remain legible alongside sample-content notices."
+    ],
+    "rules": [
+      {
+        "name": "The Paper Rule",
+        "body": "Use canvas for the page and paper for content surfaces; use sage and rust to distinguish geographic and calendar destinations.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Use Unna for headings, dates and destination links; use DM Sans for prose, navigation and controls.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Surface Rule",
+        "body": "Use borders and changes of background to separate application panels; reserve map-library popup shadows for the map overlay.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do preserve forest text, cream ground and the sage/terracotta relationship.",
+      "Do keep sample and illustrative-content notices visible as readable text.",
+      "Do use native controls, visible keyboard focus and tabular date numerals.",
+      "Do keep geographic layer swatches consistent with the map features."
+    ],
+    "donts": [
+      "Don't add decorative card shadows or pill-shaped application panels.",
+      "Don't replace Unna headings with a system display face or the obsolete Lora specification.",
+      "Don't imply official affiliation or present the generated preview as geographic evidence."
+    ]
+  }
+}

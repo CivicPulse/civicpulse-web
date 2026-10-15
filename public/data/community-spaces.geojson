@@ -1,0 +1,50 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "Downtown gathering space",
+        "description": "Illustrative community space."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6288,
+          32.836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "West Macon gathering space",
+        "description": "Illustrative community space."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6972,
+          32.8142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sample": true,
+        "name": "East Macon gathering space",
+        "description": "Illustrative community space."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.606,
+          32.846
+        ]
+      }
+    }
+  ]
+}
