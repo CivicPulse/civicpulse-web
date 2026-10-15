@@ -247,7 +247,9 @@ try {
   for (const line of ics.split('\r\n')) expect(Buffer.byteLength(line)).toBeLessThanOrEqual(75);
   for (const id of ['fall-cleanup', 'resource-fair', 'live-on-poplar', 'neighborhood-walk', 'library-makers', 'winter-garden']) {
     expect(allEvents.some(event => event.id === id)).toBeFalsy();
-    expect((await fetch(`${base}/events/${id}.ics`)).status).toBe(404);
+    const removed = await fetch(`${base}/events/${id}.ics`, { redirect: 'manual' });
+    expect([301, 404]).toContain(removed.status);
+    if (removed.status === 301) expect(new URL(removed.headers.get('location'), base).href).toBe(new URL('/calendar/', base).href);
   }
   const importedICS = await (await fetch(base + '/events/mobilize-1033976-2026-11-03.ics')).text();
   expect(importedICS).toContain('DTSTART:20261103T140000Z');
