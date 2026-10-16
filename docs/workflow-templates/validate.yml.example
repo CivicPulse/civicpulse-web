@@ -1,0 +1,32 @@
+# INACTIVE: review/lead coordination required before placement in .github/workflows.
+# No production credentials, provider calls, caches or artifact promotion.
+name: Credential-free web validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PUBLIC_CONTENT_SOURCE: local
+    steps:
+      - name: Check out untrusted validation source without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up pinned project runtime without package-manager caching
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: '22.22.0'
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Validate local static publication and CMS fixtures
+        run: node scripts/validate-local-ci.mjs

@@ -1,0 +1,40 @@
+{
+  "fixture_kind": "design-only-not-api-behavior",
+  "contract_reference": "parent architecture-runner-handoff.md and ADR 0001",
+  "unresolved_before_adapter": [
+    "frozen SQL signatures and result/error types",
+    "canonical run ID plus attempt encoding",
+    "legal state and evidence allowlists",
+    "lease ownership and database-clock semantics",
+    "grants and actual-role denial tests",
+    "authenticated reconciliation observations"
+  ],
+  "synthetic_source_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "synthetic_next_source_sha": "cccccccccccccccccccccccccccccccccccccccc",
+  "baseline_claim_shape": {
+    "job_id": "db629045-63cb-42e4-9ff8-002e023c5921",
+    "lease_id": "d762cc52-2300-407e-af36-8102af33d199",
+    "fence": "7",
+    "dataset_epoch": "a68c5e45-98fa-4b78-b7e3-ef7da3123456",
+    "target_generation": "42",
+    "lease_expires_at": "2026-10-16T20:05:00Z"
+  },
+  "scenarios": [
+    { "id": "no-work", "design_observation": "eligible desired content/source already verified live", "required_assertion": "no claim or upload" },
+    { "id": "paused-bootstrap-baseline", "design_observation": "pause or bootstrap/baseline gate fails", "required_assertion": "error, not null success; no upload" },
+    { "id": "duplicate-wakeups", "design_observation": "repeated notification while compatible claim active", "required_assertion": "same run idempotent; different run cannot steal" },
+    { "id": "source-only", "design_observation": "generation remains42; approved source changes", "required_assertion": "new claim and distinct snapshot identity" },
+    { "id": "same-source-retry", "design_observation": "identical validated immutable candidate exists", "required_assertion": "reuse exact bytes; still require deploy gate" },
+    { "id": "stale-generation", "design_observation": "desired generation43 after claim42", "required_assertion": "supersede; zero stale uploads" },
+    { "id": "stale-source", "design_observation": "approved main differs from pinned source", "required_assertion": "supersede; no identity rebinding or upload" },
+    { "id": "expired-lease-fence", "design_observation": "claim ownership expired or fence replaced", "required_assertion": "deny transition and provider call" },
+    { "id": "differing-epoch", "design_observation": "current epoch differs from pinned claim", "required_assertion": "block; no cross-epoch numeric comparison" },
+    { "id": "total-empty", "design_observation": "complete bootstrapped inventory has all five zero counts", "required_assertion": "reject before activation/upload" },
+    { "id": "preupload-validation", "design_observation": "snapshot, artifact or source evidence invalid", "required_assertion": "zero provider calls" },
+    { "id": "api-outage", "design_observation": "manifest or authoritative ownership/freshness check unavailable", "required_assertion": "abort; preserve served live artifact; no local fallback" },
+    { "id": "known-provider-failure", "design_observation": "provider terminal failure verified", "required_assertion": "record failed outcome without reporting live" },
+    { "id": "unknown-provider-outcome", "design_observation": "upload timeout or process crash", "required_assertion": "retain lockout; no replacement upload" },
+    { "id": "lost-live-callback", "design_observation": "provider succeeded but completion callback lost", "required_assertion": "reconcile provider and production marker before changing live receipt" },
+    { "id": "reconciliation-refusal", "design_observation": "predecessor active or observations ambiguous/stale", "required_assertion": "deny takeover and upload" }
+  ]
+}

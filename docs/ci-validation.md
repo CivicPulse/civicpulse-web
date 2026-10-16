@@ -14,7 +14,8 @@ From a clean web checkout with locked dependencies installed using `npm ci`, run
 node scripts/validate-local-ci.mjs
 ```
 
-The command requires local public source selection, runs the CMS publish-review,
+The command accepts local or unset public source selection (unset defaults to
+local) and rejects explicit Supabase selection before starting steps. It runs the CMS publish-review,
 private-event, content-source, deterministic JSON and actual snapshot export/build
 fixtures, builds the normal static site, then checks private-event public output.
 Snapshot mocks use explicit fixture source identity and never call the hosted API.
@@ -30,6 +31,11 @@ permissions and no deployment environment. A future workflow must avoid
 PR-produced artifact into the production release lane. The local script is an
 orchestrator, not a sandbox or a credential-isolation boundary; the CI caller must
 enforce that separation. Nothing is installed in `.github/workflows` yet.
+The [inactive validation template](workflow-templates/validate.yml.example) and
+[verified source pins](workflow-templates/README.md) prepare that future lane;
+moving it into the executable workflow directory requires separate review and
+lead coordination. [Delivery scenarios](delivery-scenarios.md) are design inputs
+only while machine controls remain unfrozen.
 
 Browser automation is a separate lane: it needs a started local server and a
 supported browser installation, then the existing Playwright suites. This command
