@@ -140,6 +140,8 @@ vite.config.ts.timestamp-*
 
 # Astro and local visual verification
 .astro/
+.civicpulse/generated/
+src/data/mobilize-events.public.json
 .impeccable/review/
 .DS_Store
 .wrangler/

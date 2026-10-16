@@ -1,9 +1,11 @@
 import data from '../data/events.json';
 import mgdsa from '../data/mgdsa-events.json';
-import mobilize from '../data/mobilize-events.json';
+import mobilize from '../data/mobilize-events.public.json';
 import mgrls from '../data/mgrls-events.json';
 import bcsd from '../data/bcsd-events.json';
+import cms from '../data/cms-published.json';
 import { calendars, organizations } from './calendars';
+import { assertPublicPrivateEvent, publicIcsLocation } from './private-event-policy.mjs';
 export interface CommunityEvent {
   id: string; title: string; start: string; end: string; category: string;
   location: string; address: string; description: string; note: string;
@@ -17,7 +19,10 @@ export interface CommunityEvent {
 }
 // Fresh captured listings replace their earlier manual imports, retaining the same IDs.
 const refreshedMobilizeUrls = new Set(mobilize.map(event => event.sourceUrl));
-export const events: CommunityEvent[] = [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls, ...bcsd].map((item: CommunityEvent) => {
+const useCmsSnapshot = import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
+const sourceEvents: CommunityEvent[] = useCmsSnapshot ? cms.events as CommunityEvent[] : [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls, ...bcsd] as CommunityEvent[];
+export const events: CommunityEvent[] = sourceEvents.map((item: CommunityEvent) => {
+  assertPublicPrivateEvent(item);
   if (item.sample) throw new Error(`Sample events cannot be published: ${item.id}`);
   const organizationId = item.organizationId || (item.sourceGroup === 'mgdsa' ? 'mgdsa' : undefined);
   const inferred = calendars.find(calendar => 'sourceCalendar' in calendar && calendar.sourceCalendar === item.sourceCalendar) || calendars.find(calendar => calendar.organizationId === organizationId);
@@ -54,7 +59,10 @@ export function escapeICS(value: string) {
 function utc(value: string) { return new Date(value).toISOString().replaceAll(/[-:]/g, '').replace('.000', ''); }
 export function calendarFile(items: CommunityEvent[]) {
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CivicPulse//Macon-Bibb Events//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Macon-Bibb community events'];
-  for (const item of items) lines.push('BEGIN:VEVENT', `UID:${item.id}@civicpulse`, 'DTSTAMP:20261015T120000Z', item.allDay ? `DTSTART;VALUE=DATE:${item.start.slice(0, 10).replaceAll('-', '')}` : `DTSTART:${utc(item.start)}`, ...(item.endTimeUnknown ? [] : [item.allDay ? `DTEND;VALUE=DATE:${item.end.slice(0, 10).replaceAll('-', '')}` : `DTEND:${utc(item.end)}`]), `SUMMARY:${escapeICS(item.title)}`, `LOCATION:${escapeICS(item.address)}`, `DESCRIPTION:${escapeICS([item.note, item.description, item.organizer, item.sourceUrl].filter(Boolean).join('\n'))}`, ...(item.sourceUrl ? [`URL:${item.sourceUrl}`] : []), 'END:VEVENT');
+  for (const item of items) {
+    assertPublicPrivateEvent(item);
+    lines.push('BEGIN:VEVENT', `UID:${item.id}@civicpulse`, 'DTSTAMP:20261015T120000Z', item.allDay ? `DTSTART;VALUE=DATE:${item.start.slice(0, 10).replaceAll('-', '')}` : `DTSTART:${utc(item.start)}`, ...(item.endTimeUnknown ? [] : [item.allDay ? `DTEND;VALUE=DATE:${item.end.slice(0, 10).replaceAll('-', '')}` : `DTEND:${utc(item.end)}`]), `SUMMARY:${escapeICS(item.title)}`, `LOCATION:${publicIcsLocation(item)}`, `DESCRIPTION:${escapeICS([item.note, item.description, item.organizer, item.sourceUrl].filter(Boolean).join('\n'))}`, ...(item.sourceUrl ? [`URL:${item.sourceUrl}`] : []), 'END:VEVENT');
+  }
   lines.push('END:VCALENDAR');
   // RFC 5545 folds at 75 octets; continuation begins with a space.
   return lines.map(line => {

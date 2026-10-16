@@ -1,10 +1,9 @@
 import type { FeatureCollection, Point } from 'geojson';
 import { events, type CommunityEvent } from './events';
+import { isPublicMapEvent } from './private-event-policy.mjs';
 
 // Derive the map from calendar records; never guess a location.
-export const mappedEvents = events.filter(event => !event.sample &&
-  event.coordinates?.length === 2 && event.coordinates.every(Number.isFinite) &&
-  Math.abs(event.coordinates[0]) <= 180 && Math.abs(event.coordinates[1]) <= 90);
+export const mappedEvents = events.filter(event => isPublicMapEvent(event));
 
 interface VenueProperties {
   name: string;
