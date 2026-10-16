@@ -15,6 +15,8 @@ Run `node scripts/export-published-content.mjs` only with
 the local additive contract, reads manifest A, all five explicitly filtered record
 kinds and all declared stored layers, then reads manifest B. Bootstrap must be
 complete; explicit empty kinds and zero-feature event-derived layers are allowed.
+Stored-layer responses are bounded to the requested 500 features per page and
+the manifest's cumulative feature count before being appended.
 Decimal revisions and generations stay strings. Unknown payload fields are
 preserved for ordinary records. Private events are checked at the record
 serialization boundary before a snapshot file is written.

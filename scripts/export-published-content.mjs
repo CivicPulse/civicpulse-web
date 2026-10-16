@@ -139,6 +139,8 @@ async function fetchStoredLayer(api, layer) {
   for (;;) {
     const page = await api.layerGeoJSON(layer.id, { limit: LAYER_PAGE_SIZE, offset });
     validateFeatureCollection(page, layer.id);
+    if (page.features.length > LAYER_PAGE_SIZE) throw new Error(`Layer ${layer.id} page exceeds requested limit`);
+    if (features.length + page.features.length > layer.feature_count) throw new Error(`Layer ${layer.id} running count exceeds manifest`);
     features.push(...page.features);
     if (!Number.isSafeInteger(page.nextOffset) && page.nextOffset !== null) throw new Error(`Layer ${layer.id} has an invalid nextOffset`);
     if (page.nextOffset === null) break;

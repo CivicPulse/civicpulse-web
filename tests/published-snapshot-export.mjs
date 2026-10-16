@@ -163,6 +163,38 @@ test('export requires explicit Supabase mode and refuses incomplete bootstrap', 
   }), /bootstrap is incomplete/);
 });
 
+test('stored-layer pages enforce requested and cumulative bounds before accumulation', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  await exportPublishedSnapshot({ api: clientFor(fixture()), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  const pointerPath = path.join(dir, 'active-snapshot.json');
+  const pointerBefore = await readFile(pointerPath);
+  const feature = { type: 'Feature', geometry: null, properties: {} };
+  const page = (count, nextOffset) => ({ type: 'FeatureCollection', features: Array.from({ length: count }, () => feature), nextOffset });
+  const cases = [
+    { count: 501, pages: [page(501, null)], error: /page exceeds requested limit/ },
+    { count: 1001, pages: [page(500, 500), page(501, null)], error: /page exceeds requested limit/ },
+    { count: 500, pages: [page(500, 500), page(1, null)], error: /running count exceeds manifest/ },
+  ];
+  for (const [index, vector] of cases.entries()) {
+    const candidate = fixture({ generation: String(index + 2), layerMode: 'stored', storedLayerFeatures: [] });
+    candidate.manifest.layers[0].feature_count = vector.count;
+    const api = clientFor(candidate);
+    let reads = 0;
+    api.layerGeoJSON = async () => vector.pages[reads++];
+    await assert.rejects(exportPublishedSnapshot({ api, snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha }), vector.error);
+    assert.equal(reads, vector.pages.length);
+    assert.deepEqual(await readFile(pointerPath), pointerBefore);
+    assert.deepEqual((await readdir(dir)).filter(name => name.startsWith('.staging-')), []);
+  }
+  for (const [index, count] of [0, 500].entries()) {
+    const candidate = fixture({ generation: String(index + 10), layerMode: 'stored', storedLayerFeatures: Array.from({ length: count }, () => feature) });
+    candidate.manifest.layers[0].feature_count = count;
+    const result = await exportPublishedSnapshot({ api: clientFor(candidate), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+    assert.equal((await loadPinnedSnapshot(result.directory)).layers['event-locations'].features.length, count);
+  }
+});
+
 test('all-empty inventory is refused and preserves the last active snapshot', async t => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
