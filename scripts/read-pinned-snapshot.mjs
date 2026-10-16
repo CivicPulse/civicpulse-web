@@ -55,7 +55,7 @@ export async function loadPinnedSnapshot(snapshotPath, { allowStagingDirectory =
   try { manifest = JSON.parse(manifestBytes.toString('utf8')); }
   catch { throw new Error('Pinned snapshot manifest is not valid JSON'); }
   if (!isRecord(manifest) || manifest.schema_version !== 1 || manifest.source !== 'supabase' ||
-    manifest.bootstrap_complete !== true || manifest.exporter_version !== 1 ||
+    manifest.bootstrap_complete !== true || manifest.exporter_version !== 2 ||
     manifest.api_commit !== 'e9c9c621f43864f8fc90eaefacc4c0a223f50680' ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(manifest.dataset_epoch || '') ||
     !/^(0|[1-9][0-9]*)$/.test(manifest.generation || '') || !/^[0-9a-f]{40}$/i.test(manifest.source_sha || '') ||
@@ -66,7 +66,7 @@ export async function loadPinnedSnapshot(snapshotPath, { allowStagingDirectory =
   const unhashedManifest = { ...manifest };
   delete unhashedManifest.sha256;
   if (sha256(stableSerialize(unhashedManifest)) !== expectedManifestSha) throw new Error('Pinned snapshot manifest checksum mismatch');
-  const expectedName = `${manifest.dataset_epoch}-${manifest.generation}-${manifest.api_manifest_sha256}`;
+  const expectedName = `${manifest.dataset_epoch}-${manifest.generation}-${manifest.sha256}`;
   const basename = path.basename(root);
   if (allowStagingDirectory ? !/^\.staging-[0-9a-f-]{36}$/i.test(basename) : basename !== expectedName) {
     throw new Error('Pinned snapshot directory identity does not match its manifest');

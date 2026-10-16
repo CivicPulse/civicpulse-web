@@ -25,8 +25,15 @@ snapshot manifest last, renames the complete directory to an immutable name, the
 runs the same strict pinned-reader validation against that final directory before
 atomically replacing `active-snapshot.json`. A failed fetch, consistency check,
 serialization, final read or pointer replacement removes its owned staging/final
-directory and leaves the previous active pointer unchanged. A per-root exclusive lock refuses overlapping exports; stale
-locks and complete orphan generations fail closed and require operator recovery.
+directory and leaves the previous active pointer unchanged. Exporter version 2
+names immutable directories as epoch-generation-snapshotDigest. The digest binds
+the complete deterministic manifest excluding its top-level `sha256`, including
+source SHA, vendor provenance and file hashes. A new source release can therefore
+consume the same API generation. Existing candidates are reused only after strict
+reader validation, exact manifest comparison and byte-for-byte comparison of the
+complete regular-file inventory. Failure cleanup never deletes reused artifacts;
+corrupt or differing candidates fail closed. A per-root exclusive lock refuses
+overlapping exports; stale locks require operator recovery.
 The root and every snapshot input are checked for symlinks, paths stay within the
 pinned generation, and unlisted files are rejected. `node
 scripts/read-pinned-snapshot.mjs` validates the explicit `CIVICPULSE_SNAPSHOT_DIR`

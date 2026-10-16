@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { lstat, mkdir, open, readFile, realpath, rename, rm, stat, unlink, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, open, readFile, realpath, rename, rm, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCivicPulseClient } from '../src/vendor/civicpulse-api-publication-local/client.mjs';
@@ -196,8 +196,6 @@ async function activateCandidate({ snapshotsDir, api, vendorManifestSha256, sour
     if (!sameManifest(manifestA, manifestB)) throw new Error('Publication manifest changed during export');
 
     const apiManifestHash = sha256(stableSerialize(manifestA));
-    const finalName = `${manifestA.dataset_epoch}-${manifestA.generation}-${apiManifestHash}`;
-    const finalDir = path.join(snapshotsDir, finalName);
     const files = {};
     files['records.json'] = await writeJson(path.join(stageDir, 'records.json'), serializePublicRecords(records));
     await mkdir(path.join(stageDir, 'layers'));
@@ -215,7 +213,7 @@ async function activateCandidate({ snapshotsDir, api, vendorManifestSha256, sour
     const snapshotManifest = {
       schema_version: 1,
       source: 'supabase',
-      exporter_version: 1,
+      exporter_version: 2,
       api_commit: API_COMMIT,
       bootstrap_complete: true,
       api_vendor_manifest_sha256: vendorManifestSha256,
@@ -230,15 +228,33 @@ async function activateCandidate({ snapshotsDir, api, vendorManifestSha256, sour
       files,
     };
     snapshotManifest.sha256 = sha256(stableSerialize(snapshotManifest));
+    const finalName = `${manifestA.dataset_epoch}-${manifestA.generation}-${snapshotManifest.sha256}`;
+    const finalDir = path.join(snapshotsDir, finalName);
     await writeJson(path.join(stageDir, 'manifest.json'), snapshotManifest);
     await validateSnapshotImpl(stageDir, { allowStagingDirectory: true });
+    let finalExists = false;
     try {
-      await stat(finalDir);
-      throw new Error(`Immutable snapshot already exists: ${finalName}`);
+      await lstat(finalDir);
+      finalExists = true;
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
-    await renameImpl(stageDir, finalDir);
+    if (finalExists) {
+      const existing = await loadPinnedSnapshot(finalDir);
+      if (stableSerialize(existing.manifest) !== stableSerialize(snapshotManifest)) {
+        throw new Error('Existing immutable snapshot differs from the candidate');
+      }
+      const candidateFiles = ['manifest.json', 'records.json', ...Object.values(layerFiles).map(layer => layer.file)];
+      for (const file of candidateFiles) {
+        const [candidateBytes, existingBytes] = await Promise.all([
+          readFile(path.join(stageDir, file)), readFile(path.join(finalDir, file)),
+        ]);
+        if (!candidateBytes.equals(existingBytes)) throw new Error(`Existing immutable snapshot bytes differ: ${file}`);
+      }
+      await rm(stageDir, { recursive: true });
+    } else {
+      await renameImpl(stageDir, finalDir);
+    }
     const pointerTemp = path.join(snapshotsDir, `.active-${randomUUID()}.tmp`);
     try {
       // Validate the immutable final path with the exact pinned-reader rules a
@@ -250,7 +266,7 @@ async function activateCandidate({ snapshotsDir, api, vendorManifestSha256, sour
       return { directory: finalDir, pointer, manifest: snapshotManifest };
     } catch (error) {
       await rm(pointerTemp, { force: true }).catch(() => {});
-      await rm(finalDir, { recursive: true, force: true }).catch(() => {});
+      if (!finalExists) await rm(finalDir, { recursive: true, force: true }).catch(() => {});
       throw error;
     }
   } catch (error) {

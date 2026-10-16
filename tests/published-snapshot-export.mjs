@@ -209,7 +209,7 @@ test('pinned reader uses the exact directory and rejects symlink inputs', async 
   await assert.rejects(loadPinnedSnapshot(second.directory), /symlinks/);
 });
 
-test('export refuses symlink roots, busy locks, and never overwrites an orphan generation', async t => {
+test('export refuses symlink roots and busy locks, and validates orphan reuse', async t => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const realRoot = path.join(dir, 'real-root');
@@ -238,17 +238,56 @@ test('export refuses symlink roots, busy locks, and never overwrites an orphan g
     api: secondApi, snapshotsDir: realRoot, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha,
   });
   await writeFile(pointerPath, firstPointer);
-  await assert.rejects(exportPublishedSnapshot({
+  const reused = await exportPublishedSnapshot({
     api: secondApi, snapshotsDir: realRoot, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha,
-  }), /Immutable snapshot already exists/);
-  assert.deepEqual(await readFile(pointerPath), firstPointer);
+  });
+  assert.equal(reused.directory, second.directory);
+  assert.equal(JSON.parse(await readFile(pointerPath)).directory, path.basename(second.directory));
   await stat(first.directory);
   await stat(second.directory);
+
+  await writeFile(pointerPath, firstPointer);
+  await writeFile(path.join(second.directory, 'records.json'), 'corrupt orphan');
+  await assert.rejects(exportPublishedSnapshot({
+    api: secondApi, snapshotsDir: realRoot, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha,
+  }), /Pinned records checksum mismatch/);
+  assert.deepEqual(await readFile(pointerPath), firstPointer);
+  assert.equal(await readFile(path.join(second.directory, 'records.json'), 'utf8'), 'corrupt orphan');
 
   await writeFile(path.join(realRoot, '.export.lock'), 'stale lock');
   await assert.rejects(exportPublishedSnapshot({
     api: clientFor(fixture({ generation: '3' })), snapshotsDir: realRoot, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha,
   }), /Another snapshot export is active or requires lock recovery/);
+});
+
+test('same API generation supports source-only releases and exact retries without deleting reused artifacts', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const options = { api: clientFor(fixture()), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha };
+  const first = await exportPublishedSnapshot(options);
+  const firstBytes = await readFile(path.join(first.directory, 'manifest.json'));
+  const nextOptions = { ...options, sourceSha: 'c'.repeat(40) };
+  const second = await exportPublishedSnapshot(nextOptions);
+  assert.notEqual(second.directory, first.directory);
+  assert.equal(second.manifest.generation, first.manifest.generation);
+  assert.equal((await loadPinnedSnapshot(second.directory)).manifest.source_sha, nextOptions.sourceSha);
+  const secondBytes = await readFile(path.join(second.directory, 'manifest.json'));
+  const retry = await exportPublishedSnapshot(nextOptions);
+  assert.equal(retry.directory, second.directory);
+  assert.deepEqual(await readFile(path.join(first.directory, 'manifest.json')), firstBytes);
+  assert.deepEqual(await readFile(path.join(second.directory, 'manifest.json')), secondBytes);
+  const pointerPath = path.join(dir, 'active-snapshot.json');
+  const pointerBefore = await readFile(pointerPath);
+  await assert.rejects(exportPublishedSnapshot({ ...nextOptions, renameImpl: async () => { throw new Error('reused pointer failure'); } }), /reused pointer failure/);
+  assert.deepEqual(await readFile(pointerPath), pointerBefore);
+  assert.deepEqual(await readFile(path.join(second.directory, 'manifest.json')), secondBytes);
+  assert.deepEqual((await readdir(dir)).filter(name => name.startsWith('.staging-')), []);
+  const reformatted = `${JSON.stringify(JSON.parse(secondBytes), null, 2)}\n`;
+  await writeFile(path.join(second.directory, 'manifest.json'), reformatted);
+  await loadPinnedSnapshot(second.directory); // Semantically valid, but not byte-identical.
+  await assert.rejects(exportPublishedSnapshot(nextOptions), /Existing immutable snapshot bytes differ: manifest.json/);
+  assert.deepEqual(await readFile(pointerPath), pointerBefore);
+  assert.equal(await readFile(path.join(second.directory, 'manifest.json'), 'utf8'), reformatted);
 });
 
 test('prototype-named layer IDs survive export and pinned loading as own keys', async t => {
