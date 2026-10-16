@@ -386,10 +386,17 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
   await cp(repository, app, { recursive: true, filter(source) {
     const relative = path.relative(repository, source);
     if (!relative) return true;
+    if (relative === 'src/data/mobilize-events.public.json') return false;
     const first = relative.split(path.sep)[0];
     return !['.git', 'node_modules', 'dist', '.astro', '.civicpulse', '.impeccable'].includes(first) && !relative.startsWith('.env');
   } });
   await symlink(path.join(repository, 'node_modules'), path.join(app, 'node_modules'), 'dir');
+  // Static imports must resolve even when the selected CMS branch excludes
+  // local events. Generate this ignored input from reviewed bytes in the
+  // disposable app rather than inheriting a prepared shared checkout.
+  execFileSync(process.execPath, [path.join(app, 'scripts/prepare-public-mobilize.mjs')], {
+    cwd: app, env: { ...process.env, PUBLIC_CONTENT_SOURCE: 'local' }, stdio: 'pipe', timeout: 30_000,
+  });
   const materialized = await materializePinnedSnapshot(exported.directory, {
     dataDirectory: path.join(app, 'src/data'), publicDirectory: path.join(app, 'public'),
   });
