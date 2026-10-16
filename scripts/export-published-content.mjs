@@ -286,7 +286,7 @@ export async function exportPublishedSnapshot({
     throw new Error('Snapshot export requires the publication-v1 API client');
   }
   if (!/^[0-9a-f]{64}$/i.test(vendorManifestSha256 || '')) throw new Error('Snapshot export requires a pinned API vendor manifest hash');
-  if (!/^[0-9a-f]{40}$/.test(sourceSha || '')) throw new Error('Snapshot source SHA must be a full commit hash in lowercase');
+  if (typeof sourceSha !== 'string' || !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Snapshot source SHA must be a full commit hash in lowercase');
   const requestedDir = path.resolve(snapshotsDir);
   await assertNoSymlinkComponents(requestedDir);
   await mkdir(requestedDir, { recursive: true });

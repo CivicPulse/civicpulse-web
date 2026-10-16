@@ -277,6 +277,7 @@ test('export and pinned reader reject uppercase source SHA without normalization
   t.after(() => rm(dir, { recursive: true, force: true }));
   const root = path.join(dir, 'snapshots');
   const options = { api: clientFor(fixture()), snapshotsDir: root, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha };
+  await assert.rejects(exportPublishedSnapshot({ ...options, sourceSha: [sourceSha] }), /full commit hash in lowercase/);
   for (const invalidSha of [sourceSha.toUpperCase(), `B${sourceSha.slice(1)}`]) {
     await assert.rejects(exportPublishedSnapshot({ ...options, sourceSha: invalidSha }), /full commit hash in lowercase/);
     assert.throws(() => execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/export-published-content.mjs', import.meta.url))], {
