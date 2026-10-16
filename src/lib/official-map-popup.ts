@@ -1,9 +1,24 @@
+import { isElectionLayer } from '../data/election-districts';
 import type { Feature } from 'geojson';
 import { transitServicePeriod, transitFeedExpired } from '../data/education-transit';
 export function appendOfficialDetails(element: HTMLElement, feature: Feature, source: string) {
   const p = feature.properties || {};
   const add = (value: string) => { const line = document.createElement('p'); line.textContent = value; element.append(line); };
   const link = (label: string, url: string) => { const line = document.createElement('p'); const anchor = document.createElement('a'); anchor.textContent = label; anchor.href = url; line.append(anchor); element.append(line); };
+  if (isElectionLayer(source)) {
+    add(`Boundary version: ${p.boundaryVintage}.`);
+    add(String(p.planLabel));
+    if (p.includesBibb) add('This boundary includes part or all of Bibb County.');
+    if (p.electionNote) add(String(p.electionNote));
+    add(String(p.geometryNote));
+    if (p.webGeometryRepaired) add('A source polygon validity issue was repaired for web display. Original GIS export is retained.');
+    if (p.counties) add(`${p.counties.length} counties: ${p.counties.join(', ')}.`);
+    link(p.derived ? 'Official PSC district legislation' : 'Official Census GIS layer', String(p.sourceUrl));
+    if (p.derived) link('PSC published district map', 'https://psc.ga.gov/site/downloads/psc-2022-map-packet.pdf');
+    link('Georgia My Voter Page', 'https://mvp.sos.ga.gov/s/');
+    add(`Source: ${p.attribution}. Checked ${p.sourceChecked}. Saved boundary snapshot; confirm your voting assignment with the Secretary of State.`);
+    return;
+  }
   if (source === 'rapid-service-area') {
     add('On-demand rideshare service area. Both pickup and destination must be within active Rapid service zones.');
     add('Published boundary snapshot; confirm availability with MBCTA Rapid before booking.');

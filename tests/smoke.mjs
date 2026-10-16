@@ -50,7 +50,7 @@ try {
     await page.getByRole('searchbox', { name: 'Search places, precincts or addresses' }).fill('');
     await page.getByLabel('Polling places', { exact: false }).uncheck();
     await expect(page.locator('.place-row')).toHaveCount(31);
-    await expect(page.locator('.layer-control input')).toHaveCount(19);
+    await expect(page.locator('.layer-control input')).toHaveCount(24);
     await expect(page.locator('#map-choice')).toHaveCount(1);
     await page.getByLabel('Voting precincts', { exact: false }).uncheck();
     await expect(page.locator('.place-row')).toHaveCount(0);

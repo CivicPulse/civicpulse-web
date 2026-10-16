@@ -1,5 +1,6 @@
+import { electionLayerIds } from './election-districts';
 import snapshot from './education-transit.json';
-export const officialLayerIds = new Set(snapshot.datasets.map(source => source.id));
+export const officialLayerIds = new Set([...snapshot.datasets.map(source => source.id), ...electionLayerIds]);
 export const schoolTypeLayers = [
   { id: 'schools-elementary', name: 'Elementary schools', description: '22 locations · Elementary School in source', color: '#b45a16', icon: '/icons/schools/elementary.svg', kind: 'point' },
   { id: 'schools-middle', name: 'Middle schools', description: '6 locations · Middle School in source', color: '#2166ac', icon: '/icons/schools/middle.svg', kind: 'point' },
@@ -32,11 +33,13 @@ export const educationTransitMaps = [
 ];
 export const mapLayerGroups = [
   { id: 'community', name: 'Community & elections' },
+  { id: 'election-districts', name: 'State & federal election districts' },
   { id: 'schools', name: 'School locations by type' },
   { id: 'education', name: 'Attendance & school-board districts' },
   { id: 'transit', name: 'Transit routes & stops' },
 ];
 export function layerGroup(id: string) {
+  if (electionLayerIds.has(id)) return 'election-districts';
   return (id === 'schools' || id.startsWith('schools-')) ? 'schools' : id.startsWith('school') ? 'education' : (id.startsWith('transit-') || id === 'rapid-service-area') ? 'transit' : 'community';
 }
 export const schoolAttribution = '<a href="https://www.bcsdk12.net/about-us">Bibb County School District</a> · <a href="https://www.middlegeorgiarc.org/">Middle Georgia Regional Commission</a>';
@@ -44,6 +47,7 @@ export const rapidAttribution = '<a href="https://rapid.mbcta.net/">MBCTA Rapid 
 export const transitAttribution = '<a href="https://mbcta.net/routes/">Macon-Bibb County Transit Authority</a>';
 const colors = ['#2166ac', '#e66101', '#1b9e77', '#c51b7d', '#e6ab02', '#6a51a3', '#5a5a5a', '#8c510a', '#00a6ca'];
 export function officialFeatureColor(properties: Record<string, any>, source: string): string {
+  if (electionLayerIds.has(source)) return colors[(Number(properties.districtNumber || 1) - 1) % colors.length];
   if (source === 'rapid-service-area') return colors[(Number(properties.zoneNumber) - 1) % colors.length] || '#e6ab02';
   if (source === 'schools' || isSchoolPointLayer(source)) return schoolTypeLayers.find(layer => layer.id === source)?.color || '#b45a16';
   if (source === 'transit-stops') return '#26726b';

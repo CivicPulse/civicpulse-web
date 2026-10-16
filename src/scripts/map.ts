@@ -1,3 +1,4 @@
+import { isElectionLayer, electionAttribution } from '../data/election-districts';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { layers, maps, layerUrl } from '../data/maps';
@@ -198,6 +199,7 @@ function renderDirectory() {
     const title = document.createElement('strong'); title.textContent = place.title;
     const subtitle = document.createElement('small'); subtitle.textContent = `${config.name} · ${place.source === 'polling-places' ? recordStatus(place.feature) : place.source === 'event-locations' ? `${organizationFor(place.feature.properties?.organizationId)?.name || 'Community'} · ${place.feature.properties?.events?.length || 0} saved events` : 'Uploaded data'}`;
     if (officialLayerIds.has(place.source)) subtitle.textContent = isSchoolPointLayer(place.source) ? `${place.feature.properties?.schoolType || 'Facility'} · ${place.feature.properties?.recordStatus || 'Status not recorded'}` : place.source.startsWith('transit-') ? `${config.name} · Saved schedule` : `${config.name} · Published GIS`;
+    if (isElectionLayer(place.source)) subtitle.textContent = `${place.feature.properties?.planLabel}${place.feature.properties?.includesBibb ? ' · Includes Bibb County' : ''}${place.feature.properties?.derived ? ' · Derived GIS' : ''}`;
     if (place.source === 'recreation-centers') subtitle.textContent = `${place.feature.properties?.street} · Macon-Bibb Recreation`;
     if (place.source === 'libraries') subtitle.textContent = `MGRLS · ${place.feature.properties?.county}${place.feature.properties?.kind === 'book-locker' ? ' · Book locker' : ''}`;
     info.append(title, subtitle);
@@ -217,6 +219,7 @@ function sync(updateUrl = true, resetGroups = false) {
   const activeGroups = new Set<string>([...selected].map(layerGroup));
   for (const group of document.querySelectorAll<HTMLDetailsElement>('.layer-group')) { if (resetGroups || activeGroups.has(group.dataset.layerGroup || '')) group.open = activeGroups.has(group.dataset.layerGroup || ''); }
   byId('voting-downloads').hidden = currentMap.id !== 'voting';
+  byId('election-map-note').hidden = ![...selected].some(isElectionLayer);
   byId('rapid-map-note').hidden = !selected.has('rapid-service-area');
   byId('school-map-note').hidden = ![...selected].some(id => id.startsWith('school-zones-'));
   byId('transit-map-note').hidden = ![...selected].some(id => id.startsWith('transit-'));
@@ -227,7 +230,7 @@ function sync(updateUrl = true, resetGroups = false) {
   for (const [id, layer] of loaded) { if (selected.has(id)) layer.addTo(map); else map.removeLayer(layer); }
   for (const check of checks) { check.checked = selected.has(check.value); check.disabled = failures.includes(layers.find(layer => layer.id === check.value)!.name); }
   const active = [...selected].filter(id => loaded.has(id));
-  status.textContent = `${active.length} ${active.length === 1 ? 'layer' : 'layers'} visible · ${active.length ? active.includes('rapid-service-area') ? 'Rapid service areas & selected layers' : active.some(id => id.startsWith('transit-')) ? 'Scheduled transit & selected layers' : active.some(id => id.startsWith('school')) ? 'School data & selected layers' : active.includes('recreation-centers') ? 'Recreation centers & selected layers' : active.includes('libraries') ? 'MGRLS libraries & selected layers' : active.includes('event-locations') ? 'Event venues & selected layers' : active.includes('commission-districts') ? 'County districts & selected layers' : 'Uploaded voting data' : 'No layers selected'}`;
+  status.textContent = `${active.length} ${active.length === 1 ? 'layer' : 'layers'} visible · ${active.length ? active.some(isElectionLayer) ? 'State & federal districts' : active.includes('rapid-service-area') ? 'Rapid service areas & selected layers' : active.some(id => id.startsWith('transit-')) ? 'Scheduled transit & selected layers' : active.some(id => id.startsWith('school')) ? 'School data & selected layers' : active.includes('recreation-centers') ? 'Recreation centers & selected layers' : active.includes('libraries') ? 'MGRLS libraries & selected layers' : active.includes('event-locations') ? 'Event venues & selected layers' : active.includes('commission-districts') ? 'County districts & selected layers' : 'Uploaded voting data' : 'No layers selected'}`;
   if (updateUrl) {
     const next = new URL(location.href); next.searchParams.set('map', currentMap.id); next.searchParams.set('layers', [...selected].join(','));
     history.replaceState(null, '', next);
@@ -250,7 +253,7 @@ async function loadLayers(ids: string[]) {
       const data = await response.json() as FeatureCollection;
       if (data.type !== 'FeatureCollection' || !Array.isArray(data.features)) throw new Error('Invalid layer');
       const group = L.geoJSON(data, {
-        attribution: config.id === 'rapid-service-area' ? rapidAttribution : config.id.startsWith('school') ? schoolAttribution : config.id.startsWith('transit-') ? transitAttribution : config.id === 'recreation-centers' ? '<a href="https://www.maconbibb.us/recreation/recreation-center/">Macon-Bibb County Recreation</a> · <a href="https://geocoding.geo.census.gov/">US Census Geocoder</a>' : config.id === 'libraries' ? '<a href="https://bibblib.org/locations_hours.php">MGRLS</a>' : config.id === 'event-locations' ? '' : '<a href="https://www.maconbibb.us/">Macon-Bibb County Government IT GIS</a>',
+        attribution: isElectionLayer(config.id) ? electionAttribution(config.id) : config.id === 'rapid-service-area' ? rapidAttribution : config.id.startsWith('school') ? schoolAttribution : config.id.startsWith('transit-') ? transitAttribution : config.id === 'recreation-centers' ? '<a href="https://www.maconbibb.us/recreation/recreation-center/">Macon-Bibb County Recreation</a> · <a href="https://geocoding.geo.census.gov/">US Census Geocoder</a>' : config.id === 'libraries' ? '<a href="https://bibblib.org/locations_hours.php">MGRLS</a>' : config.id === 'event-locations' ? '' : '<a href="https://www.maconbibb.us/">Macon-Bibb County Government IT GIS</a>',
         pane: config.kind === 'line' ? 'routeLayers' : config.kind === 'point' ? 'pointLayers' : 'boundaryLayers',
         style: (feature) => {
           if (feature && officialLayerIds.has(config.id)) {

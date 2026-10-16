@@ -31,3 +31,17 @@ for (const source of official.datasets) {
   }
   console.log(`${source.id}: validated ${data.features.length} features`);
 }
+
+const electionCatalog = JSON.parse(await readFile(new URL('src/data/election-districts.json', root), 'utf8'));
+for (const source of electionCatalog.datasets) {
+  const data = JSON.parse(await readFile(new URL(`public${source.data}`, root), 'utf8'));
+  const ids = new Set();
+  if (data.type !== 'FeatureCollection' || data.features.length !== source.featureCount) throw new Error(`${source.id}: wrong district count`);
+  for (const feature of data.features) {
+    if (!feature.id || ids.has(feature.id) || !feature.properties.name || !feature.properties.attribution || !feature.properties.boundaryVintage || !['Polygon','MultiPolygon'].includes(feature.geometry?.type) || !validCoordinates(feature.geometry.coordinates)) throw new Error(`${source.id}: invalid district feature`);
+    ids.add(feature.id);
+    if (source.id === 'us-house-districts' && feature.properties.CDSESSN !== '120') throw new Error('Expected 120th Congress');
+    if (source.id.startsWith('state-') && feature.properties.LSY !== '2026') throw new Error('Expected 2026 state districts');
+  }
+  console.log(`${source.id}: validated ${data.features.length} features`);
+}

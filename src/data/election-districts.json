@@ -1,0 +1,74 @@
+{
+  "checked": "2026-10-15",
+  "datasets": [
+    {
+      "id": "us-house-districts",
+      "data": "/data/us-house-districts.geojson",
+      "featureCount": 14,
+      "bibbDistricts": [
+        "2",
+        "8"
+      ],
+      "repairedFeatures": [],
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0",
+      "vintage": "120th Congressional Districts; January 1, 2026 vintage"
+    },
+    {
+      "id": "state-house-districts",
+      "data": "/data/state-house-districts.geojson",
+      "featureCount": 180,
+      "bibbDistricts": [
+        "142",
+        "143",
+        "144",
+        "145",
+        "149"
+      ],
+      "repairedFeatures": [
+        "state-house-districts:13135",
+        "state-house-districts:13151",
+        "state-house-districts:13174"
+      ],
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2",
+      "vintage": "2026 State Legislative Districts - Lower;  January 1, 2026 vintage"
+    },
+    {
+      "id": "state-senate-districts",
+      "data": "/data/state-senate-districts.geojson",
+      "featureCount": 56,
+      "bibbDistricts": [
+        "18",
+        "25",
+        "26"
+      ],
+      "repairedFeatures": [
+        "state-senate-districts:13012",
+        "state-senate-districts:13016",
+        "state-senate-districts:13047"
+      ],
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/1",
+      "vintage": "2026 State Legislative Districts - Upper;  January 1, 2026 vintage"
+    },
+    {
+      "id": "psc-districts",
+      "data": "/data/psc-districts.geojson",
+      "featureCount": 5,
+      "bibbDistricts": [
+        "1"
+      ],
+      "repairedFeatures": [],
+      "sourceUrl": "https://gov.georgia.gov/document/2022-signed-legislation/sb-472/download",
+      "derived": true,
+      "vintage": "PSC-2022 county assignments"
+    },
+    {
+      "id": "georgia-statewide",
+      "data": "/data/georgia-statewide.geojson",
+      "featureCount": 1,
+      "bibbDistricts": [],
+      "repairedFeatures": [],
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0",
+      "vintage": "January 1, 2026"
+    }
+  ]
+}

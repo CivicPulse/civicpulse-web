@@ -1,0 +1,47 @@
+{
+  "checked": "2026-10-15",
+  "attribution": "U.S. Census Bureau, TIGERweb",
+  "sources": [
+    {
+      "id": "us-house-districts",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0",
+      "query": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0/query?where=STATE%3D%2713%27&outFields=%2A&outSR=4326&f=geojson&geometryPrecision=6&maxAllowableOffset=2e-05",
+      "sourceFeatureCount": 14,
+      "vintage": "120th Congressional Districts; January 1, 2026 vintage",
+      "file": "us-house-districts.geojson.gz"
+    },
+    {
+      "id": "state-senate-districts",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/1",
+      "query": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/1/query?where=STATE%3D%2713%27&outFields=%2A&outSR=4326&f=geojson&geometryPrecision=6&maxAllowableOffset=2e-05",
+      "sourceFeatureCount": 56,
+      "vintage": "2026 State Legislative Districts - Upper;  January 1, 2026 vintage",
+      "file": "state-senate-districts.geojson.gz"
+    },
+    {
+      "id": "state-house-districts",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2",
+      "query": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2713%27&outFields=%2A&outSR=4326&f=geojson&geometryPrecision=6&maxAllowableOffset=2e-05",
+      "sourceFeatureCount": 180,
+      "vintage": "2026 State Legislative Districts - Lower;  January 1, 2026 vintage",
+      "file": "state-house-districts.geojson.gz"
+    },
+    {
+      "id": "georgia-statewide",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0",
+      "query": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0/query?where=STATE%3D%2713%27&outFields=%2A&outSR=4326&f=geojson&geometryPrecision=6&maxAllowableOffset=2e-05",
+      "sourceFeatureCount": 1,
+      "vintage": "States (or statistically equivalent entities); January 1, 2026 vintage",
+      "file": "georgia-statewide.geojson.gz"
+    },
+    {
+      "id": "georgia-counties",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1",
+      "query": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=%2A&outSR=4326&f=geojson&geometryPrecision=6&maxAllowableOffset=2e-05",
+      "sourceFeatureCount": 159,
+      "vintage": "Counties (or statistically equivalent entities); January 1, 2026 vintage",
+      "file": "georgia-counties.geojson.gz"
+    }
+  ],
+  "geometryProcessing": "Official GIS query exports in WGS84, generalized by the source service at maxAllowableOffset 0.00002 degrees and geometryPrecision 6 for web display. No further simplification."
+}
