@@ -32,9 +32,13 @@ checkout and CI do not import files from the sibling API repository.
 ## Resident pages and refresh behavior
 
 Resident pages remain static and use local reviewed data by default. A successful
-CMS publish or withdrawal changes the API; residents see it only after a later
-successful static build and deployment. Until then the Admin UI reports “website
-update pending.” There is no automatic rebuild webhook or browser API dependency.
+CMS publish or withdrawal changes the API only. With the current local public
+source, another ordinary Pages build still uses the reviewed local snapshots;
+it does not ingest CMS content. The Admin UI explicitly says CMS-to-website refresh
+is not enabled in this build and resident pages are unchanged. A future CMS-source
+build requires a separately approved snapshot build and deployment; publishing
+does not start that process. No automatic or manual CMS refresh path is enabled
+for this preview. There is no automatic rebuild webhook or browser API dependency.
 See the [static publication architecture](static-publication-architecture.md)
 before changing refresh or snapshot behavior.
 

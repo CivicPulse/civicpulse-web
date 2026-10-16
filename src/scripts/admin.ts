@@ -1,5 +1,6 @@
 import { getCmsSupabase } from '../lib/cms-client';
 import { canPublishReviewedDraft, publishReviewedDraft } from '../lib/admin-publish-gate.mjs';
+import { cmsRefreshStatus } from '../lib/cms-refresh-status';
 import { ApiError, createCivicPulseClient } from '../vendor/civicpulse-api/client.mjs';
 import type { Tables } from '../vendor/civicpulse-api/database.types';
 
@@ -8,6 +9,7 @@ type Role = 'editor' | 'admin';
 type Draft = Tables<'cms_drafts'>;
 type Published = Tables<'content'>;
 type DraftSummary = { kind: string | null; id: string | null; revision: number | null; updated_at: string | null; name: string | null; title: string | null };
+const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
 const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const loginPanel = byId<HTMLElement>('login-panel');
 const workspace = byId<HTMLElement>('workspace');
@@ -290,7 +292,7 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
     expectedRevision = savedRevision;
     currentDraft = { kind, id, revision: savedRevision, payload: parsed as import('../vendor/civicpulse-api/database.types').Json, updated_at: new Date().toISOString(), updated_by: null };
     byId('editor-summary').textContent = `${String(parsed.name || parsed.title || recordId.value)} · ${editorKind.value}`;
-    showMessage(editorMessage, `Draft saved as revision ${savedRevision}. The live publication is unchanged until an administrator publishes it. Review the saved payload before publishing.`, 'success');
+    showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. Review the saved payload before publishing. Resident pages are unchanged. ${refreshStatus}`, 'success');
     conflictPanel.hidden = true;
     saving = false; updateSaveState();
     await refreshPublished(kind, id, editorRequest, sessionRequest);
@@ -357,7 +359,7 @@ byId<HTMLButtonElement>('publish').addEventListener('click', async () => {
       (publishKind, publishId, publishRevision) => api!.publish(publishKind as Kind, publishId, publishRevision));
     if (!invoked) return;
     if (editorRequest !== editorRun || sessionRequest !== authRun || role !== 'admin') return;
-    showMessage(editorMessage, 'Published to the Civic Pulse API. The resident website update is pending its next Cloudflare Pages build.', 'success');
+    showMessage(editorMessage, `Published to the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
     publishing = false; updateSaveState();
     await selectDraft(kind, id); await loadDrafts();
   } catch (error) {
@@ -372,7 +374,7 @@ byId<HTMLButtonElement>('withdraw').addEventListener('click', async () => {
   const button = byId<HTMLButtonElement>('withdraw'); button.disabled = true;
   try {
     await api.withdraw(editorKind.value as Kind, recordId.value, currentPublished.revision || 0);
-    showMessage(editorMessage, 'Publication withdrawn from the Civic Pulse API. The resident website update is pending its next Cloudflare Pages build.', 'success');
+    showMessage(editorMessage, `Publication withdrawn from the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
     await selectDraft(editorKind.value as Kind, recordId.value); await loadDrafts();
   } catch (error) { showMessage(editorMessage, userMessage(error), 'error'); }
   finally { updateSaveState(); }

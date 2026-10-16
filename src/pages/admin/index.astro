@@ -1,12 +1,16 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { cmsRefreshStatus } from '../../lib/cms-refresh-status';
+const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
 ---
 <Layout title="Content editor · Civic Pulse" description="Staff content editor for Civic Pulse.">
   <main id="main" class="admin-main">
     <div class="page-intro admin-intro">
       <h1>Content editor</h1>
-      <p>Review sourced community information and keep the public site current.</p>
+      <p>Review and edit sourced community information in the Civic Pulse API.</p>
     </div>
+
+    <p id="resident-refresh-note" class="notice">{refreshStatus}</p>
 
     <section id="config-notice" class="notice" role="status" hidden>
       <strong>CMS setup needed.</strong> The public Supabase URL and publishable key must be configured for this site.
@@ -92,7 +96,7 @@ import Layout from '../../layouts/Layout.astro';
         </section>
       </div>
       <aside id="publishing" class="notice publication-note" hidden>
-        <strong>Publishing changes the API snapshot.</strong> The resident website uses a static build-time snapshot. After publishing or withdrawal, the site needs a new Cloudflare Pages build. Until that build completes, the API is updated and the website update is pending.
+        <strong>Publishing changes API records only.</strong> {refreshStatus}
       </aside>
     </section>
   </main>
