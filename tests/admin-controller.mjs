@@ -214,6 +214,7 @@ test('genuinely newer same-session state stays locked until explicit complete-st
   const h = await harness(); await h.select(); await h.edit('Known saved value');
   h.state.getDraft = () => {
     h.state.draft = { ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Newer concurrent edit' } };
+    h.state.history.unshift({ action: 'save', revision: 3 });
     return structuredClone(h.state.draft);
   };
   await h.el('editor-form').event('submit'); await h.flush();
@@ -246,12 +247,27 @@ test('identity loss clears hidden conflict/history/receipt details and delayed r
 test('staged newer receipt preview is erased on identity loss and cannot later authorize adoption', async () => {
   for (const loss of ['signout', 'switch', 'revoke']) {
     const h = await harness(); await h.select(); await h.edit('Saved action');
-    h.state.getDraft = () => ({ ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Private newer preview fixture' } });
+    h.state.getDraft = () => { h.state.history.unshift({ action: 'save', revision: 3 }); return { ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Private newer preview fixture' } }; };
     await h.el('editor-form').event('submit'); await h.flush(); assert.ok(h.el('newer-preview').value.includes('Private newer preview fixture'));
     if (loss === 'signout') await h.auth(null);
     if (loss === 'switch') await h.auth({ user: { id: 'staff-b' } });
     if (loss === 'revoke') { h.state.role = () => Promise.resolve(null); await h.auth(); }
     assert.equal(h.el('newer-preview').value, ''); await h.el('review-newer').event('click');
     assert.equal(h.el('record-id').value, ''); assert.ok(!h.el('payload').value.includes('Private newer preview fixture')); assert.equal(h.state.calls.length, 1);
+  }
+});
+
+
+test('newer-state adoption requires receipt audit AND newer-state audit; absent/truncated/wrong-action history stays locked', async () => {
+  for (const history of [[], [{ action: 'save', revision: 1 }], [{ action: 'publish', revision: 2 }, { action: 'save', revision: 3 }], [{ action: 'save', revision: 2 }]]) {
+    const h = await harness(); await h.select(); await h.edit('Known action');
+    h.state.getDraft = () => ({ ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Newer' } });
+    h.state.getHistory = () => Promise.resolve({ data: history, error: null });
+    await h.el('editor-form').event('submit'); await h.flush();
+    assert.equal(h.el('newer-state').hidden, true); await h.el('review-newer').event('click');
+    assert.equal(h.el('save-draft').disabled, true); assert.equal(h.state.calls.length, 1);
+    h.state.getHistory = () => Promise.resolve({ data: [{ action: 'save', revision: 3 }, { action: 'save', revision: 2 }], error: null });
+    await h.el('reload-record').event('click'); await h.flush(); assert.equal(h.el('newer-state').hidden, false);
+    await h.el('review-newer').event('click'); assert.equal(h.el('save-draft').disabled, false); assert.equal(h.state.calls.length, 1);
   }
 });

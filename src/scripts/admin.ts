@@ -345,6 +345,11 @@ byId<HTMLButtonElement>('reload-record').addEventListener('click', () => { if (c
 byId<HTMLButtonElement>('review-newer').addEventListener('click', () => {
   const staged = newerState;
   if (!staged || staged.session !== authRun || staged.editor !== editorRun || !role || checkingRole || roleUnavailable || loadingRecord || saving || publishing) return;
+  if (!actionReceipt) return;
+  try {
+    assertRecordIdentity(actionReceipt.kind, actionReceipt.id, staged.draft, staged.published);
+    if (!inspectActionReceipt(actionReceipt, staged.draft, staged.published, staged.history).superseded) return;
+  } catch { return; }
   if (!confirm('Load the complete newer saved state for review? This replaces local edits but does not save or publish anything.')) return;
   renderHistory(staged.history);
   currentDraft = staged.draft; currentPublished = staged.published;

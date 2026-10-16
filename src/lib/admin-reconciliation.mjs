@@ -25,7 +25,10 @@ export function inspectActionReceipt(receipt, draft, published, history) {
   const inconsistent = [ [receipt.draft, draft], [receipt.published, published] ].some(([expected, row]) => expected && row && expected.revision === row.revision && canonicalJson(expected.payload) !== canonicalJson(row.payload));
   const draftAdvanced = draft.revision > receipt.draft.revision;
   const publicationAdvanced = !!published && published.revision > (receipt.published?.revision ?? receipt.previousPublishedRevision ?? 0);
-  const superseded = !inconsistent && draft.revision >= receipt.draft.revision && (draftAdvanced || publicationAdvanced);
+  const newerDraftAudited = !draftAdvanced || history.some(row => row.action === 'save' && row.revision === draft.revision);
+  const newerPublicationAudited = !publicationAdvanced || history.some(row => row.action === 'publish' && row.revision === published.revision);
+  // A truncated or stale activity page is never evidence that an action happened.
+  const superseded = auditMatches && newerDraftAudited && newerPublicationAudited && !inconsistent && draft.revision >= receipt.draft.revision && (draftAdvanced || publicationAdvanced);
   return {
     matches: false, superseded,
     message: superseded
