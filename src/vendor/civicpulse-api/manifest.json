@@ -1,0 +1,11 @@
+{
+  "contract": "civicpulse-content-api-v1",
+  "files": {
+    "client.mjs": {
+      "sha256": "6cfebd0df970052cff9577f40311f057129749337f6a722f7e4fa0cab3ed680f"
+    },
+    "database.types.ts": {
+      "sha256": "75d7d4869cbf92fc5ef51f22fef966f9fc2818e9f56730e29fc8444b0152ed14"
+    }
+  }
+}
