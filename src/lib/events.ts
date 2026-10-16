@@ -4,6 +4,7 @@ import mobilize from '../data/mobilize-events.public.json';
 import mgrls from '../data/mgrls-events.json';
 import bcsd from '../data/bcsd-events.json';
 import cms from '../data/cms-published.json';
+import { resolvePublicContentSource } from './content-source.mjs';
 import { calendars, organizations } from './calendars';
 import { assertPublicPrivateEvent, publicIcsLocation } from './private-event-policy.mjs';
 export interface CommunityEvent {
@@ -19,7 +20,7 @@ export interface CommunityEvent {
 }
 // Fresh captured listings replace their earlier manual imports, retaining the same IDs.
 const refreshedMobilizeUrls = new Set(mobilize.map(event => event.sourceUrl));
-const useCmsSnapshot = import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
+const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
 const sourceEvents: CommunityEvent[] = useCmsSnapshot ? cms.events as CommunityEvent[] : [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls, ...bcsd] as CommunityEvent[];
 export const events: CommunityEvent[] = sourceEvents.map((item: CommunityEvent) => {
   assertPublicPrivateEvent(item);

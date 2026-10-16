@@ -1,6 +1,9 @@
 import { electionLayers, electionMaps } from './election-districts';
 import { educationTransitLayers, educationTransitMaps } from './education-transit';
-export const layers = [
+import cms from './cms-published.json';
+import { resolvePublicContentSource } from '../lib/content-source.mjs';
+const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+const localLayers = [
   ...electionLayers,
   ...educationTransitLayers,
   { id: 'recreation-centers', name: 'Recreation centers', description: '11 county centers with published hours and amenities', color: '#26726b', kind: 'point' },
@@ -10,7 +13,7 @@ export const layers = [
   { id: 'polling-places', name: 'Polling places', description: 'Uploaded locations and record status', color: '#ae583b', kind: 'point' },
   { id: 'voting-precincts', name: 'Voting precincts', description: 'Uploaded precinct boundaries', color: '#3d704c', kind: 'area' },
 ] as const;
-export const maps = [
+const localMaps = [
   { id: 'voting', name: 'Polling places & precincts', description: 'Uploaded polling locations and voting precincts, including historical records.', layers: ['polling-places', 'voting-precincts'] },
   { id: 'commissioners', name: 'Find your commissioner', description: 'Explore the nine commission districts and commissioner details from Macon-Bibb County Government IT GIS.', layers: ['commission-districts'] },
   { id: 'events', name: 'Community events', description: 'Explore calendar events by venue. Online events and listings without coordinates remain in the calendar.', layers: ['event-locations'] },
@@ -18,9 +21,18 @@ export const maps = [
   { id: 'libraries', name: 'MGRLS libraries', description: 'Find Middle Georgia Regional Library locations, published opening hours and contact details. Book markers are colored by county.', layers: ['libraries'] },
   ...electionMaps,
   ...educationTransitMaps,
-];
+] as const;
+type CmsLayer = { id: string; name: string; description: string; color: string; kind: string; [key: string]: unknown };
+type MapLayer = { id: string; name: string; description: string; color: string; kind: string; [key: string]: unknown };
+type CmsMap = { id: string; name: string; description: string; layers: readonly string[]; [key: string]: unknown };
+const cmsLayers = cms.layers as unknown as CmsLayer[];
+export const cmsLayerIds = new Set(useCmsSnapshot ? cmsLayers.map(layer => layer.id) : []);
+export const layers: readonly MapLayer[] = useCmsSnapshot ? cmsLayers : localLayers;
+export const maps: readonly CmsMap[] = useCmsSnapshot ? cms.maps as unknown as CmsMap[] : localMaps;
 
 export function layerUrl(id: string) {
+  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id && layer.dynamic === 'events')) return '/data/calendar-events.geojson';
+  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id)) return `/data/cms/${encodeURIComponent(id)}.geojson`;
   const filename = id === 'commission-districts' ? 'commission_districts' : id === 'polling-places' ? 'polling_places' : id === 'voting-precincts' ? 'voting_precincts' : id === 'event-locations' ? 'calendar-events' : id;
   return `/data/${filename}.geojson`;
 }

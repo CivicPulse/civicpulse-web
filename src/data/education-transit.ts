@@ -1,6 +1,10 @@
 import { electionLayerIds } from './election-districts';
 import snapshot from './education-transit.json';
-export const officialLayerIds = new Set([...snapshot.datasets.map(source => source.id), ...electionLayerIds]);
+import cms from './cms-published.json';
+import { resolvePublicContentSource } from '../lib/content-source.mjs';
+const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+const cmsLayerIds = (cms.layers as unknown as { id: string }[]).map(layer => layer.id);
+export const officialLayerIds = new Set([...snapshot.datasets.map(source => source.id), ...electionLayerIds, ...(useCmsSnapshot ? cmsLayerIds : [])]);
 export const schoolTypeLayers = [
   { id: 'schools-elementary', name: 'Elementary schools', description: '22 locations · Elementary School in source', color: '#b45a16', icon: '/icons/schools/elementary.svg', kind: 'point' },
   { id: 'schools-middle', name: 'Middle schools', description: '6 locations · Middle School in source', color: '#2166ac', icon: '/icons/schools/middle.svg', kind: 'point' },
