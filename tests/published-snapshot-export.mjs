@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { exportPublishedSnapshot } from '../scripts/export-published-content.mjs';
 import { loadPinnedSnapshot } from '../scripts/read-pinned-snapshot.mjs';
 import { materializePinnedSnapshot } from '../scripts/materialize-pinned-snapshot.mjs';
+import { sha256, stableSerialize } from '../scripts/snapshot-integrity.mjs';
 import { PRIVATE_LOCATION } from '../src/lib/private-event-policy.mjs';
 import urlCorpus from './fixtures/cp-source-url-v1.json' with { type: 'json' };
 
@@ -150,6 +151,59 @@ test('a later layer failure removes staging and preserves the active snapshot', 
   assert.deepEqual(await readFile(pointerPath), pointerBefore);
   assert.deepEqual((await readdir(dir)).filter(name => name.startsWith('.staging-')), []);
   await stat(prior.directory);
+});
+
+test('nonfinite record and feature values fail at serialization before activation', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-json-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const prior = await exportPublishedSnapshot({ api: clientFor(fixture()), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  const pointer = await readFile(path.join(dir, 'active-snapshot.json'));
+  const priorFiles = await allFiles(prior.directory);
+  const priorBytes = await Promise.all(priorFiles.map(file => readFile(file)));
+  for (const extraNumber of [Infinity, -Infinity, NaN, JSON.parse('1e1000')]) {
+    const records = [row('organization', 'org', { nested: { extraNumber } })];
+    const candidate = { records, layers: new Map(), manifest: manifest({ generation: '2', records }) };
+    await assert.rejects(exportPublishedSnapshot({ api: clientFor(candidate), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha }), /Snapshot JSON requires finite numbers/);
+  }
+  const feature = { type: 'Feature', geometry: null, properties: { nested: JSON.parse('{"extraNumber":1e1000}') } };
+  const candidate = fixture({ generation: '2', layerMode: 'stored', storedLayerFeatures: [feature] });
+  candidate.manifest.layers[0].feature_count = 1;
+  await assert.rejects(exportPublishedSnapshot({ api: clientFor(candidate), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha }), /Snapshot JSON requires finite numbers/);
+  assert.deepEqual(await readFile(path.join(dir, 'active-snapshot.json')), pointer);
+  for (const [index, file] of priorFiles.entries()) assert.deepEqual(await readFile(file), priorBytes[index]);
+  assert.deepEqual((await readdir(dir)).filter(name => name.startsWith('.staging-')), []);
+  assert.deepEqual((await readdir(dir)).sort(), [path.basename(prior.directory), 'active-snapshot.json'].sort());
+
+  feature.properties.nested.extraNumber = 1.25;
+  const finite = await exportPublishedSnapshot({ api: clientFor(candidate), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  assert.equal((await loadPinnedSnapshot(finite.directory)).layers['event-locations'].features[0].properties.nested.extraNumber, 1.25);
+});
+
+test('reader rejects correctly hashed overflow literals in records and layers', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-json-reader-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const records = [row('organization', 'org', { extraNumber: 1 })];
+  const valid = await exportPublishedSnapshot({ api: clientFor({ records, layers: new Map(), manifest: manifest({ records }) }), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  const candidate = fixture({ generation: '2', layerMode: 'stored', storedLayerFeatures: [{ type: 'Feature', geometry: null, properties: { extraNumber: 1 } }] });
+  candidate.manifest.layers[0].feature_count = 1;
+  const layered = await exportPublishedSnapshot({ api: clientFor(candidate), snapshotsDir: dir, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  for (const [index, source] of [valid, layered].entries()) {
+    const copy = path.join(dir, `reader-candidate-${index}`);
+    await cp(source.directory, copy, { recursive: true });
+    const metadata = JSON.parse(await readFile(path.join(copy, 'manifest.json'), 'utf8'));
+    const relative = index === 0 ? 'records.json' : metadata.layer_files['event-locations'].file;
+    const bytes = (await readFile(path.join(copy, relative), 'utf8')).replace('"extraNumber":1', '"extraNumber":1e1000');
+    assert.match(bytes, /"extraNumber":1e1000/);
+    await writeFile(path.join(copy, relative), bytes);
+    const fileMeta = index === 0 ? metadata.files[relative] : metadata.layer_files['event-locations'];
+    fileMeta.sha256 = sha256(bytes); fileMeta.bytes = Buffer.byteLength(bytes);
+    delete metadata.sha256;
+    metadata.sha256 = sha256(stableSerialize(metadata));
+    await writeFile(path.join(copy, 'manifest.json'), `${stableSerialize(metadata)}\n`);
+    const final = path.join(dir, `${metadata.dataset_epoch}-${metadata.generation}-${metadata.sha256}`);
+    await fsRename(copy, final);
+    await assert.rejects(loadPinnedSnapshot(final), /Snapshot JSON requires finite numbers/);
+  }
 });
 
 test('export requires explicit Supabase mode and refuses incomplete bootstrap', async t => {

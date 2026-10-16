@@ -96,6 +96,7 @@ export async function loadPinnedSnapshot(snapshotPath, { allowStagingDirectory =
   let records;
   try { records = JSON.parse(recordBytes.toString('utf8')); }
   catch { throw new Error('Pinned records file is not valid JSON'); }
+  stableSerialize(records);
   if (!isRecord(records) || Object.keys(records).length !== CONTENT_KINDS.length ||
     CONTENT_KINDS.some(kind => !Array.isArray(records[kind]) || records[kind].length !== manifest.counts[kind])) {
     throw new Error('Pinned records do not match the manifest counts');
@@ -140,6 +141,7 @@ export async function loadPinnedSnapshot(snapshotPath, { allowStagingDirectory =
     let collection;
     try { collection = JSON.parse(bytes.toString('utf8')); }
     catch { throw new Error(`Pinned layer is not valid JSON: ${id}`); }
+    stableSerialize(collection);
     if (!isRecord(collection) || collection.type !== 'FeatureCollection' || !Array.isArray(collection.features) ||
       collection.features.length !== layerMeta.output_feature_count) throw new Error(`Pinned layer output count mismatch: ${id}`);
     const declared = manifest.layers.find(layer => layer.id === id);

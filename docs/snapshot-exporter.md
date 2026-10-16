@@ -20,6 +20,12 @@ the manifest's cumulative feature count before being appended.
 Decimal revisions and generations stay strings. Unknown payload fields are
 preserved for ordinary records. Private events are checked at the record
 serialization boundary before a snapshot file is written.
+Canonical serialization accepts only JSON data with finite numbers, dense arrays
+and plain/null-prototype objects. Unsupported values, sparse arrays, accessors,
+cycles and non-JSON instances are rejected without coercion or `toJSON` calls.
+The reader validates these semantics in every parsed manifest, records file and
+layer collection, including correctly hashed numeric-overflow literals. Valid
+version-2 encoding is unchanged.
 
 The exporter writes one generation into a unique staging directory under
 `.civicpulse/snapshots`, validates page membership and layer counts, writes the
