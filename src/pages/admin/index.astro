@@ -80,6 +80,7 @@ const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
             <p id="payload-help" class="sr-only">Edit the entire JSON record. The id value must match the Record ID field.</p>
             <div id="editor-message" class="form-message" role="status" aria-live="polite" hidden></div>
             <button id="reload-record" type="button" hidden>Reload saved record to check outcome</button>
+            <section id="newer-state" class="conflict-panel" hidden><h3>A newer saved state is available</h3><p>Your previous action succeeded. Review this complete state before replacing local edits. This does not save or publish.</p><label>Newer draft, publication and activity<textarea id="newer-preview" readonly></textarea></label><button id="review-newer" type="button">Review newer saved state</button></section>
             <div id="conflict-panel" class="conflict-panel" role="alert" hidden>
               <h3>Someone saved a newer revision</h3>
               <p>Your text is still here. Compare it with the latest saved revision, then choose how to continue.</p>

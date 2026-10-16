@@ -1,5 +1,6 @@
 import { getCmsSupabase } from '../lib/cms-client';
 import { canPublishReviewedDraft, publishReviewedDraft } from '../lib/admin-publish-gate.mjs';
+import { assertRecordIdentity, inspectActionReceipt, makeActionReceipt } from '../lib/admin-reconciliation.mjs';
 import { changesEditorSession, deferredAuthRefresh } from '../lib/admin-session.mjs';
 import { CmsOutcomeUnknown, withCmsDeadline } from '../lib/admin-request.mjs';
 import { cmsRefreshStatus } from '../lib/cms-refresh-status';
@@ -54,6 +55,8 @@ let activeUserId: string | null = null;
 let outcomeUnknown = false;
 let loadingRecord = false;
 let roleUnavailable = false;
+let actionReceipt: ReturnType<typeof makeActionReceipt> | null = null;
+let newerState: { draft: Draft; published: Published | null; history: Tables<'cms_history'>[]; session: number; editor: number } | null = null;
 
 function showMessage(target: HTMLElement, message: string, kind: 'error' | 'success' | 'info' = 'info') {
   target.textContent = message;
@@ -110,7 +113,15 @@ function clearEditor() {
   byId<HTMLButtonElement>('publish').hidden = true;
   byId<HTMLButtonElement>('withdraw').hidden = true;
   byId<HTMLElement>('history-panel').hidden = true;
-  conflictPanel.hidden = true; hideMessage(editorMessage);
+  conflictPanel.hidden = true;
+  byId<HTMLTextAreaElement>('conflict-local').value = '';
+  byId<HTMLTextAreaElement>('conflict-latest').value = '';
+  delete conflictPanel.dataset.revision;
+  byId('history-list').replaceChildren();
+  byId('editor-summary').textContent = 'Select a record or start a new draft.';
+  actionReceipt = null; newerState = null;
+  byId<HTMLTextAreaElement>('newer-preview').value = ''; byId('newer-state').hidden = true;
+  hideMessage(editorMessage);
   updateSaveState();
 }
 function updateSaveState() {
@@ -170,15 +181,16 @@ async function loadDrafts(append = false) {
     if (sessionRequest === authRun && roleRequest === role) byId('record-status').textContent = userMessage(error);
   } finally { if (sessionRequest === authRun) loadingList = false; }
 }
-async function loadHistory(kind: Kind, id: string) {
-  const editorRequest = editorRun; const sessionRequest = authRun;
-  const panel = byId<HTMLElement>('history-panel'); const list = byId<HTMLOListElement>('history-list');
-  list.replaceChildren(); panel.hidden = false;
+async function readHistory(kind: Kind, id: string) {
   const { data, error } = await withCmsDeadline(supabase!.from('cms_history').select('action,actor,occurred_at,revision,sequence')
     .eq('kind', kind).eq('id', id).order('sequence', { ascending: false }).limit(10));
   if (error) throw error;
-  if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-  for (const row of data || []) {
+  return data || [];
+}
+function renderHistory(rows: Tables<'cms_history'>[]) {
+  const list = byId<HTMLOListElement>('history-list');
+  list.replaceChildren(); byId('history-panel').hidden = false;
+  for (const row of rows) {
     const item = document.createElement('li');
     const when = row.occurred_at ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(row.occurred_at)) : 'Time unavailable';
     item.textContent = `${row.action || 'Changed'} · revision ${row.revision ?? '—'} · ${when}`;
@@ -190,9 +202,9 @@ async function selectDraft(kind: Kind, id: string) {
   if (checkingRole || roleUnavailable || !role || saving || publishing) return false;
   const editorRequest = ++editorRun;
   const sessionRequest = authRun;
-  // Keep the old text, baseline and unknown-outcome lock until BOTH authoritative
+  // Keep the old text, baseline and unknown-outcome lock until all authoritative
   // reads finish. No partial read is allowed to enable a write.
-  loadingRecord = true; updateSaveState();
+  loadingRecord = true; newerState = null; byId('newer-state').hidden = true; byId<HTMLTextAreaElement>('newer-preview').value = ''; updateSaveState();
   showMessage(editorMessage, outcomeUnknown ? 'Checking the saved draft and publication. No changes will be sent.' : 'Loading saved record…');
   const isCurrent = () => editorRequest === editorRun && sessionRequest === authRun;
   try {
@@ -202,8 +214,23 @@ async function selectDraft(kind: Kind, id: string) {
     const { data, error } = await withCmsDeadline(supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle());
     if (!isCurrent()) return false;
     if (error) throw error;
-    await loadHistory(kind, id);
+    assertRecordIdentity(kind, id, row, data);
+    const history = await readHistory(kind, id);
     if (!isCurrent()) return false;
+    if (actionReceipt) {
+      if (actionReceipt.kind !== kind || actionReceipt.id !== id) throw new Error('Reconciliation must target the record of the confirmed action.');
+      const result = inspectActionReceipt(actionReceipt, row, data, history);
+      if (!result.matches) {
+        if (result.superseded) {
+          newerState = { draft: row, published: data as Published | null, history, session: sessionRequest, editor: editorRequest };
+          byId<HTMLTextAreaElement>('newer-preview').value = JSON.stringify({ draft: row, published: data, history }, null, 2);
+          byId('newer-state').hidden = false;
+        }
+        throw new Error(result.message);
+      }
+    }
+    actionReceipt = null; newerState = null; byId('newer-state').hidden = true; byId<HTMLTextAreaElement>('newer-preview').value = '';
+    renderHistory(history);
     currentDraft = row; expectedRevision = row.revision || 0;
     currentPublished = data as Published | null;
     editorKind.value = kind; editorKind.disabled = true;
@@ -234,6 +261,7 @@ async function refreshRole(session: { user: { id: string; email?: string } } | n
   activeUserId = nextUserId;
   if (reset) {
     ++authRun; role = null; clearEditor(); clearRecordList(); loadingList = false;
+    byId('staff-email').textContent = ''; byId('role-label').textContent = '';
   }
   checkingRole = !!session; if (reset) roleUnavailable = false; updateSaveState();
   // Revalidate membership on same-user events without replacing their editor.
@@ -248,7 +276,7 @@ async function refreshRole(session: { user: { id: string; email?: string } } | n
     } catch (error) {
       if (run !== roleRun) return;
       const revoked = (error as { code?: string })?.code === '42501';
-      if (revoked) { ++authRun; role = null; clearEditor(); clearRecordList(); }
+      if (revoked) { ++authRun; role = null; clearEditor(); clearRecordList(); byId('staff-email').textContent = ''; byId('role-label').textContent = ''; }
       roleUnavailable = true; workspace.hidden = true; accessPanel.hidden = false;
       byId('access-heading').textContent = revoked ? 'CMS access is no longer available' : 'Staff access could not be checked';
       byId('access-message').textContent = revoked ? userMessage(error) : 'Your unsaved text is kept in this tab. Editing is paused until your staff access can be checked again. No changes have been retried.';
@@ -314,6 +342,22 @@ byId<HTMLButtonElement>('load-more').addEventListener('click', () => void loadDr
 byId<HTMLButtonElement>('new-draft').addEventListener('click', () => { clearEditor(); editorKind.value = kindFilter.value; recordId.focus(); });
 editorKind.addEventListener('change', () => { kindFilter.value = editorKind.value; clearRecordList(); void loadDrafts(); });
 byId<HTMLButtonElement>('reload-record').addEventListener('click', () => { if (confirm('Reload the saved record? Unsaved edits will be replaced. Check the revision before making another change.')) void selectDraft(editorKind.value as Kind, recordId.value.trim()); });
+byId<HTMLButtonElement>('review-newer').addEventListener('click', () => {
+  const staged = newerState;
+  if (!staged || staged.session !== authRun || staged.editor !== editorRun || !role || checkingRole || roleUnavailable || loadingRecord || saving || publishing) return;
+  if (!confirm('Load the complete newer saved state for review? This replaces local edits but does not save or publish anything.')) return;
+  renderHistory(staged.history);
+  currentDraft = staged.draft; currentPublished = staged.published;
+  expectedRevision = staged.draft.revision || 0;
+  editorKind.value = staged.draft.kind || ''; recordId.value = staged.draft.id || '';
+  payloadInput.value = JSON.stringify(staged.draft.payload, null, 2);
+  byId('editor-summary').textContent = `${labelFor(staged.draft)} · ${staged.draft.kind}`;
+  byId('revision-label').textContent = `Draft r${expectedRevision} · ${currentPublished ? `Published r${currentPublished.revision}` : 'Not published'}`;
+  actionReceipt = null; newerState = null; outcomeUnknown = false; conflictPanel.hidden = true;
+  byId('newer-state').hidden = true; byId<HTMLTextAreaElement>('newer-preview').value = '';
+  showMessage(editorMessage, 'Loaded the newer saved state for review. No action has been repeated. Review all fields and metadata before saving or publishing.', 'info');
+  updateSaveState();
+});
 recordId.addEventListener('input', updateSaveState); payloadInput.addEventListener('input', updateSaveState);
 
 byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
@@ -331,11 +375,12 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
     currentDraft = { kind, id, revision: savedRevision, payload: parsed as import('../vendor/civicpulse-api/database.types').Json, updated_at: new Date().toISOString(), updated_by: null };
     // The mutation result is known. Keep writes locked until the following
     // draft/publication/history reads reconcile that result; never replay it.
+    actionReceipt = makeActionReceipt('save', kind, id, currentDraft, currentPublished);
     outcomeUnknown = true; saving = false; updateSaveState();
     const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
     const loaded = await refreshed;
     if (receiptRun !== editorRun || sessionRequest !== authRun) return;
-    showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. ${loaded ? 'Review the saved payload before publishing.' : 'Saved-state refresh failed. Do not repeat this save; reload the saved record to check its state.'} Resident pages are unchanged. ${refreshStatus}`, loaded ? 'success' : 'info');
+    showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. ${loaded ? 'Review the saved payload before publishing.' : `Saved-state refresh failed. Do not repeat this save. ${byId('editor-message').textContent}`} Resident pages are unchanged. ${refreshStatus}`, loaded ? 'success' : 'info');
     if (loaded) await loadDrafts();
   } catch (error) {
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
@@ -398,7 +443,8 @@ byId<HTMLButtonElement>('publish').addEventListener('click', async () => {
       (publishKind, publishId, publishRevision) => api!.publish(publishKind as Kind, publishId, publishRevision)));
     if (!invoked) return;
     if (editorRequest !== editorRun || sessionRequest !== authRun || role !== 'admin') return;
-    publishing = false; updateSaveState();
+    actionReceipt = makeActionReceipt('publish', kind, id, publishState.draft, publishState.draft);
+    outcomeUnknown = true; publishing = false; updateSaveState();
     const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
     const loaded = await refreshed;
     if (!loaded && sessionRequest === authRun && receiptRun === editorRun) { outcomeUnknown = true; updateSaveState(); }
@@ -419,7 +465,8 @@ byId<HTMLButtonElement>('withdraw').addEventListener('click', async () => {
   try {
     await withCmsDeadline(api.withdraw(kind, id, revision));
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-    publishing = false;
+    actionReceipt = makeActionReceipt('withdraw', kind, id, currentDraft, null, revision);
+    outcomeUnknown = true; publishing = false;
     const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
     const loaded = await refreshed;
     if (!loaded && sessionRequest === authRun && receiptRun === editorRun) { outcomeUnknown = true; updateSaveState(); }

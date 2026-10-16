@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
+import * as reconciliation from '../src/lib/admin-reconciliation.mjs';
 import * as gate from '../src/lib/admin-publish-gate.mjs';
 import * as session from '../src/lib/admin-session.mjs';
 import * as request from '../src/lib/admin-request.mjs';
@@ -34,18 +35,19 @@ async function harness() {
   const clearTimeout = id => timers.delete(id);
   const user = { user: { id: 'staff-a', email: 'synthetic@example.org' } };
   const payload = { id: 'qa-org', name: 'Original', unknown: { evidence: ['retain', { value: 3 }] } };
-  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, save: null, publish: null, withdraw: null, calls: [], auth: null };
+  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, history: [], save: null, publish: null, withdraw: null, calls: [], auth: null };
   const api = {
     role: () => state.role(),
     getDraft: async () => state.getDraft ? state.getDraft() : structuredClone(state.draft),
-    saveDraft: async (...args) => { state.calls.push(['save', ...args]); if (state.save) return state.save(...args); const [kind, value, revision] = args; if (revision !== state.draft.revision) throw new ApiError(409, { code: '40001', message: 'Revision conflict' }); state.draft = { kind, id: value.id, revision: revision + 1, payload: structuredClone(value) }; return revision + 1; },
-    publish: async (...args) => { state.calls.push(['publish', ...args]); if (state.publish) return state.publish(...args); state.published = structuredClone(state.draft); },
-    withdraw: async (...args) => { state.calls.push(['withdraw', ...args]); if (state.withdraw) return state.withdraw(...args); state.published = null; },
+    saveDraft: async (...args) => { state.calls.push(['save', ...args]); if (state.save) return state.save(...args); const [kind, value, revision] = args; if (revision !== state.draft.revision) throw new ApiError(409, { code: '40001', message: 'Revision conflict' }); state.draft = { kind, id: value.id, revision: revision + 1, payload: structuredClone(value) }; state.history.unshift({ action: 'save', revision: revision + 1 }); return revision + 1; },
+    publish: async (...args) => { state.calls.push(['publish', ...args]); if (state.publish) return state.publish(...args); state.published = structuredClone(state.draft); state.history.unshift({ action: 'publish', revision: state.draft.revision }); },
+    withdraw: async (...args) => { state.calls.push(['withdraw', ...args]); if (state.withdraw) return state.withdraw(...args); state.history.unshift({ action: 'withdraw', revision: state.published.revision }); state.published = null; },
   };
-  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: [], error: null }) }; return query; } };
+  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: structuredClone(state.history), error: null }) }; return query; } };
   const modules = {
     '../lib/cms-client': { getCmsSupabase: () => supabase },
     '../lib/admin-publish-gate.mjs': gate,
+    '../lib/admin-reconciliation.mjs': reconciliation,
     '../lib/admin-session.mjs': { ...session, deferredAuthRefresh: refresh => session.deferredAuthRefresh(refresh, work => queueMicrotask(work)) },
     '../lib/admin-request.mjs': { ...request, withCmsDeadline: promise => request.withCmsDeadline(promise, 20, { setTimeout, clearTimeout }) },
     '../lib/cms-refresh-status': { cmsRefreshStatus: () => 'CMS-to-website refresh is not enabled in this build.' },
@@ -186,4 +188,70 @@ test('known-save follow-up read arriving after user change cannot restore its pa
   await h.auth({ user: { id: 'staff-b' } }); pending.resolve({ data: [], error: null }); await save;
   assert.equal(h.el('record-id').value, ''); assert.ok(!h.el('payload').value.includes('Former user save'));
   assert.ok(!h.el('editor-message').textContent.includes('revision 2')); assert.equal(h.state.calls.length, 1);
+});
+
+test('same-session stale-success reads cannot unlock known Save/Publish/Withdraw receipts', async () => {
+  const cases = ['save-old', 'save-wrong-payload', 'save-missing-history', 'publish-old', 'publish-wrong-payload', 'withdraw-old'];
+  for (const scenario of cases) {
+    const h = await harness(); if (scenario === 'withdraw-old') h.state.published = structuredClone(h.state.draft);
+    await h.select(); const original = structuredClone(h.state.draft); const priorPublication = structuredClone(h.state.published);
+    if (scenario === 'save-old') h.state.getDraft = () => structuredClone(original);
+    if (scenario === 'save-wrong-payload') h.state.getDraft = () => ({ ...h.state.draft, payload: { ...h.state.draft.payload, name: 'Wrong at same revision' } });
+    if (scenario === 'save-missing-history') h.state.getHistory = () => Promise.resolve({ data: [], error: null });
+    if (scenario === 'publish-old') h.state.getPublished = () => Promise.resolve({ data: null, error: null });
+    if (scenario === 'publish-wrong-payload') h.state.getPublished = () => Promise.resolve({ data: { ...h.state.published, payload: { ...h.state.published.payload, name: 'Wrong at same revision' } }, error: null });
+    if (scenario === 'withdraw-old') h.state.getPublished = () => Promise.resolve({ data: priorPublication, error: null });
+    if (scenario.startsWith('save')) { await h.edit('Known saved value'); await h.el('editor-form').event('submit'); }
+    else await h.el(scenario.startsWith('publish') ? 'publish' : 'withdraw').event('click');
+    await h.flush(); assert.equal(h.el('save-draft').disabled, true, scenario); assert.equal(h.el('publish').disabled, true, scenario); assert.equal(h.el('withdraw').disabled, true, scenario);
+    await h.el('editor-form').event('submit'); await h.el('publish').event('click'); await h.el('withdraw').event('click'); assert.equal(h.state.calls.length, 1, scenario);
+    h.state.getDraft = h.state.getPublished = h.state.getHistory = null;
+    await h.el('reload-record').event('click'); await h.flush(); assert.equal(h.el('save-draft').disabled, false, scenario); assert.equal(h.state.calls.length, 1);
+  }
+});
+
+test('genuinely newer same-session state stays locked until explicit complete-state review, without replay', async () => {
+  const h = await harness(); await h.select(); await h.edit('Known saved value');
+  h.state.getDraft = () => {
+    h.state.draft = { ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Newer concurrent edit' } };
+    return structuredClone(h.state.draft);
+  };
+  await h.el('editor-form').event('submit'); await h.flush();
+  assert.equal(h.el('save-draft').disabled, true); assert.equal(h.el('newer-state').hidden, false);
+  assert.equal(JSON.parse(h.el('newer-preview').value).draft.revision, 3); assert.equal(h.state.calls.length, 1);
+  await h.el('review-newer').event('click'); assert.equal(h.el('save-draft').disabled, false);
+  assert.equal(JSON.parse(h.el('payload').value).name, 'Newer concurrent edit'); assert.equal(h.state.calls.length, 1);
+  assert.match(h.el('editor-message').textContent, /No action has been repeated/);
+});
+
+test('identity loss clears hidden conflict/history/receipt details and delayed reads cannot repopulate them', async () => {
+  for (const loss of ['signout', 'switch', 'revoke']) {
+    const h = await harness(); h.state.history = [{ action: 'save', revision: 1 }]; await h.select(); await h.edit('Sensitive local conflict');
+    h.state.draft = { ...h.state.draft, revision: 2, payload: { ...h.state.draft.payload, name: 'Sensitive server conflict' } };
+    await h.el('editor-form').event('submit'); await h.flush();
+    assert.ok(h.el('conflict-local').value.includes('Sensitive')); assert.ok(h.el('conflict-latest').value.includes('Sensitive')); assert.ok(h.el('history-list').children.length);
+    const pending = deferred(); h.state.getDraft = () => pending.promise;
+    // A pending read retains captured data until identity invalidation; it must never restore DOM.
+    const recordButtonRead = h.el('reload-record').event('click'); await h.flush();
+    if (loss === 'signout') await h.auth(null);
+    if (loss === 'switch') await h.auth({ user: { id: 'staff-b' } });
+    if (loss === 'revoke') { h.state.role = () => Promise.resolve(null); await h.auth(); }
+    pending.resolve(h.state.draft); await recordButtonRead; await h.flush();
+    for (const id of ['conflict-local', 'conflict-latest', 'newer-preview', 'record-id']) assert.equal(h.el(id).value, '', `${loss}/${id}`);
+    assert.equal(h.el('conflict-panel').dataset.revision, undefined); assert.equal(h.el('history-list').children.length, 0);
+    assert.ok(!h.el('payload').value.includes('Sensitive')); assert.ok(!h.el('editor-message').textContent.includes('Sensitive'));
+  }
+});
+
+test('staged newer receipt preview is erased on identity loss and cannot later authorize adoption', async () => {
+  for (const loss of ['signout', 'switch', 'revoke']) {
+    const h = await harness(); await h.select(); await h.edit('Saved action');
+    h.state.getDraft = () => ({ ...h.state.draft, revision: 3, payload: { ...h.state.draft.payload, name: 'Private newer preview fixture' } });
+    await h.el('editor-form').event('submit'); await h.flush(); assert.ok(h.el('newer-preview').value.includes('Private newer preview fixture'));
+    if (loss === 'signout') await h.auth(null);
+    if (loss === 'switch') await h.auth({ user: { id: 'staff-b' } });
+    if (loss === 'revoke') { h.state.role = () => Promise.resolve(null); await h.auth(); }
+    assert.equal(h.el('newer-preview').value, ''); await h.el('review-newer').event('click');
+    assert.equal(h.el('record-id').value, ''); assert.ok(!h.el('payload').value.includes('Private newer preview fixture')); assert.equal(h.state.calls.length, 1);
+  }
 });
