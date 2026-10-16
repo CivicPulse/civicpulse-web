@@ -216,6 +216,7 @@ function sync(updateUrl = true, resetGroups = false) {
   byId('map-description').textContent = currentMap.description;
   const activeGroups = new Set<string>([...selected].map(layerGroup));
   for (const group of document.querySelectorAll<HTMLDetailsElement>('.layer-group')) { if (resetGroups || activeGroups.has(group.dataset.layerGroup || '')) group.open = activeGroups.has(group.dataset.layerGroup || ''); }
+  byId('voting-downloads').hidden = currentMap.id !== 'voting';
   byId('rapid-map-note').hidden = !selected.has('rapid-service-area');
   byId('school-map-note').hidden = ![...selected].some(id => id.startsWith('school-zones-'));
   byId('transit-map-note').hidden = ![...selected].some(id => id.startsWith('transit-'));

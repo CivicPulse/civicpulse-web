@@ -5,12 +5,15 @@ const mgdsaMonthCount = month => mgdsa.filter(event => event.start.startsWith(mo
 const mgrls = JSON.parse(await readFile(new URL('../src/data/mgrls-events.json', import.meta.url), 'utf8'));
 const mobilize = JSON.parse(await readFile(new URL('../src/data/mobilize-events.json', import.meta.url), 'utf8'));
 const baseEvents = JSON.parse(await readFile(new URL('../src/data/events.json', import.meta.url), 'utf8'));
+const bcsd = JSON.parse(await readFile(new URL('../src/data/bcsd-events.json', import.meta.url), 'utf8'));
 const refreshedUrls = new Set(mobilize.map(event => event.sourceUrl));
-const allEvents = [...baseEvents.filter(event => !refreshedUrls.has(event.sourceUrl)), ...mgdsa, ...mobilize, ...mgrls];
-const monthEvents = month => allEvents.filter(event => event.start.startsWith(month));
+const allEvents = [...baseEvents.filter(event => !refreshedUrls.has(event.sourceUrl)), ...mgdsa, ...mobilize, ...mgrls, ...bcsd];
+const lastDate = event => new Intl.DateTimeFormat('en-CA', {timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Math.max(Date.parse(event.start),Date.parse(event.end)-1)));
+const onDay = (event, day) => event.start.slice(0,10) <= day && lastDate(event) >= day;
+const monthEvents = month => allEvents.filter(event => event.start.slice(0,7) <= month && lastDate(event).slice(0,7) >= month);
 const maconOctoberCount = mobilize.filter(event => event.organizationId === 'macon-bibb-dems' && event.start.startsWith('2026-10')).length;
 const venueCount = new Set(allEvents.filter(event => !event.sample && event.coordinates).map(event => `${event.organizationId}:${event.coordinates.join(',')}`)).size;
-const october17Count = allEvents.filter(event => event.start.startsWith('2026-10-17')).length;
+const october17Count = allEvents.filter(event => onDay(event, '2026-10-17')).length;
 
 const base = process.env.TEST_BASE_URL || 'http://localhost:4321';
 const out = process.env.TEST_SCREENSHOTS || '.impeccable/review';
@@ -139,7 +142,7 @@ try {
     const destinationId = new URL(await popupLink.getAttribute('href'), base).searchParams.get('event');
     const destination = allEvents.find(event => event.id === destinationId);
     await popupLink.click();
-    await expect(page.locator('.calendar-event:visible')).toHaveCount(allEvents.filter(event => event.start.slice(0,10) === destination.start.slice(0,10)).length);
+    await expect(page.locator('.calendar-event:visible')).toHaveCount(allEvents.filter(event => onDay(event, destination.start.slice(0,10))).length);
     await expect(page.locator(`#event-${destinationId} details`)).toHaveAttribute('open', '');
     await page.locator('h1').click();
     await page.screenshot({ path: `${out}/mgdsa-calendar-${name}.png`, fullPage: true });
@@ -193,7 +196,7 @@ try {
     await page.getByRole('button', { name: 'Hide all', exact: true }).click();
     await page.locator('.calendar-toggle input[value="mgrls-technology"]').check();
     await expect(page.locator('.calendar-event:visible')).toHaveCount(mgrls.filter(event => event.start.startsWith('2026-10') && event.calendarIds.includes('mgrls-technology')).length);
-    const libraryProgram = mgrls.find(event => event.title === 'All-Ages Storytime' && event.start.startsWith('2026-10-17'));
+    const libraryProgram = mgrls.find(event => event.title === 'All-Ages Storytime' && onDay(event, '2026-10-17'));
     await page.goto(`${base}/calendar/?organization=mgrls&event=${libraryProgram.id}`);
     const libraryCard = page.locator(`#event-${libraryProgram.id}`);
     await expect(libraryCard.getByRole('link', { name: 'View library event details' })).toHaveAttribute('href', libraryProgram.sourceUrl);

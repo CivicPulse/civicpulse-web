@@ -2,6 +2,7 @@ import data from '../data/events.json';
 import mgdsa from '../data/mgdsa-events.json';
 import mobilize from '../data/mobilize-events.json';
 import mgrls from '../data/mgrls-events.json';
+import bcsd from '../data/bcsd-events.json';
 import { calendars, organizations } from './calendars';
 export interface CommunityEvent {
   id: string; title: string; start: string; end: string; category: string;
@@ -16,7 +17,7 @@ export interface CommunityEvent {
 }
 // Fresh captured listings replace their earlier manual imports, retaining the same IDs.
 const refreshedMobilizeUrls = new Set(mobilize.map(event => event.sourceUrl));
-export const events: CommunityEvent[] = [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls].map((item: CommunityEvent) => {
+export const events: CommunityEvent[] = [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls, ...bcsd].map((item: CommunityEvent) => {
   if (item.sample) throw new Error(`Sample events cannot be published: ${item.id}`);
   const organizationId = item.organizationId || (item.sourceGroup === 'mgdsa' ? 'mgdsa' : undefined);
   const inferred = calendars.find(calendar => 'sourceCalendar' in calendar && calendar.sourceCalendar === item.sourceCalendar) || calendars.find(calendar => calendar.organizationId === organizationId);
@@ -29,6 +30,18 @@ export const events: CommunityEvent[] = [...data.filter(event => !refreshedMobil
 export const timeZone = 'America/New_York';
 export function eventDate(value: string, options: Intl.DateTimeFormatOptions) {
   return new Intl.DateTimeFormat('en-US', { timeZone, ...options }).format(new Date(value));
+}
+const dayFormatter = new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' });
+export function eventDays(event: CommunityEvent): [string, string] {
+  const start = dayFormatter.format(new Date(event.start));
+  // RFC 5545 DTEND is exclusive, including date-only school break periods.
+  const end = Math.max(new Date(event.start).getTime(), new Date(event.end).getTime() - 1);
+  return [start, dayFormatter.format(new Date(end))];
+}
+export function eventDateRange(event: CommunityEvent) {
+  const [first, last] = eventDays(event);
+  const start = eventDate(event.start, { weekday: 'long', month: 'long', day: 'numeric' });
+  return first === last ? start : `${start} – ${eventDate(last + 'T12:00:00-05:00', { month: 'long', day: 'numeric', year: 'numeric' })}`;
 }
 export function eventTime(event: CommunityEvent) {
   if (event.allDay) return 'All day';

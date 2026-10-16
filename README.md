@@ -93,6 +93,45 @@ Reference: https://developers.cloudflare.com/pages/framework-guides/deploy-an-as
 
 For direct upload, build locally and upload the contents of `dist/` through Cloudflare Pages Direct Upload. The map basemap makes browser requests to `tile.openstreetmap.org`; configure a suitable tile provider if traffic requirements change, and follow https://operations.osmfoundation.org/policies/tiles/.
 
+## Printable voting-map downloads (R2)
+
+The **Polling places & precincts** map at `/maps/?map=voting` includes two download buttons. They are shown for the voting preset, including when JavaScript is disabled. The full-resolution PDFs are hosted separately from the website in Cloudflare R2; do not put these large files in `public/` or `dist/`. Cloudflare Pages has a 25 MiB per-asset limit.
+
+| Setting | Value |
+| --- | --- |
+| Cloudflare account | Kerry Personal (`6d837580a4d0641139ecada9e74076b8`) |
+| R2 bucket | `civpulse-files` |
+| Public custom domain | https://files.civpulse.org |
+| Cloudflare zone | `civpulse.org` (`f94e4b3b22ccced560feebb9c7829a86`) |
+| Storage | Standard, Eastern North America (`ENAM`) |
+| Public access | Custom domain enabled with minimum TLS 1.2; private write access |
+| UI | `src/pages/maps.astro`; voting-preset visibility in `src/scripts/map.ts` |
+
+| Edition | R2 object key (also the public URL path) | Pages | Size |
+| --- | --- | --- | --- |
+| Poster, 23 × 48 inches | `maps/Macon-Bibb_23x48_300dpi_Posters.pdf` | 32 | 261,971,122 bytes (262 MB) |
+| US Letter, 8.5 × 11 inches | `maps/Macon-Bibb_Letter_300dpi_All_Maps.pdf` | 33 | 48,044,023 bytes (48 MB) |
+
+Downloads: [poster PDF](https://files.civpulse.org/maps/Macon-Bibb_23x48_300dpi_Posters.pdf) and [letter PDF](https://files.civpulse.org/maps/Macon-Bibb_Letter_300dpi_All_Maps.pdf). Each object uses `Content-Type: application/pdf`, `Content-Disposition: attachment; filename="<PDF filename>"`, and `Cache-Control: public, max-age=3600`. The attachment header makes cross-origin links download the PDF, since browsers may ignore the HTML `download` attribute across origins. PDFs are fetched only when a visitor clicks a button. Print at actual size (100%); orientations vary by page.
+
+### Updating the PDFs
+
+1. Generate and review both print editions in the companion `/mnt/storage/projects/maconbibb-maps` project. Current source files are `output/pdf/Macon-Bibb_23x48_300dpi_Posters.pdf` and `output/letter/Macon-Bibb_Letter_300dpi_All_Maps.pdf`. That project's README documents QGIS export and verification. The website build does not generate or upload PDFs.
+2. Upload to the **`civpulse-files`** bucket, preserving the object keys and HTTP metadata above. Use an authenticated R2 dashboard, S3 client, or Wrangler. Do not make upload credentials public or commit them. For example, with Wrangler already authenticated in this account:
+
+   ```sh
+   npx wrangler r2 object put civpulse-files/maps/Macon-Bibb_23x48_300dpi_Posters.pdf --remote --file=/mnt/storage/projects/maconbibb-maps/output/pdf/Macon-Bibb_23x48_300dpi_Posters.pdf --content-type=application/pdf --content-disposition='attachment; filename="Macon-Bibb_23x48_300dpi_Posters.pdf"' --cache-control='public, max-age=3600'
+   npx wrangler r2 object put civpulse-files/maps/Macon-Bibb_Letter_300dpi_All_Maps.pdf --remote --file=/mnt/storage/projects/maconbibb-maps/output/letter/Macon-Bibb_Letter_300dpi_All_Maps.pdf --content-type=application/pdf --content-disposition='attachment; filename="Macon-Bibb_Letter_300dpi_All_Maps.pdf"' --cache-control='public, max-age=3600'
+   ```
+
+3. Verify public HTTP status, content length, PDF content type, attachment filename, and byte-range requests. Compare a complete downloaded file's SHA-256 with its source before announcing an updated edition.
+4. Update the visible sizes/page counts in `src/pages/maps.astro` and this table when they change. If filenames change, update both button URLs. Build, check the voting preset at desktop/mobile widths, then deploy the site separately. PDF uploads do not deploy the website, and website deployments do not upload PDFs.
+5. Replacing an existing key may leave a cached copy for up to one hour. Purge those two URLs from the `civpulse.org` zone when immediate replacement is required, or use versioned filenames and update the links.
+
+The initial upload used a temporary authenticated multipart-transfer Worker because the connected Cloudflare API could manage R2 while the local CLI had no API token. That temporary Worker is removed after transfer; it is not a dependency of downloads or future deployments. Normal public downloads are served directly by R2's custom domain. Keep `r2.dev` access disabled; no CORS policy is required for ordinary download links.
+
+Reference: [Cloudflare Pages asset limits](https://developers.cloudflare.com/pages/platform/limits/) and [R2 public custom domains](https://developers.cloudflare.com/r2/buckets/public-buckets/).
+
 ## Assets & design
 
 
@@ -211,3 +250,11 @@ The shared offline importer regenerates this eighth dataset too. KML rings, hole
 The Schools by type preset enables six independent point layers generated from the official `Type` field: elementary (22), middle (6), high (6), pre-K (1), Administration (7), and Specialty School (1). Source categories are retained, including classifications of academies and support facilities. Each type has a consistent building-marker color in the layer key, map and directory. The point-type subsets are non-overlapping and together contain all 43 original IDs; `schools.geojson` remains available as a combined download.
 
 Attendance presets enable only the matching elementary, middle or high point layer plus that level’s boundaries. Schools by type enables all six. Bookmarked `layers=schools` URLs expand to the new point layers. The offline importer regenerates the six type files along with the other official datasets.
+
+## BCSD calendar snapshots
+
+Run `python scripts/import-bcsd-events.py` to rebuild `src/data/bcsd-events.json` offline from `data/sources/bcsd-events/`. Requires the existing `scripts/requirements-events.txt` dependencies. Original public ICS and 2026–27 academic PDF, capture manifest, reviewed PDF dates, and import report are saved there. Refresh sources and review the PDF dates/aliases before rerunning when BCSD publishes changes. The site does not poll the feed automatically.
+
+The October 15, 2026 snapshot contains 63 distinct entries: 54 feed occurrences and 18 academic periods with nine duplicates merged. Recurrences cover January 1, 2026 through October 15, 2027; the academic PDF covers only 2026–27. Pre-planning follows highlighted weekdays. Dates retain America/New_York offsets and all-day exclusive ends; no locations are guessed. Shared entries belong to both BCSD calendar filters. Multi-day periods display on each covered day and across month/year boundaries.
+
+Validate with `python -m unittest discover -s tests -p 'test_*import.py'`, `node tests/bcsd-calendar.mjs` (dev server on port 4324), and `npm run build`.

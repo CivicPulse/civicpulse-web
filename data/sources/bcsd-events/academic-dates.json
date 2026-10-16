@@ -1,0 +1,128 @@
+[
+  {
+    "title": "Pre-Planning",
+    "start": "2026-07-23",
+    "endExclusive": "2026-07-25",
+    "description": "Teacher pre-planning; no student classes. The PDF highlights July 23–24 and July 27–31.",
+    "feedTitle": "Pre-Planning"
+  },
+  {
+    "title": "Pre-Planning",
+    "start": "2026-07-27",
+    "endExclusive": "2026-08-01",
+    "description": "Teacher pre-planning; no student classes. Weekend July 25–26 is not highlighted in the PDF.",
+    "feedTitle": "Pre-Planning"
+  },
+  {
+    "title": "First Day of School",
+    "start": "2026-08-03",
+    "endExclusive": "2026-08-04",
+    "description": "First day of the 2026–27 school year.",
+    "feedTitle": "First Day of School"
+  },
+  {
+    "title": "Labor Day Holiday",
+    "start": "2026-09-07",
+    "endExclusive": "2026-09-08",
+    "description": "School holiday.",
+    "feedTitle": "Labor Day Holiday"
+  },
+  {
+    "title": "Asynchronous Learning Day",
+    "start": "2026-09-08",
+    "endExclusive": "2026-09-09",
+    "description": "Student virtual learning day. Students may complete assignments at any time; students and teachers do not need to be online simultaneously.",
+    "feedTitle": "Asynchronous Learning Day"
+  },
+  {
+    "title": "Fall Break",
+    "start": "2026-10-12",
+    "endExclusive": "2026-10-17",
+    "description": "School break, October 12–16.",
+    "feedTitle": "Fall Break"
+  },
+  {
+    "title": "Thanksgiving Break",
+    "start": "2026-11-23",
+    "endExclusive": "2026-11-28",
+    "description": "School break, November 23–27.",
+    "feedTitle": "Thanksgiving Break"
+  },
+  {
+    "title": "Last Day of Semester",
+    "start": "2026-12-18",
+    "endExclusive": "2026-12-19",
+    "description": "Last day of the first semester.",
+    "feedTitle": "Last Day of Semester"
+  },
+  {
+    "title": "Holiday Break",
+    "start": "2026-12-21",
+    "endExclusive": "2027-01-02",
+    "description": "School break, December 21 through January 1.",
+    "feedTitle": "Holiday Break"
+  },
+  {
+    "title": "Planning Day (No Students)",
+    "start": "2027-01-04",
+    "endExclusive": "2027-01-05",
+    "description": "Teacher planning day; no students.",
+    "feedTitle": "Planning Day (No Students)"
+  },
+  {
+    "title": "First Day of Semester",
+    "start": "2027-01-05",
+    "endExclusive": "2027-01-06",
+    "description": "First day of the second semester.",
+    "feedTitle": "First Day of Semester"
+  },
+  {
+    "title": "Martin Luther King Jr. Holiday",
+    "start": "2027-01-18",
+    "endExclusive": "2027-01-19",
+    "description": "School holiday.",
+    "feedTitle": "Dr. Martin Luther King Jr. Holiday"
+  },
+  {
+    "title": "Winter Break & Inclement Weather Makeup Days",
+    "start": "2027-02-15",
+    "endExclusive": "2027-02-17",
+    "description": "February 15–16 are designated as winter break and inclement weather makeup days. Confirm with the district whether makeup instruction is required.",
+    "feedTitle": "Winter Break"
+  },
+  {
+    "title": "Asynchronous Learning Day & School Data Day",
+    "start": "2027-02-17",
+    "endExclusive": "2027-02-18",
+    "description": "Student virtual learning day and school data day. Students may complete assignments at any time; students and teachers do not need to be online simultaneously.",
+    "feedTitle": "Asynchronous Day"
+  },
+  {
+    "title": "Spring Break",
+    "start": "2027-03-29",
+    "endExclusive": "2027-04-03",
+    "description": "School break, March 29 through April 2.",
+    "feedTitle": "Spring Break"
+  },
+  {
+    "title": "Last Day of School (Half-Day for Students)",
+    "start": "2027-05-21",
+    "endExclusive": "2027-05-22",
+    "description": "Last day of school; half-day for students. The PDF does not specify dismissal times.",
+    "feedTitle": "Last Day of School"
+  },
+  {
+    "title": "Post-Planning",
+    "start": "2027-05-24",
+    "endExclusive": "2027-05-26",
+    "description": "Teacher post-planning, May 24–25.",
+    "feedTitle": "Post-Planning"
+  },
+  {
+    "title": "Memorial Day Holiday",
+    "start": "2027-05-31",
+    "endExclusive": "2027-06-01",
+    "description": "School holiday.",
+    "feedTitle": "Memorial Day Holiday"
+  }
+]

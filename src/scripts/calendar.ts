@@ -1,4 +1,4 @@
-import { events, eventDate } from '../lib/events';
+import { events, eventDate, eventDays } from '../lib/events';
 import { calendars, organizations, calendarsFor, organizationFor } from '../lib/calendars';
 const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const grid = byId('calendar-grid');
@@ -13,6 +13,11 @@ if (params.get('color') === 'organization') colorBy.value = 'organization';
 let selectedCalendars = new Set(params.has('calendars') ? params.get('calendars')!.split(',').filter(id => calendars.some(calendar => calendar.id === id)) : calendars.map(calendar => calendar.id));
 const clearDay = byId<HTMLButtonElement>('clear-day');
 const articles = [...document.querySelectorAll<HTMLElement>('.calendar-event')];
+const eventRanges = new Map(events.map(event => [event.id, eventDays(event)]));
+const occursOn = (event: typeof events[number], day: string) => {
+  const [first, last] = eventRanges.get(event.id)!;
+  return first <= day && last >= day;
+};
 const todayKey = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 const today = todayKey.split('-').map(Number);
 let year = today[0], month = today[1] - 1;
@@ -28,10 +33,13 @@ if (focused) {
 const key = (day?: number) => `${year}-${String(month + 1).padStart(2, '0')}${day ? '-' + String(day).padStart(2, '0') : ''}`;
 function matching() {
   const search = query.value.trim().toLocaleLowerCase();
-  return events.filter(event => event.start.startsWith(key()) &&
+  return events.filter(event => {
+    const [first, last] = eventRanges.get(event.id)!;
+    return first.slice(0, 7) <= key() && last.slice(0, 7) >= key() &&
     (organization.value === 'all' || event.organizationId === organization.value) &&
     event.calendarIds?.some(id => selectedCalendars.has(id)) &&
-    (category.value === 'all' || event.category === category.value) && `${event.title} ${event.location} ${event.description}`.toLocaleLowerCase().includes(search));
+    (category.value === 'all' || event.category === category.value) && `${event.title} ${event.location} ${event.description}`.toLocaleLowerCase().includes(search);
+  });
 }
 function render() {
   for (const check of calendarChecks) check.checked = selectedCalendars.has(check.value);
@@ -53,7 +61,7 @@ function render() {
   const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month, 1)));
   byId('month-title').textContent = monthLabel;
   const matched = matching();
-  const shown = matched.filter(event => selectedDay === null || event.start.startsWith(key(selectedDay)));
+  const shown = matched.filter(event => selectedDay === null || occursOn(event, key(selectedDay)));
   const shownIds = new Set(shown.map(event => event.id));
   for (const article of articles) article.hidden = !shownIds.has(article.dataset.event!);
   const heading = selectedDay === null ? `Events in ${monthLabel}` : `Events on ${eventDate(key(selectedDay) + 'T12:00:00-05:00', { month: 'long', day: 'numeric' })}`;
@@ -71,7 +79,7 @@ function render() {
   for (let i = 0; i < firstDay; i++) { const spacer = document.createElement('span'); spacer.setAttribute('aria-hidden', 'true'); grid.append(spacer); }
   for (let day = 1; day <= total; day++) {
     const dayKey = key(day);
-    const onDay = matched.filter(event => event.start.startsWith(dayKey));
+    const onDay = matched.filter(event => occursOn(event, dayKey));
     const button = document.createElement('button'); button.type = 'button'; button.className = 'day-cell';
     button.setAttribute('aria-pressed', String(selectedDay === day));
     button.setAttribute('aria-label', `${eventDate(dayKey + 'T12:00:00-05:00', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}, ${onDay.length} ${onDay.length === 1 ? 'event' : 'events'}`);

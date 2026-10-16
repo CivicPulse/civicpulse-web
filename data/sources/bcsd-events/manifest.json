@@ -1,0 +1,10 @@
+{
+  "captured": "2026-10-15",
+  "windowStart": "2026-01-01",
+  "windowEndExclusive": "2027-10-16",
+  "feedUrl": "https://www.bcsdk12.net/fs/calendar-manager/events.ics?feed_id=81257faa-eb4b-40bb-936d-21f3d07fd772",
+  "pdfUrl": "https://resources.finalsite.net/images/v1774008347/bibbk12gaus/thvokesh4x2t3ze1yqvb/AcademicCal2627_rev031926.pdf",
+  "academicCalendarApproved": "2026-03-19",
+  "method": "Original public ICS and PDF saved; PDF sidebar dates visually checked against the calendar grid. Recurrences expanded offline. Exact all-day date spans and reviewed title aliases merge across sources; feed timing retained.",
+  "scope": "Feed recurrence window matches the existing calendar snapshot. Academic dates only cover the supplied 2026\u201327 school year. Teacher pre-planning excludes the unhighlighted July 25\u201326 weekend. No coordinates inferred for district-wide dates or feed venues."
+}

@@ -29,6 +29,11 @@
       "id": "mgrls",
       "name": "Middle Georgia Regional Library",
       "color": "#375f74"
+    },
+    {
+      "id": "bcsd",
+      "name": "Bibb County School District",
+      "color": "#82651d"
     }
   ],
   "calendars": [
@@ -143,6 +148,18 @@
       "organizationId": "mgrls",
       "name": "Teens/ Young Adults",
       "color": "#38667b"
+    },
+    {
+      "id": "bcsd-district",
+      "organizationId": "bcsd",
+      "name": "District events & board meetings",
+      "color": "#82651d"
+    },
+    {
+      "id": "bcsd-academic",
+      "organizationId": "bcsd",
+      "name": "2026–27 academic calendar",
+      "color": "#386b59"
     }
   ]
 }

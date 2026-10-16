@@ -19,6 +19,14 @@ import { mapLayerGroups, layerGroup, transitServicePeriod, officialFeatureColor,
         <label class="field-label" for="map-choice">Choose a map</label>
         <select id="map-choice" aria-describedby="map-description" disabled>{maps.map(map => <option value={map.id}>{map.name}</option>)}</select>
         <p id="map-description">{maps[0].description}</p>
+        <section id="voting-downloads" aria-labelledby="voting-downloads-title">
+          <h2 id="voting-downloads-title">Printable voting maps</h2>
+          <a class="button-link" href="https://files.civpulse.org/maps/Macon-Bibb_23x48_300dpi_Posters.pdf" download aria-describedby="poster-download-detail"><Icon name="download" size={18}/> Download poster PDF</a>
+          <p id="poster-download-detail">23 × 48 inches · 32 pages · 262 MB</p>
+          <a class="button-link" href="https://files.civpulse.org/maps/Macon-Bibb_Letter_300dpi_All_Maps.pdf" download aria-describedby="letter-download-detail"><Icon name="download" size={18}/> Download letter PDF</a>
+          <p id="letter-download-detail">8.5 × 11 inches · 33 pages · 48 MB</p>
+          <p class="print-help">Full-resolution PDFs for printing. Large files may take a few minutes to download. Print at actual size (100%).</p>
+        </section>
         <p id="rapid-map-note" class="map-help" hidden>On-demand rideshare zones, separate from fixed bus routes. Both pickup and destination must be inside active zones. <a href="https://rapid.mbcta.net/">Check MBCTA Rapid availability</a>.</p>
         <p id="school-map-note" class="map-help" hidden>Attendance polygons are labeled <strong>2025–26</strong> in the source. Split and temporary elementary zones are retained. <a href="https://www.bcsdk12.net/about-us">Confirm current enrollment assignments with BCSD</a>.</p>
         <p id="transit-map-note" class="map-help" hidden>Schedule snapshot: {transitServicePeriod}. No live arrivals. <strong id="transit-expired" hidden>This schedule has expired.</strong> <a href="https://myride.mbcta.net/">Check current bus information</a>.</p>
@@ -73,3 +81,7 @@ import { mapLayerGroups, layerGroup, transitServicePeriod, officialFeatureColor,
 </style>
 
 <style>.rapid-swatches{display:grid;grid-template-columns:repeat(2,6px);gap:1px;flex:none}.rapid-swatches i{width:6px;height:6px}</style>
+
+<style>
+#voting-downloads{margin:0 0 24px;padding-bottom:24px;border-bottom:1px solid var(--line)}#voting-downloads h2{font-size:24px;margin-bottom:14px}#voting-downloads .button-link{width:100%;justify-content:flex-start;font-size:13px;padding:10px 12px}#voting-downloads p{font-size:12px;color:var(--muted);margin:7px 0 16px}#voting-downloads .print-help{margin-bottom:0;line-height:1.6}
+</style>
