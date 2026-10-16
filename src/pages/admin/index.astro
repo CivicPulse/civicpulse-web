@@ -30,6 +30,7 @@ const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
     <section id="access-panel" class="admin-panel access-panel" role="status" aria-live="polite" hidden>
       <h2 id="access-heading">Checking access</h2>
       <p id="access-message"></p>
+      <button id="access-retry" type="button" hidden>Check staff access again</button>
       <button id="access-signout" type="button" hidden>Sign out</button>
     </section>
 
@@ -78,6 +79,7 @@ const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
             <textarea id="payload" name="payload" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="payload-help" required></textarea>
             <p id="payload-help" class="sr-only">Edit the entire JSON record. The id value must match the Record ID field.</p>
             <div id="editor-message" class="form-message" role="status" aria-live="polite" hidden></div>
+            <button id="reload-record" type="button" hidden>Reload saved record to check outcome</button>
             <div id="conflict-panel" class="conflict-panel" role="alert" hidden>
               <h3>Someone saved a newer revision</h3>
               <p>Your text is still here. Compare it with the latest saved revision, then choose how to continue.</p>

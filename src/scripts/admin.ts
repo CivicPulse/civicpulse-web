@@ -1,5 +1,7 @@
 import { getCmsSupabase } from '../lib/cms-client';
 import { canPublishReviewedDraft, publishReviewedDraft } from '../lib/admin-publish-gate.mjs';
+import { changesEditorSession, deferredAuthRefresh } from '../lib/admin-session.mjs';
+import { CmsOutcomeUnknown, withCmsDeadline } from '../lib/admin-request.mjs';
 import { cmsRefreshStatus } from '../lib/cms-refresh-status';
 import { ApiError, createCivicPulseClient } from '../vendor/civicpulse-api/client.mjs';
 import type { Tables } from '../vendor/civicpulse-api/database.types';
@@ -46,6 +48,12 @@ let authRun = 0;
 let editorRun = 0;
 let saving = false;
 let publishing = false;
+let checkingRole = false;
+let roleRun = 0;
+let activeUserId: string | null = null;
+let outcomeUnknown = false;
+let loadingRecord = false;
+let roleUnavailable = false;
 
 function showMessage(target: HTMLElement, message: string, kind: 'error' | 'success' | 'info' = 'info') {
   target.textContent = message;
@@ -94,7 +102,7 @@ function labelFor(row: Draft | DraftSummary) {
 function clearEditor() {
   editorRun++;
   currentDraft = null; currentPublished = null; expectedRevision = 0;
-  saving = false; publishing = false;
+  saving = false; publishing = false; outcomeUnknown = false; loadingRecord = false;
   recordId.value = ''; payloadInput.value = '{\n  "id": "",\n  "name": ""\n}';
   editorKind.disabled = false; recordId.disabled = false;
   byId('editor-summary').textContent = 'New draft · revision 0';
@@ -107,21 +115,28 @@ function clearEditor() {
 }
 function updateSaveState() {
   const parsed = parsePayload(false);
-  byId<HTMLButtonElement>('save-draft').disabled = !role || !parsed || !recordId.checkValidity() || saving || publishing;
+  byId<HTMLButtonElement>('save-draft').disabled = !role || !parsed || !recordId.checkValidity() || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown;
   const publish = byId<HTMLButtonElement>('publish');
   publish.disabled = !canPublishReviewedDraft({
     role, draft: currentDraft, kind: editorKind.value, id: recordId.value.trim(), expectedRevision,
-    payloadText: payloadInput.value, conflicted: !conflictPanel.hidden, busy: saving || publishing,
+    payloadText: payloadInput.value, conflicted: !conflictPanel.hidden, busy: saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown,
     alreadyPublished: currentPublished?.revision === currentDraft?.revision,
   });
   payloadInput.disabled = publishing;
+  byId<HTMLButtonElement>('save-draft').textContent = saving ? 'Saving…' : 'Save draft';
+  publish.textContent = publishing ? 'Publishing…' : (currentPublished ? 'Publish draft update' : 'Publish reviewed draft');
+  byId<HTMLButtonElement>('withdraw').disabled = role !== 'admin' || !currentPublished || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown;
+  byId<HTMLButtonElement>('reload-record')?.toggleAttribute('hidden', !outcomeUnknown);
+  byId('editor-form').setAttribute('aria-busy', String(saving || publishing || loadingRecord));
+  for (const id of ['kind-filter', 'new-draft', 'load-more']) (byId(id) as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord;
+  document.querySelectorAll('.record-button').forEach(button => { (button as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord; });
 }
 function clearRecordList() {
   recordList.replaceChildren(); listOffset = 0; hasMore = false;
   byId<HTMLButtonElement>('load-more').hidden = true;
 }
 async function loadDrafts(append = false) {
-  if (!supabase || !role || loadingList) return;
+  if (!supabase || !role || loadingList || checkingRole || roleUnavailable) return;
   const sessionRequest = authRun;
   const roleRequest = role;
   loadingList = true;
@@ -130,8 +145,8 @@ async function loadDrafts(append = false) {
   if (!append) clearRecordList();
   byId('record-status').textContent = 'Loading drafts…';
   try {
-    const { data, error } = await supabase.from('cms_drafts').select('kind,id,revision,updated_at,name:payload->>name,title:payload->>title')
-      .eq('kind', kind).order('id', { ascending: true }).range(offset, offset + 49);
+    const { data, error } = await withCmsDeadline(supabase.from('cms_drafts').select('kind,id,revision,updated_at,name:payload->>name,title:payload->>title')
+      .eq('kind', kind).order('id', { ascending: true }).range(offset, offset + 49));
     if (error) throw error;
     if (sessionRequest !== authRun || roleRequest !== role) return;
     const rows = (data || []) as DraftSummary[];
@@ -157,8 +172,8 @@ async function loadHistory(kind: Kind, id: string) {
   const editorRequest = editorRun; const sessionRequest = authRun;
   const panel = byId<HTMLElement>('history-panel'); const list = byId<HTMLOListElement>('history-list');
   list.replaceChildren(); panel.hidden = false;
-  const { data, error } = await supabase!.from('cms_history').select('action,actor,occurred_at,revision,sequence')
-    .eq('kind', kind).eq('id', id).order('sequence', { ascending: false }).limit(10);
+  const { data, error } = await withCmsDeadline(supabase!.from('cms_history').select('action,actor,occurred_at,revision,sequence')
+    .eq('kind', kind).eq('id', id).order('sequence', { ascending: false }).limit(10));
   if (error) throw error;
   if (editorRequest !== editorRun || sessionRequest !== authRun) return;
   for (const row of data || []) {
@@ -170,7 +185,7 @@ async function loadHistory(kind: Kind, id: string) {
   if (!list.children.length) { const item = document.createElement('li'); item.textContent = 'No activity is recorded yet.'; list.append(item); }
 }
 async function refreshPublished(kind: Kind, id: string, editorRequest: number, sessionRequest: number) {
-  const { data, error } = await supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle();
+  const { data, error } = await withCmsDeadline(supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle());
   if (error) throw error;
   if (editorRequest !== editorRun || sessionRequest !== authRun) return;
   currentPublished = data as Published | null;
@@ -183,70 +198,104 @@ async function refreshPublished(kind: Kind, id: string, editorRequest: number, s
   byId('revision-label').textContent = currentPublished
     ? `Draft r${draftRevision} · Published r${publishedRevision}${draftRevision === publishedRevision ? ' · current' : ' · unpublished changes'}`
     : `Draft r${draftRevision} · Not published`;
-  publish.disabled = role !== 'admin' || !currentDraft || !parsePayload(false) || (currentPublished?.revision === draftRevision);
+  updateSaveState();
   withdraw.title = currentPublished ? `Withdraw the published revision ${publishedRevision}.` : 'This record has no live publication.';
 }
 async function selectDraft(kind: Kind, id: string) {
+  if (checkingRole || roleUnavailable || !role || saving || publishing) return false;
   const editorRequest = ++editorRun;
   const sessionRequest = authRun;
-  currentDraft = null; currentPublished = null; expectedRevision = 0;
-  saving = false; publishing = false;
-  editorKind.value = kind; recordId.value = id;
-  editorKind.disabled = true; recordId.disabled = true;
-  byId<HTMLButtonElement>('publish').disabled = true;
-  updateSaveState();
-  hideMessage(editorMessage); conflictPanel.hidden = true;
+  // Keep the old text, baseline and unknown-outcome lock until BOTH authoritative
+  // reads finish. No partial read is allowed to enable a write.
+  loadingRecord = true; updateSaveState();
+  showMessage(editorMessage, outcomeUnknown ? 'Checking the saved draft and publication. No changes will be sent.' : 'Loading saved record…');
+  const isCurrent = () => editorRequest === editorRun && sessionRequest === authRun;
   try {
-    const row = await api!.getDraft(kind, id) as Draft | null;
-    if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-    if (!row) { byId('record-status').textContent = 'This draft was removed. Refresh the list.'; return; }
+    const row = await withCmsDeadline(api!.getDraft(kind, id)) as Draft | null;
+    if (!isCurrent()) return false;
+    if (!row) throw new Error('The saved draft could not be found. Your local text is unchanged.');
+    const { data, error } = await withCmsDeadline(supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle());
+    if (!isCurrent()) return false;
+    if (error) throw error;
     currentDraft = row; expectedRevision = row.revision || 0;
+    currentPublished = data as Published | null;
     editorKind.value = kind; editorKind.disabled = true;
     recordId.value = row.id || ''; recordId.disabled = true;
     payloadInput.value = JSON.stringify(row.payload, null, 2);
     byId('editor-summary').textContent = `${labelFor(row)} · ${kind}`;
-    byId<HTMLButtonElement>('save-draft').textContent = 'Save draft';
+    const wasUnknown = outcomeUnknown;
+    outcomeUnknown = false; loadingRecord = false; conflictPanel.hidden = true;
     document.querySelectorAll('.record-button').forEach(button => button.setAttribute('aria-current', (button as HTMLButtonElement).dataset.id === id ? 'true' : 'false'));
-    await refreshPublished(kind, id, editorRequest, sessionRequest);
-    if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-    await loadHistory(kind, id);
-    if (editorRequest !== editorRun || sessionRequest !== authRun) return;
+    const dr = currentDraft.revision ?? 0; const pr = currentPublished?.revision;
+    byId('revision-label').textContent = currentPublished ? `Draft r${dr} · Published r${pr}${dr === pr ? ' · current' : ' · unpublished changes'}` : `Draft r${dr} · Not published`;
+    byId('publish').hidden = role !== 'admin'; byId('withdraw').hidden = role !== 'admin';
     updateSaveState();
+    if (wasUnknown) showMessage(editorMessage, `Saved state checked: draft revision ${dr}${pr == null ? ', not published' : `, published revision ${pr}`}. Review the loaded content before another action.`, 'success');
+    else hideMessage(editorMessage);
+    try { await loadHistory(kind, id); } catch (error) { if (isCurrent()) showMessage(editorMessage, `Saved state loaded. Activity could not be refreshed. ${userMessage(error)}`, 'info'); }
+    if (!isCurrent()) return false;
     if (location.hash !== '#editor') location.hash = 'editor';
+    return true;
   } catch (error) {
-    if (editorRequest === editorRun && sessionRequest === authRun) showMessage(editorMessage, userMessage(error), 'error');
-  }
+    if (isCurrent()) showMessage(editorMessage, `Saved state could not be checked. Your text is unchanged. ${userMessage(error)}`, 'error');
+    return false;
+  } finally { if (isCurrent()) { loadingRecord = false; updateSaveState(); } }
 }
-async function refreshRole(session: { user: { email?: string } } | null) {
-  const run = ++authRun;
-  role = null;
-  clearEditor();
-  clearRecordList();
-  loadingList = false;
+async function refreshRole(session: { user: { id: string; email?: string } } | null) {
+  const run = ++roleRun;
+  const nextUserId = session?.user.id ?? null;
+  const reset = changesEditorSession(activeUserId, nextUserId);
+  activeUserId = nextUserId;
+  if (reset) {
+    ++authRun; role = null; clearEditor(); clearRecordList(); loadingList = false;
+  }
+  checkingRole = !!session; if (reset) roleUnavailable = false; updateSaveState();
+  // Revalidate membership on same-user events without replacing their editor.
+  if (!reset && session && role && supabase && api) {
+    try {
+      const result = await withCmsDeadline(api.role());
+      if (run !== roleRun) return;
+      if (result !== 'editor' && result !== 'admin') throw new ApiError(403, { code: '42501', message: 'Your staff membership is no longer active.' });
+      role = result; roleUnavailable = false; workspace.hidden = false; accessPanel.hidden = true; byId('access-retry').hidden = true;
+      byId('role-label').textContent = result === 'admin' ? 'Administrator' : 'Editor';
+      for (const id of ['publishing-nav', 'publishing', 'publish', 'withdraw']) byId(id).hidden = result !== 'admin';
+    } catch (error) {
+      if (run !== roleRun) return;
+      const revoked = (error as { code?: string })?.code === '42501';
+      if (revoked) { ++authRun; role = null; clearEditor(); clearRecordList(); }
+      roleUnavailable = true; workspace.hidden = true; accessPanel.hidden = false;
+      byId('access-heading').textContent = revoked ? 'CMS access is no longer available' : 'Staff access could not be checked';
+      byId('access-message').textContent = revoked ? userMessage(error) : 'Your unsaved text is kept in this tab. Editing is paused until your staff access can be checked again. No changes have been retried.';
+      byId('access-retry').hidden = false;
+    } finally { if (run === roleRun) { checkingRole = false; updateSaveState(); } }
+    return;
+  }
   workspace.hidden = true; accessPanel.hidden = true; loginPanel.hidden = !!session; loginMessage.hidden = true;
   byId('access-signout').hidden = !session;
-  if (!session || !supabase || !api) return;
+  if (!session || !supabase || !api) { checkingRole = false; updateSaveState(); return; }
   accessPanel.hidden = false; byId('access-heading').textContent = 'Checking staff access'; byId('access-message').textContent = 'Confirming your current membership with the Civic Pulse API…';
   byId('staff-email').textContent = session.user.email || 'Signed-in staff member';
   try {
-    const result = await api.role();
-    if (run !== authRun) return;
+    const result = await withCmsDeadline(api.role());
+    if (run !== roleRun) return;
     if (result !== 'editor' && result !== 'admin') {
       byId('access-heading').textContent = 'You do not have CMS access';
       byId('access-message').textContent = 'This account is signed in, but it is not an editor or administrator. Ask a Civic Pulse administrator to review your membership.';
       return;
     }
-    role = result;
+    role = result; roleUnavailable = false; byId('access-retry').hidden = true;
     accessPanel.hidden = true; workspace.hidden = false;
     byId('role-label').textContent = result === 'admin' ? 'Administrator' : 'Editor';
     byId('publishing-nav').hidden = result !== 'admin'; byId('publishing').hidden = result !== 'admin';
     byId<HTMLButtonElement>('new-draft').hidden = false;
+    checkingRole = false; updateSaveState();
     await loadDrafts();
   } catch (error) {
-    if (run !== authRun) return;
+    if (run !== roleRun) return;
     byId('access-heading').textContent = 'Could not confirm CMS access';
     byId('access-message').textContent = userMessage(error);
-  }
+    roleUnavailable = true; byId('access-retry').hidden = false;
+  } finally { if (run === roleRun) { checkingRole = false; updateSaveState(); } }
 }
 
 if (supabase && api) {
@@ -263,7 +312,7 @@ if (supabase && api) {
   const { data: { session }, error } = await supabase.auth.getSession();
   if (error) { showMessage(loginMessage, error.message, 'error'); loginPanel.hidden = false; }
   else await refreshRole(session);
-  supabase.auth.onAuthStateChange((_event, session) => { void refreshRole(session); });
+  supabase.auth.onAuthStateChange(deferredAuthRefresh(refreshRole));
 }
 
 async function signOut() {
@@ -273,21 +322,24 @@ async function signOut() {
 }
 byId<HTMLButtonElement>('signout').addEventListener('click', () => void signOut());
 byId<HTMLButtonElement>('access-signout').addEventListener('click', () => void signOut());
+byId<HTMLButtonElement>('access-retry').addEventListener('click', async () => { if (!supabase) return; try { const { data, error } = await withCmsDeadline(supabase.auth.getSession()); if (error) throw error; await refreshRole(data.session); } catch (error) { showMessage(byId('access-message'), userMessage(error), 'error'); } });
 kindFilter.addEventListener('change', () => { clearEditor(); editorKind.value = kindFilter.value; void loadDrafts(); });
 byId<HTMLButtonElement>('load-more').addEventListener('click', () => void loadDrafts(true));
 byId<HTMLButtonElement>('new-draft').addEventListener('click', () => { clearEditor(); editorKind.value = kindFilter.value; recordId.focus(); });
 editorKind.addEventListener('change', () => { kindFilter.value = editorKind.value; clearRecordList(); void loadDrafts(); });
+byId<HTMLButtonElement>('reload-record').addEventListener('click', () => { if (confirm('Reload the saved record? Unsaved edits will be replaced. Check the revision before making another change.')) void selectDraft(editorKind.value as Kind, recordId.value.trim()); });
 recordId.addEventListener('input', updateSaveState); payloadInput.addEventListener('input', updateSaveState);
 
 byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
   event.preventDefault(); hideMessage(editorMessage);
+  if (saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown) return;
   const parsed = parsePayload(); if (!parsed) return;
   if (!api || !role) { showMessage(editorMessage, 'Your CMS session is unavailable. Sign in again.', 'error'); return; }
   const editorRequest = editorRun; const sessionRequest = authRun;
   const kind = editorKind.value as Kind; const id = recordId.value.trim(); const revision = expectedRevision;
   saving = true; updateSaveState();
   try {
-    const savedRevision = await api.saveDraft(kind, parsed, revision) as number;
+    const savedRevision = await withCmsDeadline(api.saveDraft(kind, parsed, revision)) as number;
     if (editorRequest !== editorRun || sessionRequest !== authRun || editorKind.value !== kind || recordId.value.trim() !== id) return;
     expectedRevision = savedRevision;
     currentDraft = { kind, id, revision: savedRevision, payload: parsed as import('../vendor/civicpulse-api/database.types').Json, updated_at: new Date().toISOString(), updated_by: null };
@@ -295,12 +347,17 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
     showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. Review the saved payload before publishing. Resident pages are unchanged. ${refreshStatus}`, 'success');
     conflictPanel.hidden = true;
     saving = false; updateSaveState();
-    await refreshPublished(kind, id, editorRequest, sessionRequest);
-    if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-    await loadHistory(kind, id);
-    if (editorRequest === editorRun && sessionRequest === authRun) await loadDrafts();
+    try {
+      await refreshPublished(kind, id, editorRequest, sessionRequest);
+      if (editorRequest !== editorRun || sessionRequest !== authRun) return;
+      await loadHistory(kind, id);
+      if (editorRequest === editorRun && sessionRequest === authRun) await loadDrafts();
+    } catch (error) {
+      if (editorRequest === editorRun && sessionRequest === authRun) showMessage(editorMessage, `Draft saved as revision ${savedRevision}. The following read failed; do not repeat the save. ${userMessage(error)}`, 'info');
+    }
   } catch (error) {
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
+    if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true;
     if (error instanceof ApiError && error.code === '40001') {
       const local = payloadInput.value;
       byId<HTMLTextAreaElement>('conflict-local').value = local;
@@ -308,7 +365,7 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
       byId('conflict-panel').dataset.revision = String(expectedRevision);
       conflictPanel.hidden = false;
       try {
-        const latest = await api.getDraft(kind, id) as Draft | null;
+        const latest = await withCmsDeadline(api.getDraft(kind, id)) as Draft | null;
         if (editorRequest !== editorRun || sessionRequest !== authRun) return;
         byId<HTMLTextAreaElement>('conflict-latest').value = latest ? JSON.stringify(latest.payload, null, 2) : 'This draft no longer exists.';
         byId('conflict-panel').dataset.revision = String(latest?.revision ?? 0);
@@ -341,10 +398,10 @@ byId<HTMLButtonElement>('load-latest').addEventListener('click', () => {
   } catch { showMessage(editorMessage, 'The latest draft is no longer available. Refresh the record list.', 'error'); }
 });
 byId<HTMLButtonElement>('publish').addEventListener('click', async () => {
-  if (role !== 'admin' || !currentDraft || !api) return;
+  if (role !== 'admin' || !currentDraft || !api || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown) return;
   const publishState = {
     role, draft: currentDraft, kind: editorKind.value, id: recordId.value.trim(), expectedRevision,
-    payloadText: payloadInput.value, conflicted: !conflictPanel.hidden, busy: saving || publishing,
+    payloadText: payloadInput.value, conflicted: !conflictPanel.hidden, busy: saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown,
     alreadyPublished: currentPublished?.revision === currentDraft?.revision,
   };
   if (!canPublishReviewedDraft(publishState)) {
@@ -355,29 +412,40 @@ byId<HTMLButtonElement>('publish').addEventListener('click', async () => {
   const editorRequest = editorRun; const sessionRequest = authRun;
   publishing = true; updateSaveState();
   try {
-    const invoked = await publishReviewedDraft(publishState,
-      (publishKind, publishId, publishRevision) => api!.publish(publishKind as Kind, publishId, publishRevision));
+    const invoked = await withCmsDeadline(publishReviewedDraft(publishState,
+      (publishKind, publishId, publishRevision) => api!.publish(publishKind as Kind, publishId, publishRevision)));
     if (!invoked) return;
     if (editorRequest !== editorRun || sessionRequest !== authRun || role !== 'admin') return;
-    showMessage(editorMessage, `Published to the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
     publishing = false; updateSaveState();
-    await selectDraft(kind, id); await loadDrafts();
+    const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
+    const loaded = await refreshed;
+    if (!loaded && sessionRequest === authRun && receiptRun === editorRun) { outcomeUnknown = true; updateSaveState(); }
+    await loadDrafts();
+    if (sessionRequest === authRun && receiptRun === editorRun && editorKind.value === kind && recordId.value === id) showMessage(editorMessage, `${loaded ? '' : 'Saved-state refresh failed; do not repeat publication. '}Published revision ${publishState.draft.revision} to the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
   } catch (error) {
-    if (editorRequest === editorRun && sessionRequest === authRun) showMessage(editorMessage, userMessage(error), 'error');
+    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
   } finally {
     if (editorRequest === editorRun && sessionRequest === authRun) { publishing = false; updateSaveState(); }
   }
 });
 byId<HTMLButtonElement>('withdraw').addEventListener('click', async () => {
-  if (role !== 'admin' || !currentPublished || !api) return;
-  if (!confirm(`Withdraw the published ${editorKind.value} “${recordId.value}”? Its draft and audit history will remain.`)) return;
-  const button = byId<HTMLButtonElement>('withdraw'); button.disabled = true;
+  if (role !== 'admin' || !currentPublished || !api || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown) return;
+  const kind = editorKind.value as Kind; const id = recordId.value; const revision = currentPublished.revision || 0;
+  const editorRequest = editorRun; const sessionRequest = authRun;
+  if (!confirm(`Withdraw published revision ${revision} of ${kind} “${id}”? Its draft and audit history will remain.`)) return;
+  publishing = true; updateSaveState();
   try {
-    await api.withdraw(editorKind.value as Kind, recordId.value, currentPublished.revision || 0);
-    showMessage(editorMessage, `Publication withdrawn from the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
-    await selectDraft(editorKind.value as Kind, recordId.value); await loadDrafts();
-  } catch (error) { showMessage(editorMessage, userMessage(error), 'error'); }
-  finally { updateSaveState(); }
+    await withCmsDeadline(api.withdraw(kind, id, revision));
+    if (editorRequest !== editorRun || sessionRequest !== authRun) return;
+    publishing = false;
+    const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
+    const loaded = await refreshed;
+    if (!loaded && sessionRequest === authRun && receiptRun === editorRun) { outcomeUnknown = true; updateSaveState(); }
+    await loadDrafts();
+    if (sessionRequest === authRun && receiptRun === editorRun && editorKind.value === kind && recordId.value === id) showMessage(editorMessage, `${loaded ? '' : 'Saved-state refresh failed; do not repeat publication. '}Published revision ${revision} withdrawn from the Civic Pulse API. Its draft and history remain. Resident pages are unchanged. ${refreshStatus}`, 'success');
+  } catch (error) {
+    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
+  } finally { if (sessionRequest === authRun) { publishing = false; updateSaveState(); } }
 });
 
 if (!supabase) { loginPanel.hidden = true; accessPanel.hidden = true; }
