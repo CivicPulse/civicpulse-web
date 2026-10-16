@@ -58,7 +58,7 @@ export async function loadPinnedSnapshot(snapshotPath, { allowStagingDirectory =
     manifest.bootstrap_complete !== true || manifest.exporter_version !== 2 ||
     manifest.api_commit !== 'e9c9c621f43864f8fc90eaefacc4c0a223f50680' ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(manifest.dataset_epoch || '') ||
-    !/^(0|[1-9][0-9]*)$/.test(manifest.generation || '') || !/^[0-9a-f]{40}$/i.test(manifest.source_sha || '') ||
+    !/^(0|[1-9][0-9]*)$/.test(manifest.generation || '') || !/^[0-9a-f]{40}$/.test(manifest.source_sha || '') ||
     !/^[0-9a-f]{64}$/i.test(manifest.api_manifest_sha256 || '') ||
     !/^[0-9a-f]{64}$/i.test(manifest.api_vendor_manifest_sha256 || '') ||
     !/^[0-9a-f]{64}$/i.test(manifest.sha256 || '')) throw new Error('Pinned snapshot manifest is incomplete or unsupported');

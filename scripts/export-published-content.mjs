@@ -286,7 +286,7 @@ export async function exportPublishedSnapshot({
     throw new Error('Snapshot export requires the publication-v1 API client');
   }
   if (!/^[0-9a-f]{64}$/i.test(vendorManifestSha256 || '')) throw new Error('Snapshot export requires a pinned API vendor manifest hash');
-  if (!/^[0-9a-f]{40}$/i.test(sourceSha || '')) throw new Error('Snapshot source SHA must be a full commit hash');
+  if (!/^[0-9a-f]{40}$/.test(sourceSha || '')) throw new Error('Snapshot source SHA must be a full commit hash in lowercase');
   const requestedDir = path.resolve(snapshotsDir);
   await assertNoSymlinkComponents(requestedDir);
   await mkdir(requestedDir, { recursive: true });
@@ -337,7 +337,7 @@ async function main() {
     if (checkoutSha !== process.env.GITHUB_SHA) throw new Error('Runner checkout does not match GITHUB_SHA');
     sourceSha = process.env.GITHUB_SHA;
   }
-  if (!/^[0-9a-f]{40}$/i.test(sourceSha || '')) throw new Error('A full source commit SHA is required for snapshot export');
+  if (!/^[0-9a-f]{40}$/.test(sourceSha || '')) throw new Error('A full lowercase source commit SHA is required for snapshot export');
   const vendorDir = path.join(root, 'src/vendor/civicpulse-api-publication-local');
   const vendorManifest = JSON.parse(await readFile(path.join(vendorDir, 'manifest.json'), 'utf8'));
   if (vendorManifest.contract !== 'civicpulse-content-api-v1+publication-v1-local') throw new Error('Unexpected pinned API vendor contract');

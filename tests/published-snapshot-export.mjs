@@ -272,6 +272,36 @@ test('snapshot activation requires an explicit full source SHA', async () => {
   }), /full commit hash/);
 });
 
+test('export and pinned reader reject uppercase source SHA without normalization', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-sha-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const root = path.join(dir, 'snapshots');
+  const options = { api: clientFor(fixture()), snapshotsDir: root, sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha };
+  for (const invalidSha of [sourceSha.toUpperCase(), `B${sourceSha.slice(1)}`]) {
+    await assert.rejects(exportPublishedSnapshot({ ...options, sourceSha: invalidSha }), /full commit hash in lowercase/);
+    assert.throws(() => execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/export-published-content.mjs', import.meta.url))], {
+      env: { ...process.env, GITHUB_ACTIONS: 'false', GITHUB_SHA: invalidSha, PUBLIC_CONTENT_SOURCE: 'supabase',
+        PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'fixture-not-a-credential' },
+      stdio: 'pipe', timeout: 30_000,
+    }), error => /full lowercase source commit SHA/.test(error.stderr?.toString()));
+  }
+  await assert.rejects(stat(root), { code: 'ENOENT' });
+  const valid = await exportPublishedSnapshot(options);
+  const pointer = await readFile(path.join(root, 'active-snapshot.json'));
+  const copy = path.join(dir, 'reader-candidate');
+  await cp(valid.directory, copy, { recursive: true });
+  const metadata = JSON.parse(await readFile(path.join(copy, 'manifest.json'), 'utf8'));
+  metadata.source_sha = sourceSha.toUpperCase();
+  delete metadata.sha256;
+  metadata.sha256 = sha256(stableSerialize(metadata));
+  await writeFile(path.join(copy, 'manifest.json'), `${stableSerialize(metadata)}\n`);
+  const final = path.join(dir, `${metadata.dataset_epoch}-${metadata.generation}-${metadata.sha256}`);
+  await fsRename(copy, final);
+  await assert.rejects(loadPinnedSnapshot(final), /manifest is incomplete or unsupported/);
+  assert.deepEqual(await readFile(path.join(root, 'active-snapshot.json')), pointer);
+  assert.equal((await loadPinnedSnapshot(valid.directory)).manifest.source_sha, sourceSha);
+});
+
 test('pinned reader uses the exact directory and rejects symlink inputs', async t => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
