@@ -75,7 +75,7 @@ After authenticating Wrangler with `npx wrangler login`, publish the current wor
 npm run deploy
 ```
 
-This validates and builds the site, then uploads `dist/` to the production `main` branch. `wrangler.jsonc` identifies the account and Pages project. Deployment credentials stay outside the repository. Cloudflare redirect rules send the apex to HTTPS www while preserving paths and queries. The six retired demonstration-event `.ics` URLs redirect to `/calendar/`, preventing stale Pages asset caches from exposing obsolete sample downloads. The custom domain has a proxied CNAME pointing to `civicpulse-web.pages.dev`.
+This validates and builds the site, then uploads `dist/` to the production `main` branch. `wrangler.jsonc` identifies the Pages project. Wrangler resolves the account from authentication, or from `CLOUDFLARE_ACCOUNT_ID` when set; Pages configuration does not accept an `account_id` field. Deployment credentials stay outside the repository. Cloudflare redirect rules send the apex to HTTPS www while preserving paths and queries. The six retired demonstration-event `.ics` URLs redirect to `/calendar/`, preventing stale Pages asset caches from exposing obsolete sample downloads. The custom domain has a proxied CNAME pointing to `civicpulse-web.pages.dev`.
 
 Build settings:
 
