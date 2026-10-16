@@ -1,0 +1,23 @@
+// Injected only into a disposable LOCAL test archive, never a release build.
+import { clone, fixture as fixtureData } from './admin-browser-fixture.mjs';
+const fixture: any = fixtureData;
+export function getCmsSupabase(): any {
+  return {
+    auth: {
+      getSession: async () => ({ data: { session: fixture.session }, error: null }),
+      onAuthStateChange(callback: any) { fixture.listeners.push(callback); return { data: { subscription: { unsubscribe() {} } } }; },
+      signInWithPassword: async () => ({ error: new Error('This local fixture has no real authentication.') }),
+      signOut: async () => { fixture.session = null; for (const callback of fixture.listeners) callback('SIGNED_OUT', null); return { error: null }; },
+    },
+    from(table: string) {
+      const filters: Record<string, unknown> = {};
+      const source = () => (table === 'content' ? fixture.published : table === 'cms_history' ? fixture.history : fixture.drafts).filter((row: any) => Object.entries(filters).every(([key, value]) => row[key] === value));
+      return {
+        select() { return this; }, eq(key: string, value: unknown) { filters[key] = value; return this; }, order() { return this; },
+        range: async (first: number, last: number) => ({ data: clone(source().slice(first, last + 1)), error: null }),
+        limit: async (count: number) => ({ data: clone(source().slice(0, count)), error: null }),
+        maybeSingle: async () => ({ data: clone(source()[0] || null), error: null }),
+      };
+    },
+  };
+}

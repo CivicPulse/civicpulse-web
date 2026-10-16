@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
+import * as fields from '../src/lib/admin-fields.mjs';
+import * as fieldView from '../src/lib/admin-field-view.mjs';
 import * as reconciliation from '../src/lib/admin-reconciliation.mjs';
 import * as gate from '../src/lib/admin-publish-gate.mjs';
 import * as session from '../src/lib/admin-session.mjs';
@@ -21,6 +23,7 @@ class Element {
   setAttribute(key, value) { this.attributes[key] = value; }
   toggleAttribute(key, force) { if (key === 'hidden') this.hidden = force; }
   querySelector() { return new Element('login-button'); }
+  querySelectorAll() { const all = []; const visit = node => { for (const child of node.children) { if (child.dataset.field) all.push(child); visit(child); } }; visit(this); return all; }
   checkValidity() { return !!this.value && /^[a-z0-9][a-z0-9._-]*$/.test(this.value); }
   focus() {}
 }
@@ -28,7 +31,7 @@ const flush = async () => { for (let i = 0; i < 60; i++) await Promise.resolve()
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 async function harness() {
   const elements = new Map(); const created = [];
-  const el = id => { if (!elements.has(id)) elements.set(id, new Element(id)); return elements.get(id); };
+  const el = id => { const find = node => node.id === id ? node : node.children.map(find).find(Boolean); const dynamic = [...elements.values()].map(find).find(Boolean); if (dynamic) return dynamic; if (!elements.has(id)) elements.set(id, new Element(id)); return elements.get(id); };
   el('kind-filter').value = el('editor-kind').value = 'organization';
   const timers = new Map(); let timerId = 0;
   const setTimeout = (work, delay) => { if (!delay) queueMicrotask(work); else timers.set(++timerId, work); return timerId; };
@@ -47,6 +50,8 @@ async function harness() {
   const modules = {
     '../lib/cms-client': { getCmsSupabase: () => supabase },
     '../lib/admin-publish-gate.mjs': gate,
+    '../lib/admin-fields.mjs': fields,
+    '../lib/admin-field-view.mjs': fieldView,
     '../lib/admin-reconciliation.mjs': reconciliation,
     '../lib/admin-session.mjs': { ...session, deferredAuthRefresh: refresh => session.deferredAuthRefresh(refresh, work => queueMicrotask(work)) },
     '../lib/admin-request.mjs': { ...request, withCmsDeadline: promise => request.withCmsDeadline(promise, 20, { setTimeout, clearTimeout }) },
@@ -56,7 +61,7 @@ async function harness() {
   let code = ts.transpileModule(await readFile(new URL('../src/scripts/admin.ts', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
   code = code.replace(/^import (.*?) from ['"]([^'"]+)['"];$/gm, (_all, names, path) => `const ${names} = deps.modules[${JSON.stringify(path)}];`).replaceAll('import.meta.env', 'deps.env');
   const run = Object.getPrototypeOf(async function() {}).constructor;
-  await new run('deps', 'const { document, location, confirm, setTimeout } = deps;\n' + code)({ modules, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: 'local' }, document: { getElementById: el, createElement() { const e = new Element(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout });
+  await new run('deps', 'const { document, location, confirm, setTimeout } = deps;\n' + code)({ modules, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: 'local' }, document: { getElementById: el, createElement(tag) { const e = new Element(); e.tagName = tag.toUpperCase(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout });
   await flush();
   async function select() { const button = created.filter(e => e.className === 'record-button').at(-1); await button.event('click'); await flush(); }
   async function edit(name) { el('payload').value = JSON.stringify({ ...JSON.parse(el('payload').value), name }); await el('payload').event('input'); }
@@ -270,4 +275,18 @@ test('newer-state adoption requires receipt audit AND newer-state audit; absent/
     await h.el('reload-record').event('click'); await h.flush(); assert.equal(h.el('newer-state').hidden, false);
     await h.el('review-newer').event('click'); assert.equal(h.el('save-draft').disabled, false); assert.equal(h.state.calls.length, 1);
   }
+});
+
+
+test('actual structured form edits the authoritative payload, retains unknowns and exact saved review, and never bypasses publish', async () => {
+  const h = await harness(); await h.select();
+  assert.equal(h.el('field-name').value, 'Original');
+  h.el('field-name').value = 'Edited in ordinary field'; await h.el('field-name').event('input');
+  assert.equal(JSON.parse(h.el('payload').value).name, 'Edited in ordinary field'); assert.deepEqual(JSON.parse(h.el('payload').value).unknown, { evidence: ['retain', { value: 3 }] });
+  assert.equal(h.el('publish').disabled, true); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 0);
+  assert.equal(JSON.parse(h.el('saved-review').textContent).name, 'Original');
+  await h.el('editor-form').event('submit'); await h.flush(); assert.equal(h.state.draft.revision, 2);
+  assert.equal(JSON.parse(h.el('saved-review').textContent).name, 'Edited in ordinary field'); assert.equal(h.el('publish').disabled, false);
+  h.el('field-name').value = 'Later unsaved edit'; await h.el('field-name').event('input'); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 1);
+  await h.auth(null); assert.equal(h.el('saved-review').textContent, 'No saved revision yet.'); assert.ok(!h.el('structured-fields').textContent.includes('Later unsaved edit'));
 });

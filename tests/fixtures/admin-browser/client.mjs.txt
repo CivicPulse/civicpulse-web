@@ -1,0 +1,29 @@
+// Injected only into a disposable LOCAL test archive. Not backend/security proof.
+import { clone, fixture } from '../../lib/admin-browser-fixture.mjs';
+import { assertPublicPrivateEvent } from '../../lib/private-event-policy.mjs';
+export class ApiError extends Error { constructor(status, detail) { super(detail.message); this.status = status; this.code = detail.code; } }
+function audit(action, row) { fixture.history.unshift({ kind: row.kind, id: row.id, revision: row.revision, action, actor: 'local-fixture-user', sequence: fixture.history.length + 1, occurred_at: new Date().toISOString() }); }
+export function createCivicPulseClient() {
+  return {
+    role: async () => fixture.role,
+    getDraft: async (kind, id) => clone(fixture.drafts.find(row => row.kind === kind && row.id === id) || null),
+    saveDraft: async (kind, payload, revision) => {
+      const old = fixture.drafts.find(row => row.kind === kind && row.id === payload.id);
+      if ((old?.revision || 0) !== revision) throw new ApiError(409, { code: '40001', message: 'The draft revision changed.' });
+      const row = { kind, id: payload.id, revision: revision + 1, payload: clone(payload) };
+      if (old) fixture.drafts.splice(fixture.drafts.indexOf(old), 1, row); else fixture.drafts.push(row);
+      audit('save', row); return row.revision;
+    },
+    publish: async (kind, id, revision) => {
+      const row = fixture.drafts.find(row => row.kind === kind && row.id === id);
+      if (row?.revision !== revision) throw new ApiError(409, { code: '40001', message: 'The draft revision changed.' });
+      if (kind === 'event') { try { assertPublicPrivateEvent(row.payload); } catch (error) { throw new ApiError(400, { code: '22023', message: error.message }); } }
+      fixture.published = fixture.published.filter(item => item.kind !== kind || item.id !== id); fixture.published.push(clone(row)); audit('publish', row); return revision;
+    },
+    withdraw: async (kind, id, revision) => {
+      const row = fixture.published.find(row => row.kind === kind && row.id === id);
+      if (row?.revision !== revision) throw new ApiError(409, { code: '40001', message: 'The publication revision changed.' });
+      fixture.published = fixture.published.filter(item => item.kind !== kind || item.id !== id); audit('withdraw', row);
+    },
+  };
+}

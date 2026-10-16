@@ -1,3 +1,5 @@
+import { createStructuredFields } from '../lib/admin-field-view.mjs';
+import { newPayload, parseEditorPayload } from '../lib/admin-fields.mjs';
 import { getCmsSupabase } from '../lib/cms-client';
 import { canPublishReviewedDraft, publishReviewedDraft } from '../lib/admin-publish-gate.mjs';
 import { assertRecordIdentity, inspectActionReceipt, makeActionReceipt } from '../lib/admin-reconciliation.mjs';
@@ -58,6 +60,13 @@ let roleUnavailable = false;
 let actionReceipt: ReturnType<typeof makeActionReceipt> | null = null;
 let newerState: { draft: Draft; published: Published | null; history: Tables<'cms_history'>[]; session: number; editor: number } | null = null;
 
+const structuredFields = createStructuredFields({
+  document, container: byId('structured-fields'), readText: () => payloadInput.value,
+  writeText: (text: string) => { payloadInput.value = text; }, getKind: () => editorKind.value,
+  isEditable: () => !!role && !saving && !publishing && !checkingRole && !roleUnavailable && !loadingRecord && !outcomeUnknown,
+  onChange: () => updateSaveState(), onError: (error: unknown) => showMessage(editorMessage, userMessage(error), 'error'),
+});
+
 function showMessage(target: HTMLElement, message: string, kind: 'error' | 'success' | 'info' = 'info') {
   target.textContent = message;
   target.className = `form-message ${kind === 'info' ? '' : kind}`.trim();
@@ -79,9 +88,9 @@ function userMessage(error: unknown) {
 }
 function parsePayload(showErrors = true) {
   let parsed: unknown;
-  try { parsed = JSON.parse(payloadInput.value); }
+  try { parsed = parseEditorPayload(payloadInput.value); }
   catch (error) {
-    if (showErrors) showMessage(editorMessage, `JSON syntax error: ${(error as Error).message}`, 'error');
+    if (showErrors) showMessage(editorMessage, `The complete record needs attention: ${(error as Error).message}`, 'error');
     return null;
   }
   if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') {
@@ -106,7 +115,7 @@ function clearEditor() {
   editorRun++;
   currentDraft = null; currentPublished = null; expectedRevision = 0;
   saving = false; publishing = false; outcomeUnknown = false; loadingRecord = false;
-  recordId.value = ''; payloadInput.value = '{\n  "id": "",\n  "name": ""\n}';
+  recordId.value = ''; payloadInput.value = newPayload(editorKind.value);
   editorKind.disabled = false; recordId.disabled = false;
   byId('editor-summary').textContent = 'New draft · revision 0';
   byId('revision-label').textContent = 'New';
@@ -122,6 +131,7 @@ function clearEditor() {
   actionReceipt = null; newerState = null;
   byId<HTMLTextAreaElement>('newer-preview').value = ''; byId('newer-state').hidden = true;
   hideMessage(editorMessage);
+  structuredFields.render();
   updateSaveState();
 }
 function updateSaveState() {
@@ -140,6 +150,11 @@ function updateSaveState() {
   publish.textContent = publishing ? 'Publishing…' : (currentPublished ? 'Publish draft update' : 'Publish reviewed draft');
   byId<HTMLButtonElement>('withdraw').disabled = role !== 'admin' || !currentPublished || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown;
   byId<HTMLButtonElement>('reload-record')?.toggleAttribute('hidden', !outcomeUnknown);
+  structuredFields.setDisabled(!role || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown);
+  byId('saved-review').textContent = currentDraft ? JSON.stringify(currentDraft.payload, null, 2) : 'No saved revision yet.';
+  const status = byId('draft-state');
+  status.textContent = outcomeUnknown ? 'Check last action' : loadingRecord ? 'Checking saved state…' : saving ? 'Saving draft…' : publishing ? 'Updating API publication…' : !conflictPanel.hidden ? 'Resolve revision conflict' : !parsed ? 'Record needs attention' : !currentDraft ? 'New draft' : canPublishReviewedDraft({ role: 'admin', draft: currentDraft, kind: editorKind.value, id: recordId.value.trim(), expectedRevision, payloadText: payloadInput.value }) ? 'Saved draft' : 'Unsaved changes';
+  byId('publish-help').textContent = outcomeUnknown ? 'Reload the saved state before another action.' : !conflictPanel.hidden ? 'Resolve the revision conflict before publishing.' : !currentDraft ? 'Save a draft, then review its saved payload.' : !parsed ? 'Correct the complete record before saving.' : currentPublished?.revision === currentDraft.revision && status.textContent === 'Saved draft' ? 'This saved revision is already published to the API.' : status.textContent === 'Unsaved changes' ? 'Save your changes, then review the saved revision before publishing.' : `Publish only the exact saved revision ${currentDraft.revision} shown below. Resident refresh is disabled.`;
   byId('editor-form').setAttribute('aria-busy', String(saving || publishing || loadingRecord));
   for (const id of ['kind-filter', 'new-draft', 'load-more']) (byId(id) as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord;
   document.querySelectorAll('.record-button').forEach(button => { (button as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord; });
@@ -176,7 +191,7 @@ async function loadDrafts(append = false) {
     recordList.append(fragment);
     listOffset = offset + rows.length; hasMore = rows.length === 50;
     byId<HTMLButtonElement>('load-more').hidden = !hasMore;
-    byId('record-status').textContent = rows.length ? `${listOffset} ${kind} draft${listOffset === 1 ? '' : 's'} loaded.` : 'No drafts of this type yet. Start a new draft.';
+    byId('record-status').textContent = rows.length ? `${listOffset} ${{ organization: 'organization', calendar: 'calendar', event: 'event', layer: 'map layer', map: 'map' }[kind]} draft${listOffset === 1 ? '' : 's'}.` : 'No drafts of this type yet. Start a new draft.';
   } catch (error) {
     if (sessionRequest === authRun && roleRequest === role) byId('record-status').textContent = userMessage(error);
   } finally { if (sessionRequest === authRun) loadingList = false; }
@@ -235,7 +250,7 @@ async function selectDraft(kind: Kind, id: string) {
     currentPublished = data as Published | null;
     editorKind.value = kind; editorKind.disabled = true;
     recordId.value = row.id || ''; recordId.disabled = true;
-    payloadInput.value = JSON.stringify(row.payload, null, 2);
+    payloadInput.value = JSON.stringify(row.payload, null, 2); structuredFields.render();
     byId('editor-summary').textContent = `${labelFor(row)} · ${kind}`;
     const wasUnknown = outcomeUnknown;
     outcomeUnknown = false; loadingRecord = false; conflictPanel.hidden = true;
@@ -337,10 +352,10 @@ async function signOut() {
 byId<HTMLButtonElement>('signout').addEventListener('click', () => void signOut());
 byId<HTMLButtonElement>('access-signout').addEventListener('click', () => void signOut());
 byId<HTMLButtonElement>('access-retry').addEventListener('click', async () => { if (!supabase) return; try { const { data, error } = await withCmsDeadline(supabase.auth.getSession()); if (error) throw error; await refreshRole(data.session); } catch (error) { showMessage(byId('access-message'), userMessage(error), 'error'); } });
-kindFilter.addEventListener('change', () => { clearEditor(); editorKind.value = kindFilter.value; void loadDrafts(); });
+kindFilter.addEventListener('change', () => { editorKind.value = kindFilter.value; clearEditor(); void loadDrafts(); });
 byId<HTMLButtonElement>('load-more').addEventListener('click', () => void loadDrafts(true));
-byId<HTMLButtonElement>('new-draft').addEventListener('click', () => { clearEditor(); editorKind.value = kindFilter.value; recordId.focus(); });
-editorKind.addEventListener('change', () => { kindFilter.value = editorKind.value; clearRecordList(); void loadDrafts(); });
+byId<HTMLButtonElement>('new-draft').addEventListener('click', () => { editorKind.value = kindFilter.value; clearEditor(); recordId.focus(); });
+editorKind.addEventListener('change', () => { kindFilter.value = editorKind.value; structuredFields.render(); clearRecordList(); void loadDrafts(); });
 byId<HTMLButtonElement>('reload-record').addEventListener('click', () => { if (confirm('Reload the saved record? Unsaved edits will be replaced. Check the revision before making another change.')) void selectDraft(editorKind.value as Kind, recordId.value.trim()); });
 byId<HTMLButtonElement>('review-newer').addEventListener('click', () => {
   const staged = newerState;
@@ -355,7 +370,7 @@ byId<HTMLButtonElement>('review-newer').addEventListener('click', () => {
   currentDraft = staged.draft; currentPublished = staged.published;
   expectedRevision = staged.draft.revision || 0;
   editorKind.value = staged.draft.kind || ''; recordId.value = staged.draft.id || '';
-  payloadInput.value = JSON.stringify(staged.draft.payload, null, 2);
+  payloadInput.value = JSON.stringify(staged.draft.payload, null, 2); structuredFields.render();
   byId('editor-summary').textContent = `${labelFor(staged.draft)} · ${staged.draft.kind}`;
   byId('revision-label').textContent = `Draft r${expectedRevision} · ${currentPublished ? `Published r${currentPublished.revision}` : 'Not published'}`;
   actionReceipt = null; newerState = null; outcomeUnknown = false; conflictPanel.hidden = true;
@@ -363,7 +378,11 @@ byId<HTMLButtonElement>('review-newer').addEventListener('click', () => {
   showMessage(editorMessage, 'Loaded the newer saved state for review. No action has been repeated. Review all fields and metadata before saving or publishing.', 'info');
   updateSaveState();
 });
-recordId.addEventListener('input', updateSaveState); payloadInput.addEventListener('input', updateSaveState);
+recordId.addEventListener('input', () => {
+  if (!currentDraft) { try { const value = parseEditorPayload(payloadInput.value); value.id = recordId.value.trim(); payloadInput.value = JSON.stringify(value, null, 2); structuredFields.render(); } catch { /* Invalid Advanced JSON stays untouched. */ } }
+  updateSaveState();
+});
+payloadInput.addEventListener('input', () => { structuredFields.render(); updateSaveState(); });
 
 byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
   event.preventDefault(); hideMessage(editorMessage);
@@ -422,7 +441,7 @@ byId<HTMLButtonElement>('load-latest').addEventListener('click', () => {
   const latest = byId<HTMLTextAreaElement>('conflict-latest').value;
   try {
     const parsed = JSON.parse(latest) as Record<string, unknown>;
-    payloadInput.value = JSON.stringify(parsed, null, 2);
+    payloadInput.value = JSON.stringify(parsed, null, 2); structuredFields.render();
     expectedRevision = Number(byId('conflict-panel').dataset.revision || 0);
     if (currentDraft) currentDraft = { ...currentDraft, revision: expectedRevision, payload: parsed as import('../vendor/civicpulse-api/database.types').Json };
     conflictPanel.hidden = true; showMessage(editorMessage, `Loaded the latest saved revision ${expectedRevision}. Review it; any change must be saved before publishing.`, 'success');
