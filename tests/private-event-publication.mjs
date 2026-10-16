@@ -8,6 +8,7 @@ import {
   publicIcsLocation,
 } from '../src/lib/private-event-policy.mjs';
 import { assertLocalContentSource, prepareReviewedMobilize, REVIEWED_MOBILIZE_SHA256 } from '../scripts/prepare-public-mobilize.mjs';
+import urlCorpus from './fixtures/cp-source-url-v1.json' with { type: 'json' };
 
 const sourcePath = new URL('../src/data/mobilize-events.json', import.meta.url);
 const basePrivate = {
@@ -84,4 +85,37 @@ test('permits only the placeholder in ICS location and excludes private or virtu
   assert.equal(isPublicMapEvent(privateEvent), false);
   assert.equal(isPublicMapEvent({ ...basePrivate, addressPrivate: false, isVirtual: true, coordinates: [-83.6, 32.8] }), false);
   assert.equal(isPublicMapEvent({ ...basePrivate, addressPrivate: false, isVirtual: false, coordinates: [-83.6, 32.8] }), true);
+});
+
+test('matches the shared cp-source-url-v1 corpus without changing accepted bytes', () => {
+  assert.equal(urlCorpus.policy, 'cp-source-url-v1');
+  for (const value of urlCorpus.accept) {
+    const event = { ...basePrivate, sourceUrl: value };
+    assert.equal(assertPublicPrivateEvent(event), event, `expected acceptance: ${JSON.stringify(value)}`);
+    assert.equal(event.sourceUrl, value, 'accepted source URL bytes must remain unchanged');
+    assert.doesNotThrow(() => new URL(value), `accepted URL must parse: ${JSON.stringify(value)}`);
+  }
+  for (const value of urlCorpus.reject) {
+    assert.throws(() => assertPublicPrivateEvent({ ...basePrivate, sourceUrl: value }), undefined,
+      `expected rejection: ${JSON.stringify(value)}`);
+  }
+  assert.throws(() => {
+    const event = { ...basePrivate };
+    delete event.sourceUrl;
+    assertPublicPrivateEvent(event);
+  }, /cp-source-url-v1/);
+});
+
+test('matches generated cp-source-url-v1 host-length boundaries', () => {
+  const repeat = (character, count) => character.repeat(count);
+  const accept = [
+    `https://${repeat('a', 63)}.test/`,
+    `https://${repeat('a', 63)}.${repeat('b', 63)}.${repeat('c', 63)}.${repeat('d', 61)}/`,
+  ];
+  const reject = [
+    `https://${repeat('a', 64)}.test/`,
+    `https://${repeat('a', 63)}.${repeat('b', 63)}.${repeat('c', 63)}.${repeat('d', 62)}/`,
+  ];
+  for (const sourceUrl of accept) assert.doesNotThrow(() => assertPublicPrivateEvent({ ...basePrivate, sourceUrl }));
+  for (const sourceUrl of reject) assert.throws(() => assertPublicPrivateEvent({ ...basePrivate, sourceUrl }), /cp-source-url-v1/);
 });
