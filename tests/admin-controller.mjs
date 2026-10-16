@@ -34,7 +34,7 @@ async function harness() {
   const clearTimeout = id => timers.delete(id);
   const user = { user: { id: 'staff-a', email: 'synthetic@example.org' } };
   const payload = { id: 'qa-org', name: 'Original', unknown: { evidence: ['retain', { value: 3 }] } };
-  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, save: null, publish: null, withdraw: null, calls: [], auth: null };
+  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, save: null, publish: null, withdraw: null, calls: [], auth: null };
   const api = {
     role: () => state.role(),
     getDraft: async () => state.getDraft ? state.getDraft() : structuredClone(state.draft),
@@ -42,7 +42,7 @@ async function harness() {
     publish: async (...args) => { state.calls.push(['publish', ...args]); if (state.publish) return state.publish(...args); state.published = structuredClone(state.draft); },
     withdraw: async (...args) => { state.calls.push(['withdraw', ...args]); if (state.withdraw) return state.withdraw(...args); state.published = null; },
   };
-  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => ({ data: [], error: null }) }; return query; } };
+  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: [], error: null }) }; return query; } };
   const modules = {
     '../lib/cms-client': { getCmsSupabase: () => supabase },
     '../lib/admin-publish-gate.mjs': gate,
@@ -157,4 +157,33 @@ test('publish and withdraw deadlines retain unknown lock through failed reads, w
     await h.el('reload-record').event('click'); await h.flush(); assert.equal(h.el('save-draft').disabled, true);
     await h.el(action).event('click'); assert.equal(h.state.calls.length, 1);
   }
+});
+
+
+test('known save success stays locked through pending/failed published or history reads, without duplicate saves', async () => {
+  for (const boundary of ['getPublished', 'getHistory']) {
+    const h = await harness(); await h.select(); await h.edit('Intentionally saved');
+    const pending = deferred(); h.state[boundary] = () => pending.promise;
+    const save = h.el('editor-form').event('submit'); await h.flush();
+    assert.equal(h.state.draft.revision, 2); assert.equal(h.state.calls.length, 1); assert.equal(h.el('save-draft').disabled, true);
+    await h.el('editor-form').event('submit'); await h.el('publish').event('click'); await h.el('withdraw').event('click'); assert.equal(h.state.calls.length, 1);
+    pending.resolve({ data: null, error: new Error('Follow-up read failed') }); await save;
+    assert.match(h.el('editor-message').textContent, /saved.*revision 2/); assert.match(h.el('editor-message').textContent, /Do not repeat/);
+    assert.equal(h.el('save-draft').disabled, true); assert.equal(h.el('publish').disabled, true);
+    await h.el('editor-form').event('submit'); assert.equal(h.state.calls.length, 1); assert.equal(h.state.draft.revision, 2);
+    h.state[boundary] = null; await h.el('reload-record').event('click'); await h.flush();
+    assert.equal(h.el('save-draft').disabled, false); assert.equal(JSON.parse(h.el('payload').value).name, 'Intentionally saved');
+    await h.edit('Deliberate next edit'); await h.el('editor-form').event('submit'); await h.flush();
+    assert.equal(h.state.calls.length, 2); assert.equal(h.state.draft.revision, 3);
+  }
+});
+
+
+test('known-save follow-up read arriving after user change cannot restore its payload or feedback', async () => {
+  const h = await harness(); await h.select(); await h.edit('Former user save');
+  const pending = deferred(); h.state.getHistory = () => pending.promise;
+  const save = h.el('editor-form').event('submit'); await h.flush(); assert.equal(h.state.draft.revision, 2);
+  await h.auth({ user: { id: 'staff-b' } }); pending.resolve({ data: [], error: null }); await save;
+  assert.equal(h.el('record-id').value, ''); assert.ok(!h.el('payload').value.includes('Former user save'));
+  assert.ok(!h.el('editor-message').textContent.includes('revision 2')); assert.equal(h.state.calls.length, 1);
 });

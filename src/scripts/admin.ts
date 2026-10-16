@@ -122,7 +122,9 @@ function updateSaveState() {
     payloadText: payloadInput.value, conflicted: !conflictPanel.hidden, busy: saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown,
     alreadyPublished: currentPublished?.revision === currentDraft?.revision,
   });
-  payloadInput.disabled = publishing;
+  payloadInput.readOnly = saving || publishing || loadingRecord || outcomeUnknown;
+  recordId.disabled = !!currentDraft || saving || publishing || loadingRecord || outcomeUnknown;
+  editorKind.disabled = !!currentDraft || saving || publishing || loadingRecord || outcomeUnknown;
   byId<HTMLButtonElement>('save-draft').textContent = saving ? 'Saving…' : 'Save draft';
   publish.textContent = publishing ? 'Publishing…' : (currentPublished ? 'Publish draft update' : 'Publish reviewed draft');
   byId<HTMLButtonElement>('withdraw').disabled = role !== 'admin' || !currentPublished || saving || publishing || checkingRole || roleUnavailable || loadingRecord || outcomeUnknown;
@@ -184,23 +186,6 @@ async function loadHistory(kind: Kind, id: string) {
   }
   if (!list.children.length) { const item = document.createElement('li'); item.textContent = 'No activity is recorded yet.'; list.append(item); }
 }
-async function refreshPublished(kind: Kind, id: string, editorRequest: number, sessionRequest: number) {
-  const { data, error } = await withCmsDeadline(supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle());
-  if (error) throw error;
-  if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-  currentPublished = data as Published | null;
-  const publish = byId<HTMLButtonElement>('publish'); const withdraw = byId<HTMLButtonElement>('withdraw');
-  publish.hidden = role !== 'admin'; withdraw.hidden = role !== 'admin';
-  publish.textContent = currentPublished ? 'Publish draft update' : 'Publish reviewed draft';
-  withdraw.disabled = role !== 'admin' || !currentPublished;
-  const draftRevision = currentDraft?.revision ?? 0;
-  const publishedRevision = currentPublished?.revision ?? null;
-  byId('revision-label').textContent = currentPublished
-    ? `Draft r${draftRevision} · Published r${publishedRevision}${draftRevision === publishedRevision ? ' · current' : ' · unpublished changes'}`
-    : `Draft r${draftRevision} · Not published`;
-  updateSaveState();
-  withdraw.title = currentPublished ? `Withdraw the published revision ${publishedRevision}.` : 'This record has no live publication.';
-}
 async function selectDraft(kind: Kind, id: string) {
   if (checkingRole || roleUnavailable || !role || saving || publishing) return false;
   const editorRequest = ++editorRun;
@@ -217,6 +202,8 @@ async function selectDraft(kind: Kind, id: string) {
     const { data, error } = await withCmsDeadline(supabase!.from('content').select('*').eq('kind', kind).eq('id', id).maybeSingle());
     if (!isCurrent()) return false;
     if (error) throw error;
+    await loadHistory(kind, id);
+    if (!isCurrent()) return false;
     currentDraft = row; expectedRevision = row.revision || 0;
     currentPublished = data as Published | null;
     editorKind.value = kind; editorKind.disabled = true;
@@ -232,7 +219,6 @@ async function selectDraft(kind: Kind, id: string) {
     updateSaveState();
     if (wasUnknown) showMessage(editorMessage, `Saved state checked: draft revision ${dr}${pr == null ? ', not published' : `, published revision ${pr}`}. Review the loaded content before another action.`, 'success');
     else hideMessage(editorMessage);
-    try { await loadHistory(kind, id); } catch (error) { if (isCurrent()) showMessage(editorMessage, `Saved state loaded. Activity could not be refreshed. ${userMessage(error)}`, 'info'); }
     if (!isCurrent()) return false;
     if (location.hash !== '#editor') location.hash = 'editor';
     return true;
@@ -343,18 +329,14 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
     if (editorRequest !== editorRun || sessionRequest !== authRun || editorKind.value !== kind || recordId.value.trim() !== id) return;
     expectedRevision = savedRevision;
     currentDraft = { kind, id, revision: savedRevision, payload: parsed as import('../vendor/civicpulse-api/database.types').Json, updated_at: new Date().toISOString(), updated_by: null };
-    byId('editor-summary').textContent = `${String(parsed.name || parsed.title || recordId.value)} · ${editorKind.value}`;
-    showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. Review the saved payload before publishing. Resident pages are unchanged. ${refreshStatus}`, 'success');
-    conflictPanel.hidden = true;
-    saving = false; updateSaveState();
-    try {
-      await refreshPublished(kind, id, editorRequest, sessionRequest);
-      if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-      await loadHistory(kind, id);
-      if (editorRequest === editorRun && sessionRequest === authRun) await loadDrafts();
-    } catch (error) {
-      if (editorRequest === editorRun && sessionRequest === authRun) showMessage(editorMessage, `Draft saved as revision ${savedRevision}. The following read failed; do not repeat the save. ${userMessage(error)}`, 'info');
-    }
+    // The mutation result is known. Keep writes locked until the following
+    // draft/publication/history reads reconcile that result; never replay it.
+    outcomeUnknown = true; saving = false; updateSaveState();
+    const refreshed = selectDraft(kind, id); const receiptRun = editorRun;
+    const loaded = await refreshed;
+    if (receiptRun !== editorRun || sessionRequest !== authRun) return;
+    showMessage(editorMessage, `Draft saved to the Civic Pulse API as revision ${savedRevision}. ${loaded ? 'Review the saved payload before publishing.' : 'Saved-state refresh failed. Do not repeat this save; reload the saved record to check its state.'} Resident pages are unchanged. ${refreshStatus}`, loaded ? 'success' : 'info');
+    if (loaded) await loadDrafts();
   } catch (error) {
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
     if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true;
