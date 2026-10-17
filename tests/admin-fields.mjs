@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { editPayloadField, editableFieldValue, fieldsByKind, parseEditorPayload } from '../src/lib/admin-fields.mjs';
+import { CmsJsonValueError } from '../src/lib/admin-json.mjs';
 import { canPublishReviewedDraft } from '../src/lib/admin-publish-gate.mjs';
 
 test('editing one field retains nested unknown metadata, source bytes, geometry and special own keys', () => {
@@ -24,7 +25,7 @@ test('date offsets and ordered IDs are not normalized; absent/null/unsupported f
   assert.deepEqual(editableFieldValue({}, field), { editable: true, value: 'unset' });
   assert.equal(Object.hasOwn(parseEditorPayload(editPayloadField('{"id":"x"}', 'event', 'addressPrivate', 'unset')), 'addressPrivate'), false);
   assert.throws(() => editPayloadField('{bad', 'event', 'title', 'New'));
-  assert.throws(() => editPayloadField('{"id":"x","extra":1e1000}', 'event', 'title', 'New'), /finite/);
+  assert.throws(() => editPayloadField('{"id":"x","extra":1e1000}', 'event', 'title', 'New'), CmsJsonValueError);
 });
 
 test('private flag never silently sanitizes fields, and structured edits require explicit save before publishing', () => {

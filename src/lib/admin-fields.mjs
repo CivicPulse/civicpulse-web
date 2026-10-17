@@ -1,3 +1,4 @@
+import { parseCmsJson } from './admin-json.mjs';
 import { canonicalJson } from './admin-publish-gate.mjs';
 
 const name = { key: 'name', label: 'Name', section: 'Content', help: 'The name shown to residents.' };
@@ -31,7 +32,7 @@ export const fieldsByKind = {
 };
 
 export function parseEditorPayload(text) {
-  const value = JSON.parse(text);
+  const value = parseCmsJson(text);
   if (!value || Array.isArray(value) || typeof value !== 'object') throw new Error('The complete record must be a JSON object.');
   canonicalJson(value); // Reject numeric overflow instead of coercing it to null.
   return value;

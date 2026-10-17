@@ -24,7 +24,7 @@ flag does not sanitize/redact coordinates, fields or addresses; API publication
 validation still rejects invalid private records.
 
 New event drafts explicitly set sample=false; no event text/source facts are
-invented. Drafts can be incomplete. A complete record must be valid finite JSON,
+invented. Drafts can be incomplete. A complete record must use supported JSON numeric values (see below),
 and its ID must match Record ID. Backend-enforced permissions, membership,
 reference, date, geometry and publication validation remain authoritative.
 
@@ -89,3 +89,38 @@ error status, and a fixture-only function signature mismatch. The screenshot
 views in the connected-Chrome review show the desktop records/editor hierarchy
 and stacked mobile layout. Mock success is not authenticated hosted QA, nor does
 it close the previously unverified live conflict/withdraw/signout/editor-role cases.
+
+
+## Numeric values at the editor boundary
+
+Native JSON parsing can round a high-precision decimal or underflow a small value
+before a field renderer sees it. The CMS therefore guards raw JSON at the exact
+project-origin `/rest/v1/` response readers, using the existing vendored client's
+fetch injection and Supabase's global fetch option. Vendor files are unchanged.
+The native Response retains its status/headers and bound text/json/clone readers;
+the guard runs when consumers read the body, outside PostgREST's fetch retry loop.
+Auth and other origins/paths are untouched. Request headers, body and signal pass
+through unchanged. Guard errors contain no response body, numeric token or key.
+
+Every unquoted numeric token must have the same normalized decimal VALUE as the
+canonical decimal spelling of its JavaScript Number. Equivalent exponent forms
+and trailing zeros are accepted; precision loss, overflow and underflow are
+rejected before the first native JSON parse. This is not preservation of numeric
+lexemes or an arbitrary-precision editor. Negative zero is the same numeric value
+as zero here. The same guard applies to pasted Advanced JSON, structured edits,
+Save parsing and the handler's exact-payload Publish gate. Strings and escaped
+numeric-looking text are not treated as numeric tokens.
+
+Work is bounded: at most 16 Mi UTF-16 text units, 4096 units per numeric token and
+128 levels of JSON nesting. Exponents are compared without allocating strings of
+zeros. Unsupported records remain blocked for API-side resolution; they are not
+silently rewritten to a nearby supported value. A rejected load/reconcile cannot
+provide an editable rounded baseline. A known successful mutation followed by a
+rejected response stays locked until proper reconciliation; it is not replayed.
+
+`node tests/admin-json.mjs` exercises raw Response text through the ACTUAL pinned
+vendored getDraft and installed Supabase content parser, with one request per
+unsafe guard rejection (no automatic guard retry), ordinary/equivalent controls,
+strings/escapes/bounds and HTTP status/error preservation. Actual controller cases
+also load unsafe nested raw draft/public responses and prove no rounded editor
+state or write dispatch, plus known-save/reconcile locking and explicit recovery.

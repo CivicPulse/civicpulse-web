@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
+import { createClient as createRealSupabase } from '@supabase/supabase-js';
+import { createCivicPulseClient as createRealApi } from '../src/vendor/civicpulse-api/client.mjs';
+import * as numeric from '../src/lib/admin-json.mjs';
 import * as fields from '../src/lib/admin-fields.mjs';
 import * as fieldView from '../src/lib/admin-field-view.mjs';
 import * as reconciliation from '../src/lib/admin-reconciliation.mjs';
@@ -38,30 +41,31 @@ async function harness() {
   const clearTimeout = id => timers.delete(id);
   const user = { user: { id: 'staff-a', email: 'synthetic@example.org' } };
   const payload = { id: 'qa-org', name: 'Original', unknown: { evidence: ['retain', { value: 3 }] } };
-  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, history: [], save: null, publish: null, withdraw: null, calls: [], auth: null };
+  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, rawDraft: null, rawPublished: null, rawDraftCalls: 0, rawPublishedCalls: 0, clientOptions: null, history: [], save: null, publish: null, withdraw: null, calls: [], auth: null };
   const api = {
     role: () => state.role(),
-    getDraft: async () => state.getDraft ? state.getDraft() : structuredClone(state.draft),
+    getDraft: async (kind, id) => state.rawDraft !== null ? createRealApi(state.clientOptions).getDraft(kind, id) : state.getDraft ? state.getDraft() : structuredClone(state.draft),
     saveDraft: async (...args) => { state.calls.push(['save', ...args]); if (state.save) return state.save(...args); const [kind, value, revision] = args; if (revision !== state.draft.revision) throw new ApiError(409, { code: '40001', message: 'Revision conflict' }); state.draft = { kind, id: value.id, revision: revision + 1, payload: structuredClone(value) }; state.history.unshift({ action: 'save', revision: revision + 1 }); return revision + 1; },
     publish: async (...args) => { state.calls.push(['publish', ...args]); if (state.publish) return state.publish(...args); state.published = structuredClone(state.draft); state.history.unshift({ action: 'publish', revision: state.draft.revision }); },
     withdraw: async (...args) => { state.calls.push(['withdraw', ...args]); if (state.withdraw) return state.withdraw(...args); state.history.unshift({ action: 'withdraw', revision: state.published.revision }); state.published = null; },
   };
-  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: structuredClone(state.history), error: null }) }; return query; } };
+  const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.rawPublished !== null ? createRealSupabase('https://example.test', 'public-fixture', { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: numeric.createCmsJsonFetch(async () => { state.rawPublishedCalls++; return new Response(state.rawPublished, { headers: { 'content-type': 'application/json' } }); }, 'https://example.test') } }).from('content').select('*').eq('kind', 'organization').eq('id', 'qa-org').maybeSingle() : state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: structuredClone(state.history), error: null }) }; return query; } };
   const modules = {
     '../lib/cms-client': { getCmsSupabase: () => supabase },
     '../lib/admin-publish-gate.mjs': gate,
     '../lib/admin-fields.mjs': fields,
+    '../lib/admin-json.mjs': numeric,
     '../lib/admin-field-view.mjs': fieldView,
     '../lib/admin-reconciliation.mjs': reconciliation,
     '../lib/admin-session.mjs': { ...session, deferredAuthRefresh: refresh => session.deferredAuthRefresh(refresh, work => queueMicrotask(work)) },
     '../lib/admin-request.mjs': { ...request, withCmsDeadline: promise => request.withCmsDeadline(promise, 20, { setTimeout, clearTimeout }) },
     '../lib/cms-refresh-status': { cmsRefreshStatus: () => 'CMS-to-website refresh is not enabled in this build.' },
-    '../vendor/civicpulse-api/client.mjs': { ApiError, createCivicPulseClient: () => api },
+    '../vendor/civicpulse-api/client.mjs': { ApiError, createCivicPulseClient: options => { state.clientOptions = options; return api; } },
   };
   let code = ts.transpileModule(await readFile(new URL('../src/scripts/admin.ts', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
   code = code.replace(/^import (.*?) from ['"]([^'"]+)['"];$/gm, (_all, names, path) => `const ${names} = deps.modules[${JSON.stringify(path)}];`).replaceAll('import.meta.env', 'deps.env');
   const run = Object.getPrototypeOf(async function() {}).constructor;
-  await new run('deps', 'const { document, location, confirm, setTimeout } = deps;\n' + code)({ modules, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: 'local' }, document: { getElementById: el, createElement(tag) { const e = new Element(); e.tagName = tag.toUpperCase(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout });
+  await new run('deps', 'const { document, location, confirm, setTimeout } = deps; const globalThis = deps.runtime;\n' + code)({ modules, runtime: { fetch: async () => { state.rawDraftCalls++; return new Response(state.rawDraft, { headers: { 'content-type': 'application/json' } }); } }, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: 'local' }, document: { getElementById: el, createElement(tag) { const e = new Element(); e.tagName = tag.toUpperCase(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout });
   await flush();
   async function select() { const button = created.filter(e => e.className === 'record-button').at(-1); await button.event('click'); await flush(); }
   async function edit(name) { el('payload').value = JSON.stringify({ ...JSON.parse(el('payload').value), name }); await el('payload').event('input'); }
@@ -289,4 +293,48 @@ test('actual structured form edits the authoritative payload, retains unknowns a
   assert.equal(JSON.parse(h.el('saved-review').textContent).name, 'Edited in ordinary field'); assert.equal(h.el('publish').disabled, false);
   h.el('field-name').value = 'Later unsaved edit'; await h.el('field-name').event('input'); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 1);
   await h.auth(null); assert.equal(h.el('saved-review').textContent, 'No saved revision yet.'); assert.ok(!h.el('structured-fields').textContent.includes('Later unsaved edit'));
+});
+
+
+test('RAW unsafe draft/public JSON reaches actual parsers then locks actual controller before any rounded editable state/write', async () => {
+  for (const token of ['1e-400', '0.1234567890123456789', '9007199254740993', '1e400']) {
+    for (const transport of ['draft', 'public']) {
+      const h = await harness(); const previous = h.el('payload').value;
+      const row = `{"kind":"organization","id":"qa-org","revision":1,"payload":{"id":"qa-org","name":"RAW_BODY_SENTINEL","nested":{"n":${token}}}}`;
+      if (transport === 'draft') h.state.rawDraft = '[' + row + ']'; else h.state.rawPublished = row;
+      await h.select(); assert.equal(h.el('payload').value, previous); assert.equal(h.el('save-draft').disabled, true); assert.equal(h.el('publish').disabled, true);
+      assert.ok(!h.el('editor-message').textContent.includes('RAW_BODY_SENTINEL')); assert.ok(!h.el('editor-message').textContent.includes(token));
+      await h.el('editor-form').event('submit'); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 0);
+      assert.equal(transport === 'draft' ? h.state.rawDraftCalls : h.state.rawPublishedCalls, 1);
+    }
+  }
+});
+
+test('RAW equivalent finite values load/edit/save with preserved value, while unsafe Advanced JSON cannot save/publish', async () => {
+  const h = await harness();
+  h.state.rawDraft = '[{"kind":"organization","id":"qa-org","revision":1,"payload":{"id":"qa-org","name":"Original","n":1E+03,"fraction":0.1250}}]';
+  await h.select(); assert.equal(h.el('save-draft').disabled, false); assert.equal(JSON.parse(h.el('payload').value).n, 1000);
+  h.state.draft.payload = JSON.parse(h.el('payload').value); h.state.rawDraft = null;
+  await h.edit('Intentional edit'); await h.el('editor-form').event('submit'); await h.flush();
+  assert.equal(h.state.calls.length, 1); assert.equal(h.state.calls[0][2].n, 1000); assert.equal(h.state.calls[0][2].fraction, .125);
+  h.el('payload').value = '{"id":"qa-org","name":"Intentional edit","n":1e-400}'; await h.el('payload').event('input');
+  assert.equal(h.el('save-draft').disabled, true); await h.el('editor-form').event('submit'); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 1);
+});
+
+test('known-save RAW unsafe public reconciliation keeps receipt lock; safe recovery does not replay', async () => {
+  const h = await harness(); await h.select(); await h.edit('Known saved edit');
+  h.state.rawPublished = '{"kind":"organization","id":"qa-org","revision":1,"payload":{"id":"qa-org","n":1e-400}}';
+  await h.el('editor-form').event('submit'); await h.flush(); assert.equal(h.state.draft.revision, 2); assert.equal(h.state.rawPublishedCalls, 1);
+  assert.equal(h.el('save-draft').disabled, true); assert.match(h.el('editor-message').textContent, /saved.*revision 2/);
+  await h.el('editor-form').event('submit'); await h.el('publish').event('click'); assert.equal(h.state.calls.length, 1);
+  h.state.rawPublished = null; await h.el('reload-record').event('click'); await h.flush(); assert.equal(h.el('save-draft').disabled, false); assert.equal(h.state.calls.length, 1);
+});
+
+test('actual handler cannot publish an unsafe token that native parse would round to the SAVED baseline', async () => {
+  const h = await harness(); h.state.draft.payload.n = 0; await h.select();
+  const original = JSON.stringify(h.state.draft.payload);
+  h.el('payload').value = original.replace('"n":0', '"n":1e-400'); await h.el('payload').event('input');
+  assert.equal(h.el('publish').disabled, true); await h.el('publish').event('click'); await h.el('editor-form').event('submit'); assert.equal(h.state.calls.length, 0);
+  h.el('payload').value = original.replace('"n":0', '"n":0.0000'); await h.el('payload').event('input');
+  assert.equal(h.el('publish').disabled, false); await h.el('publish').event('click'); await h.flush(); assert.equal(h.state.calls.length, 1);
 });

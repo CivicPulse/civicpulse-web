@@ -1,3 +1,4 @@
+import { parseCmsJson } from './admin-json.mjs';
 /** Stable JSON text for comparing data values while ignoring object-key order. */
 export function canonicalJson(value) {
   if (value === null || typeof value === 'string' || typeof value === 'boolean') return JSON.stringify(value);
@@ -19,7 +20,7 @@ export function canPublishReviewedDraft(state) {
   if (role !== 'admin' || !draft || conflicted || busy || alreadyPublished || draft.kind !== kind || draft.id !== id) return false;
   if (draft.revision == null || Number(draft.revision) !== Number(expectedRevision)) return false;
   let edited;
-  try { edited = JSON.parse(payloadText); } catch { return false; }
+  try { edited = parseCmsJson(payloadText); } catch { return false; }
   if (!edited || typeof edited !== 'object' || Array.isArray(edited) || edited.id !== id) return false;
   try { return canonicalJson(edited) === canonicalJson(draft.payload); }
   catch { return false; }

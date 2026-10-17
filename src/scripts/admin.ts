@@ -1,3 +1,4 @@
+import { createCmsJsonFetch, isCmsJsonValueError } from '../lib/admin-json.mjs';
 import { createStructuredFields } from '../lib/admin-field-view.mjs';
 import { newPayload, parseEditorPayload } from '../lib/admin-fields.mjs';
 import { getCmsSupabase } from '../lib/cms-client';
@@ -37,7 +38,7 @@ let api: ReturnType<typeof createCivicPulseClient> | null = null;
 if (supabase) {
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
   const publishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  api = createCivicPulseClient({ url, publishableKey, accessToken: async () => (await supabase.auth.getSession()).data.session?.access_token });
+  api = createCivicPulseClient({ url, publishableKey, fetch: createCmsJsonFetch(globalThis.fetch, url), accessToken: async () => (await supabase.auth.getSession()).data.session?.access_token });
 }
 
 let role: Role | null = null;
@@ -265,6 +266,7 @@ async function selectDraft(kind: Kind, id: string) {
     if (location.hash !== '#editor') location.hash = 'editor';
     return true;
   } catch (error) {
+    if (isCurrent() && isCmsJsonValueError(error)) outcomeUnknown = true;
     if (isCurrent()) showMessage(editorMessage, `Saved state could not be checked. Your text is unchanged. ${userMessage(error)}`, 'error');
     return false;
   } finally { if (isCurrent()) { loadingRecord = false; updateSaveState(); } }
@@ -408,7 +410,7 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
     if (loaded) await loadDrafts();
   } catch (error) {
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
-    if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true;
+    if (error instanceof CmsOutcomeUnknown || isCmsJsonValueError(error)) outcomeUnknown = true;
     if (error instanceof ApiError && error.code === '40001') {
       const local = payloadInput.value;
       byId<HTMLTextAreaElement>('conflict-local').value = local;
@@ -475,7 +477,7 @@ byId<HTMLButtonElement>('publish').addEventListener('click', async () => {
     await loadDrafts();
     if (sessionRequest === authRun && receiptRun === editorRun && editorKind.value === kind && recordId.value === id) showMessage(editorMessage, `${loaded ? '' : 'Saved-state refresh failed; do not repeat publication. '}Published revision ${publishState.draft.revision} to the Civic Pulse API. Resident pages are unchanged. ${refreshStatus}`, 'success');
   } catch (error) {
-    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
+    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown || isCmsJsonValueError(error)) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
   } finally {
     if (editorRequest === editorRun && sessionRequest === authRun) { publishing = false; updateSaveState(); }
   }
@@ -497,7 +499,7 @@ byId<HTMLButtonElement>('withdraw').addEventListener('click', async () => {
     await loadDrafts();
     if (sessionRequest === authRun && receiptRun === editorRun && editorKind.value === kind && recordId.value === id) showMessage(editorMessage, `${loaded ? '' : 'Saved-state refresh failed; do not repeat publication. '}Published revision ${revision} withdrawn from the Civic Pulse API. Its draft and history remain. Resident pages are unchanged. ${refreshStatus}`, 'success');
   } catch (error) {
-    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
+    if (editorRequest === editorRun && sessionRequest === authRun) { if (error instanceof CmsOutcomeUnknown || isCmsJsonValueError(error)) outcomeUnknown = true; showMessage(editorMessage, userMessage(error), 'error'); }
   } finally { if (sessionRequest === authRun) { publishing = false; updateSaveState(); } }
 });
 
