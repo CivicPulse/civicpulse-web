@@ -3,7 +3,7 @@ import { clone, fixture } from '../../lib/admin-browser-fixture.mjs';
 import { assertPublicPrivateEvent } from '../../lib/private-event-policy.mjs';
 export class ApiError extends Error { constructor(status, detail) { super(detail.message); this.status = status; this.code = detail.code; } }
 function audit(action, row) { fixture.history.unshift({ kind: row.kind, id: row.id, revision: row.revision, action, actor: 'local-fixture-user', sequence: fixture.history.length + 1, occurred_at: new Date().toISOString() }); }
-export function createCivicPulseClient() {
+export function createCivicPulseClient(_options) {
   return {
     role: async () => fixture.role,
     getDraft: async (kind, id) => clone(fixture.drafts.find(row => row.kind === kind && row.id === id) || null),

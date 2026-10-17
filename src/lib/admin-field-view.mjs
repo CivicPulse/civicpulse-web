@@ -21,9 +21,9 @@ export function createStructuredFields({ document, container, readText, writeTex
       }
       const label = document.createElement('label');
       label.className = ['multiline', 'lines'].includes(field.type) ? 'wide-field' : '';
-      const title = document.createElement('span'); title.textContent = field.label;
+      const title = document.createElement('span'); title.textContent = field.label; title.id = `label-${field.key}`;
       const control = document.createElement(field.type === 'boolean' ? 'select' : ['multiline', 'lines'].includes(field.type) ? 'textarea' : 'input');
-      control.id = `field-${field.key}`; control.dataset.field = field.key;
+      control.id = `field-${field.key}`; control.dataset.field = field.key; control.setAttribute('aria-labelledby', title.id);
       if (control.tagName === 'INPUT') control.type = 'text';
       if (field.type === 'boolean') {
         for (const [value, name] of [['unset', 'Not specified'], ['true', 'Yes'], ['false', 'No']]) {
