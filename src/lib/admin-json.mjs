@@ -76,6 +76,8 @@ export function createCmsJsonFetch(request, projectUrl) {
   return async (input, init) => {
     const url = new URL(typeof input === 'string' || input instanceof URL ? String(input) : input.url);
     const response = await request(input, init);
-    return url.origin === origin && url.pathname.startsWith('/rest/v1/') ? guardResponse(response) : response;
+    // Error details are not editable content. Leave non-2xx bodies untouched so
+    // both clients retain their HTTP/SQLSTATE classification (including conflicts).
+    return response.ok && url.origin === origin && url.pathname.startsWith('/rest/v1/') ? guardResponse(response) : response;
   };
 }

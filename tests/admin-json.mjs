@@ -55,6 +55,23 @@ test('Advanced JSON with a rounded-to-baseline number cannot pass the handler pu
   assert.equal(canPublishReviewedDraft({ role: 'admin', kind: 'organization', id: 'x', expectedRevision: 1, draft, payloadText: '{"id":"x","n":0.0000}' }), true);
 });
 
+test('ACTUAL clients preserve non-2xx conflict classification with unsafe numeric error details without retries', async () => {
+  const body = '{"code":"40001","message":"Revision conflict","details":{"n":1e-400}}';
+  let draftCalls = 0, publicCalls = 0;
+  const client = createCivicPulseClient({ url, publishableKey: 'public-fixture', fetch: createCmsJsonFetch(async () => {
+    draftCalls++; return new Response(body, { status: 409, headers: { 'content-type': 'application/json' } });
+  }, url) });
+  await assert.rejects(client.getDraft('organization', 'x'), error => error instanceof ApiError && error.status === 409 && error.code === '40001' && !isCmsJsonValueError(error));
+  assert.equal(draftCalls, 1);
+  const sdk = createClient(url, 'public-fixture', { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: createCmsJsonFetch(async () => {
+    publicCalls++; return new Response(body, { status: 409, headers: { 'content-type': 'application/json' } });
+  }, url) } });
+  const result = await sdk.from('content').select('*').maybeSingle();
+  assert.equal(result.status, 409); assert.equal(result.error.code, '40001');
+  assert.equal(result.data, null); assert.equal(isCmsJsonValueError(result.error), false);
+  assert.equal(publicCalls, 1);
+});
+
 test('project REST scope leaves other origins and Auth transport untouched', async () => {
   const guard = createCmsJsonFetch(async () => new Response('{"n":1e-400}'), url);
   assert.equal((await (await guard(url + '/auth/v1/user')).json()).n, 0);

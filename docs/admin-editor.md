@@ -95,12 +95,14 @@ it close the previously unverified live conflict/withdraw/signout/editor-role ca
 
 Native JSON parsing can round a high-precision decimal or underflow a small value
 before a field renderer sees it. The CMS therefore guards raw JSON at the exact
-project-origin `/rest/v1/` response readers, using the existing vendored client's
+project-origin `/rest/v1/` successful (2xx) response readers, using the existing vendored client's
 fetch injection and Supabase's global fetch option. Vendor files are unchanged.
 The native Response retains its status/headers and bound text/json/clone readers;
 the guard runs when consumers read the body, outside PostgREST's fetch retry loop.
 Auth and other origins/paths are untouched. Request headers, body and signal pass
-through unchanged. Guard errors contain no response body, numeric token or key.
+through unchanged. Non-2xx bodies remain untouched so HTTP/SQLSTATE errors retain
+their client classification; error details never become editable content. Guard
+errors contain no response body, numeric token or key.
 
 Every unquoted numeric token must have the same normalized decimal VALUE as the
 canonical decimal spelling of its JavaScript Number. Equivalent exponent forms
