@@ -42,8 +42,17 @@ const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
       <nav class="cms-nav" aria-label="Content management">
         <a href="#records">Browse records</a>
         <a href="#editor">Edit a draft</a>
+        <a href="#website-status">Website delivery</a>
         <a href="#publishing" id="publishing-nav" hidden>API publication</a>
       </nav>
+      <section id="website-status" class="delivery-status" aria-labelledby="website-status-heading">
+        <div class="section-heading"><div><h2 id="website-status-heading">Website delivery</h2><p>Draft saves, API publication and verified resident pages are separate.</p></div><button id="refresh-website-status" type="button" disabled>Refresh website status</button></div>
+        <p id="website-status-message" role="status" aria-live="polite">Staff access must be verified before checking delivery.</p>
+        <p id="website-record-message">Select a saved record to check its website revision.</p>
+        <dl class="delivery-revisions"><div><dt>Saved draft revision</dt><dd id="website-draft-revision">No record selected</dd></div><div><dt>API published revision</dt><dd id="website-api-revision">No record selected</dd></div><div><dt>Last verified website revision</dt><dd id="website-live-revision">Unknown / not verified</dd></div></dl>
+        <p id="website-live-tuple" class="field-help"></p><p id="website-status-checked" class="field-help"></p>
+        <p class="field-help">Read-only checks run every 30 seconds while this tab is visible, for at most ten automatic checks. Errors stop automatic checks. Refresh checks status only; it never retries a CMS action or starts delivery.</p>
+      </section>
       <div class="cms-layout">
         <section id="records" class="record-panel" aria-labelledby="records-heading">
           <div class="section-heading"><div><h2 id="records-heading">Records</h2><p>Choose a type to find its drafts.</p></div><button id="new-draft" type="button">New draft</button></div>
@@ -119,6 +128,15 @@ const refreshStatus = cmsRefreshStatus(import.meta.env.PUBLIC_CONTENT_SOURCE);
 </script>
 <style>
 .admin-main { padding-bottom: 40px; }
+.delivery-status { background: var(--paper); border: 1px solid var(--line); padding: 20px 24px; margin-bottom: 24px; }
+.delivery-status .section-heading { margin-bottom: 12px; flex-wrap: wrap; }
+.delivery-status h2 { font-size: 26px; }
+.delivery-status > p { margin-top: 10px; line-height: 1.6; overflow-wrap: anywhere; }
+.delivery-revisions { display: flex; gap: 16px 32px; flex-wrap: wrap; margin: 16px 0; }
+.delivery-revisions div { min-width: 170px; flex: 1; }
+.delivery-revisions dt { font-size: 13px; color: var(--muted); }
+.delivery-revisions dd { margin: 6px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+.cms-nav { flex-wrap: wrap; }
 .admin-intro { padding: 28px 0 20px; }
 .admin-intro h1 { font-size: 42px; line-height: 1.12; }
 .admin-intro p { font-size: 16px; margin-top: 10px; max-width: 70ch; }

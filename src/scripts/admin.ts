@@ -1,3 +1,6 @@
+import { createDeliveryStatusController } from '../lib/admin-delivery-status.mjs';
+import { createCivicPulseClient as createStatusClient } from '../vendor/civicpulse-api-status-local/client.mjs';
+import type { PublicationStatus, RecordPublicationStatus } from '../vendor/civicpulse-api-status-local/publication.types';
 import { createCmsJsonFetch, isCmsJsonValueError } from '../lib/admin-json.mjs';
 import { createStructuredFields } from '../lib/admin-field-view.mjs';
 import { newPayload, parseEditorPayload } from '../lib/admin-fields.mjs';
@@ -41,6 +44,14 @@ if (supabase) {
   api = createCivicPulseClient({ url, publishableKey, fetch: createCmsJsonFetch(globalThis.fetch, url), accessToken: async () => (await supabase.auth.getSession()).data.session?.access_token });
 }
 
+let statusClient: ReturnType<typeof createStatusClient> | null = null;
+if (supabase) {
+  try {
+    statusClient = createStatusClient({ url: import.meta.env.PUBLIC_SUPABASE_URL, publishableKey: import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      fetch: createCmsJsonFetch(globalThis.fetch, import.meta.env.PUBLIC_SUPABASE_URL), accessToken: async () => (await supabase.auth.getSession()).data.session?.access_token });
+  } catch { /* Optional status must never prevent sign-in or content editing. */ }
+}
+
 let role: Role | null = null;
 let currentDraft: Draft | null = null;
 let currentPublished: Published | null = null;
@@ -60,6 +71,37 @@ let loadingRecord = false;
 let roleUnavailable = false;
 let actionReceipt: ReturnType<typeof makeActionReceipt> | null = null;
 let newerState: { draft: Draft; published: Published | null; history: Tables<'cms_history'>[]; session: number; editor: number } | null = null;
+
+const deliveryStatus = createDeliveryStatusController({
+  port: {
+    publicationStatus: () => withCmsDeadline(statusClient!.publicationStatus(), 10000),
+    recordPublicationStatus: (kind: Kind, id: string) => withCmsDeadline(statusClient!.recordPublicationStatus(kind, id), 10000),
+  },
+  isVisible: () => document.visibilityState !== 'hidden',
+  schedule: setTimeout, cancel: clearTimeout,
+  render: (view: { message: string; recordMessage?: string; draftRevision?: string | null; apiRevision?: string | null; global?: PublicationStatus | null; record?: RecordPublicationStatus | null; loading: boolean; canRefresh: boolean }) => {
+    byId('website-status-message').textContent = view.message;
+    byId('website-record-message').textContent = view.recordMessage || 'Website record verification is unavailable.';
+    byId('website-draft-revision').textContent = view.draftRevision ?? 'No saved draft selected';
+    byId('website-api-revision').textContent = view.apiRevision ?? 'Not published in the loaded API record';
+    byId('website-live-revision').textContent = view.record?.live_revision ?? 'Unknown / not verified';
+    const global = view.global;
+    byId('website-live-tuple').textContent = global ? `Desired generation ${global.desired_generation}. Last verified website: epoch ${global.live_dataset_epoch ?? 'unknown'}, generation ${global.live_generation ?? 'unknown'}, source ${global.live_source_sha ?? 'unknown'}.` : '';
+    byId('website-status-checked').textContent = global ? `Status observed ${global.observed_at}. These checks do not send content or start delivery.` : '';
+    byId<HTMLButtonElement>('refresh-website-status').disabled = !view.canRefresh;
+    byId<HTMLButtonElement>('refresh-website-status').textContent = view.loading ? 'Checking status…' : 'Refresh website status';
+    byId('website-status').setAttribute('aria-busy', String(view.loading));
+  },
+});
+function syncDeliveryStatus() {
+  const revision = (value: number | null | undefined) => value == null ? null : Number.isSafeInteger(value) && value >= 0 ? String(value) : 'unavailable';
+  deliveryStatus.setContext({ user: activeUserId, selection: editorRun,
+    staff: !!role && !checkingRole && !roleUnavailable && !loadingRecord,
+    source: import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase' ? 'supabase' : 'local', available: !!statusClient, uncertain: outcomeUnknown,
+    record: currentDraft ? { kind: currentDraft.kind, id: currentDraft.id, draftRevision: revision(currentDraft.revision), publishedRevision: revision(currentPublished?.revision) } : null });
+}
+byId<HTMLButtonElement>('refresh-website-status').addEventListener('click', () => { void deliveryStatus.refresh(); });
+document.addEventListener?.('visibilitychange', () => deliveryStatus.visibilityChanged());
 
 const structuredFields = createStructuredFields({
   document, container: byId('structured-fields'), readText: () => payloadInput.value,
@@ -159,6 +201,7 @@ function updateSaveState() {
   byId('editor-form').setAttribute('aria-busy', String(saving || publishing || loadingRecord));
   for (const id of ['kind-filter', 'new-draft', 'load-more']) (byId(id) as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord;
   document.querySelectorAll('.record-button').forEach(button => { (button as HTMLButtonElement).disabled = checkingRole || roleUnavailable || saving || publishing || outcomeUnknown || loadingRecord; });
+  syncDeliveryStatus();
 }
 function clearRecordList() {
   recordList.replaceChildren(); listOffset = 0; hasMore = false;

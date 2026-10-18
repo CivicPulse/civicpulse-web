@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 import { createClient as createRealSupabase } from '@supabase/supabase-js';
 import { createCivicPulseClient as createRealApi } from '../src/vendor/civicpulse-api/client.mjs';
+import * as deliveryStatus from '../src/lib/admin-delivery-status.mjs';
 import * as numeric from '../src/lib/admin-json.mjs';
 import * as fields from '../src/lib/admin-fields.mjs';
 import * as fieldView from '../src/lib/admin-field-view.mjs';
@@ -32,7 +33,7 @@ class Element {
 }
 const flush = async () => { for (let i = 0; i < 60; i++) await Promise.resolve(); };
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
-async function harness() {
+async function harness({ sourceMode = 'local' } = {}) {
   const elements = new Map(); const created = [];
   const el = id => { const find = node => node.id === id ? node : node.children.map(find).find(Boolean); const dynamic = [...elements.values()].map(find).find(Boolean); if (dynamic) return dynamic; if (!elements.has(id)) elements.set(id, new Element(id)); return elements.get(id); };
   el('kind-filter').value = el('editor-kind').value = 'organization';
@@ -41,7 +42,7 @@ async function harness() {
   const clearTimeout = id => timers.delete(id);
   const user = { user: { id: 'staff-a', email: 'synthetic@example.org' } };
   const payload = { id: 'qa-org', name: 'Original', unknown: { evidence: ['retain', { value: 3 }] } };
-  const state = { draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, rawDraft: null, rawPublished: null, rawDraftCalls: 0, rawPublishedCalls: 0, clientOptions: null, history: [], save: null, publish: null, withdraw: null, calls: [], auth: null };
+  const state = { statusError: null, statusGlobalRead: null, statusCalls: 0, statusRecord: null, draft: { kind: 'organization', id: payload.id, revision: 1, payload }, published: null, role: () => Promise.resolve('admin'), getDraft: null, getPublished: null, getHistory: null, rawDraft: null, rawPublished: null, rawDraftCalls: 0, rawPublishedCalls: 0, clientOptions: null, history: [], save: null, publish: null, withdraw: null, calls: [], auth: null };
   const api = {
     role: () => state.role(),
     getDraft: async (kind, id) => state.rawDraft !== null ? createRealApi(state.clientOptions).getDraft(kind, id) : state.getDraft ? state.getDraft() : structuredClone(state.draft),
@@ -50,7 +51,13 @@ async function harness() {
     withdraw: async (...args) => { state.calls.push(['withdraw', ...args]); if (state.withdraw) return state.withdraw(...args); state.history.unshift({ action: 'withdraw', revision: state.published.revision }); state.published = null; },
   };
   const supabase = { auth: { getSession: async () => ({ data: { session: user }, error: null }), onAuthStateChange(callback) { state.auth = callback; }, signOut: async () => { state.auth('SIGNED_OUT', null); return {}; } }, from() { const query = { select() { return this; }, eq() { return this; }, order() { return this; }, range: async () => ({ data: [state.draft], error: null }), maybeSingle: async () => state.rawPublished !== null ? createRealSupabase('https://example.test', 'public-fixture', { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }, global: { fetch: numeric.createCmsJsonFetch(async () => { state.rawPublishedCalls++; return new Response(state.rawPublished, { headers: { 'content-type': 'application/json' } }); }, 'https://example.test') } }).from('content').select('*').eq('kind', 'organization').eq('id', 'qa-org').maybeSingle() : state.getPublished ? state.getPublished() : ({ data: structuredClone(state.published), error: null }), limit: async () => state.getHistory ? state.getHistory() : ({ data: structuredClone(state.history), error: null }) }; return query; } };
+  const statusApi = {
+    publicationStatus: async () => { state.statusCalls++; if (state.statusError) throw state.statusError; return state.statusGlobalRead ? state.statusGlobalRead() : ({ dataset_epoch: '11111111-1111-4111-8111-111111111111', desired_generation: '1', live_dataset_epoch: '11111111-1111-4111-8111-111111111111', live_generation: '1', generation_lag: '0', live_inventory_complete: true, live_deployment_id: 'fixture', live_source_sha: 'a'.repeat(40), live_at: '2026-10-18T12:00:00Z', paused: false, bootstrap_complete: true, state: 'live', active_job: null, last_error: null, next_attempt_at: null, status_error: null, observed_at: '2026-10-18T12:00:00Z' }); },
+    recordPublicationStatus: async () => { state.statusCalls++; if (state.statusError) throw state.statusError; return state.statusRecord || { dataset_epoch: '11111111-1111-4111-8111-111111111111', live_dataset_epoch: '11111111-1111-4111-8111-111111111111', last_event_id: null, last_action: null, last_generation: null, published_revision: state.published ? String(state.published.revision) : null, live_revision: state.published ? String(state.published.revision) : null, website_state: state.published ? 'live' : 'absent', observed_at: '2026-10-18T12:00:00Z' }; },
+  };
   const modules = {
+    '../lib/admin-delivery-status.mjs': deliveryStatus,
+    '../vendor/civicpulse-api-status-local/client.mjs': { createCivicPulseClient: () => statusApi },
     '../lib/cms-client': { getCmsSupabase: () => supabase },
     '../lib/admin-publish-gate.mjs': gate,
     '../lib/admin-fields.mjs': fields,
@@ -63,9 +70,9 @@ async function harness() {
     '../vendor/civicpulse-api/client.mjs': { ApiError, createCivicPulseClient: options => { state.clientOptions = options; return api; } },
   };
   let code = ts.transpileModule(await readFile(new URL('../src/scripts/admin.ts', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
-  code = code.replace(/^import (.*?) from ['"]([^'"]+)['"];$/gm, (_all, names, path) => `const ${names} = deps.modules[${JSON.stringify(path)}];`).replaceAll('import.meta.env', 'deps.env');
+  code = code.replace(/^import (.*?) from ['"]([^'"]+)['"];$/gm, (_all, names, path) => `const ${names.replace(/\s+as\s+/g, ': ')} = deps.modules[${JSON.stringify(path)}];`).replaceAll('import.meta.env', 'deps.env');
   const run = Object.getPrototypeOf(async function() {}).constructor;
-  await new run('deps', 'const { document, location, confirm, setTimeout } = deps; const globalThis = deps.runtime;\n' + code)({ modules, runtime: { fetch: async () => { state.rawDraftCalls++; return new Response(state.rawDraft, { headers: { 'content-type': 'application/json' } }); } }, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: 'local' }, document: { getElementById: el, createElement(tag) { const e = new Element(); e.tagName = tag.toUpperCase(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout });
+  await new run('deps', 'const { document, location, confirm, setTimeout, clearTimeout } = deps; const globalThis = deps.runtime;\n' + code)({ modules, runtime: { fetch: async () => { state.rawDraftCalls++; return new Response(state.rawDraft, { headers: { 'content-type': 'application/json' } }); } }, env: { PUBLIC_SUPABASE_URL: 'https://example.test', PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture', PUBLIC_CONTENT_SOURCE: sourceMode }, document: { getElementById: el, createElement(tag) { const e = new Element(); e.tagName = tag.toUpperCase(); created.push(e); return e; }, createDocumentFragment: () => new Element('fragment'), querySelectorAll: () => created.filter(e => e.className === 'record-button') }, location: { hash: '' }, confirm: () => true, setTimeout, clearTimeout });
   await flush();
   async function select() { const button = created.filter(e => e.className === 'record-button').at(-1); await button.event('click'); await flush(); }
   async function edit(name) { el('payload').value = JSON.stringify({ ...JSON.parse(el('payload').value), name }); await el('payload').event('input'); }
@@ -337,4 +344,20 @@ test('actual handler cannot publish an unsafe token that native parse would roun
   assert.equal(h.el('publish').disabled, true); await h.el('publish').event('click'); await h.el('editor-form').event('submit'); assert.equal(h.state.calls.length, 0);
   h.el('payload').value = original.replace('"n":0', '"n":0.0000'); await h.el('payload').event('input');
   assert.equal(h.el('publish').disabled, false); await h.el('publish').event('click'); await h.flush(); assert.equal(h.state.calls.length, 1);
+});
+
+
+test('actual admin status panel is read-only/local-disabled, and status outage cannot fail save or unlock uncertain action', async () => {
+  const local = await harness(); await local.select(); assert.equal(local.state.statusCalls, 0); assert.match(local.el('website-status-message').textContent, /not enabled/);
+  const h = await harness({ sourceMode: 'supabase' }); await h.select(); await h.flush();
+  assert.equal(h.el('website-draft-revision').textContent, '1'); assert.match(h.el('website-record-message').textContent, /absent/);
+  h.state.statusError = new Error('Synthetic status outage'); await h.edit('Saved despite status outage'); await h.submit(); await h.flush();
+  assert.equal(h.state.draft.revision, 2); assert.match(h.el('editor-message').textContent, /Draft saved.*revision 2/); assert.deepEqual(h.state.calls.map(call => call[0]), ['save']);
+  assert.match(h.el('website-status-message').textContent, /could not be verified/);
+  const pending = deferred(); h.state.save = () => pending.promise; await h.edit('Unknown write'); const submit = h.el('editor-form').event('submit'); await h.flush(); h.timeout(); await submit; await h.flush();
+  assert.equal(h.el('save-draft').disabled, true); const message = h.el('editor-message').textContent;
+  h.state.statusError = null; await h.el('refresh-website-status').event('click'); await h.flush();
+  assert.equal(h.el('save-draft').disabled, true); assert.equal(h.el('editor-message').textContent, message); assert.equal(h.state.calls.length, 2);
+  assert.match(h.el('website-status-message').textContent, /does not resolve/);
+  await h.auth(null); assert.equal(h.el('website-live-tuple').textContent, ''); assert.equal(h.el('website-status-checked').textContent, '');
 });
