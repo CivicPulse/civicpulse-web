@@ -32,6 +32,7 @@ function fakeRuntime({ existing = false, startupFailure = false } = {}) {
   const run = (command, args) => {
     calls.push(args);
     if (args[0] === 'ps') return args.includes('name=^civicpulse-api-db-test$') ? existing ? 'existing-id' : '' : 'a'.repeat(64);
+    if (args.includes('/proc/1/comm')) return 'postgres';
     if (args[0] === 'image') return JSON.stringify([pin]);
     if (args[0] === 'run' && startupFailure) throw Error('uncertain run');
     return '';
@@ -50,4 +51,12 @@ test('actual SQL lifecycle cleans only ownership-labelled container after task f
     assert.deepEqual(runtime.calls.at(-1), ['rm', '--force', 'a'.repeat(64)]);
     const start = runtime.calls.find(args => args[0] === 'run'); assert.ok(start.includes('--network=none')); assert.ok(start.includes('--pull=never')); assert.ok(start.includes('--read-only'));
   }
+});
+
+test('SQL readiness ignores the temporary init server before final postgres PID 1', async () => {
+  const runtime = fakeRuntime(); let count = 0, executed = false;
+  const run = (binary, args) => args.includes('/proc/1/comm') ? ++count === 1 ? 'bash' : 'postgres' : runtime.run(binary, args);
+  await withFreshDatabase(() => { executed = true; assert.equal(count, 2); }, run, async () => {});
+  assert.equal(executed, true);
+  assert.equal(runtime.calls.filter(args => args.includes('pg_isready')).length, 1);
 });

@@ -44,7 +44,12 @@ export async function withFreshDatabase(task, run = command, delay = ms => new P
       '-e', 'POSTGRES_PASSWORD=disposable-test-only', imageAlias]);
     let ready = false;
     for (let attempt = 0; attempt < 60; attempt++) {
-      try { run('podman', ['exec', container, 'pg_isready', '-U', 'postgres']); ready = true; break; } catch { await delay(500); }
+      try {
+        // The entrypoint's TEMPORARY init server also accepts connections.
+        // Wait until PID 1 has exec'd the final server before probing SQL.
+        if (run('podman', ['exec', container, 'cat', '/proc/1/comm']) !== 'postgres') throw new Error('PostgreSQL initialization pending');
+        run('podman', ['exec', container, 'pg_isready', '-U', 'postgres']); ready = true; break;
+      } catch { await delay(500); }
     }
     if (!ready) throw new Error('Disposable PostgreSQL readiness timeout');
     await task();
