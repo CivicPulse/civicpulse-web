@@ -44,8 +44,10 @@ and stored-layer URL; dirty/reused A workspace B versus a clean B control with
 byte-identical complete inventory; no stale public/dist files; retained last-good
 A unchanged. Corrupt pinned input, actual materializer filesystem failure,
 actual postbuild failure and actual hardlinked artifact rejection preserve both
-retained artifacts. No uploader is imported or called. Fake transport/production
-authority is not inferred from a local artifact or these assertions.
+retained artifacts. No real uploader is imported or called. A TEST-ONLY private directory receiver
+exercises success, terminal failure and timeout-after-bytes-change, with no
+implicit retry; a timeout is not interpreted as unchanged or live. No transport
+selector exists in the build entrypoint and no production authority is inferred.
 
 The artifact identity is SHA256 of strict
 `stableSerialize({schema_version:1,files})`, with **no trailing newline**. Files
@@ -64,3 +66,34 @@ and failure cases passed on the local supported Node 24.21.0 runtime. The separa
 credential-free lane passed 71 tests/build/private output on cached Node 22.23.2
 as described in [the runtime evidence](workflow-templates/README.md). Frozen
 independent review and a final complete M1 acceptance run remain separate.
+
+## Frozen source removal checkpoint
+
+Developer full integration ran against Web source
+`97a7fa79ff85e76ea35bf9ba994f1d561a05c90c` and the external API fixture commit above,
+using the real SQL/public projections and NORMAL npm builds. Evidence is retained
+at `/tmp/civicpulse-m1-artifacts-Trd9eu/evidence.json` with per-JS raw counts in
+`raw-output-counts.json`:
+
+- A: 82 files at `/tmp/civicpulse-m1-artifacts-Trd9eu/last-good`, artifact digest
+  `3d4fc349e5548f618e0eb319fd17ce222efd96c52adaf7fea48bc4e4dd3452a1`.
+- B: 79 files at the `artifactDirectoryB` path in that evidence file, digest
+  `5c20c73fe3c16abae1716c6658bf1de99fb2176584056e1ab51e95fd85f05937`.
+- All 867 unique local event IDs scanned across EVERY A/B deployable byte:
+  zero matches, including event and map JS. Four separate local-source positive
+  controls remain present in a normal local build. Generic code identifiers such
+  as the organization style case `mgdsa` are not event-record payload IDs.
+- A event JS `_astro/events.FdyyD6nW.js`: 5,713 bytes; B event JS
+  `_astro/events.BZ36BWAF.js`: 5,180 bytes. Both contain zero distinct `mgdsa-`
+  record tokens (the earlier unfixed events chunk was approximately 795 KB).
+- Real SQL B receipts withdraw event/map/layer at revision 1, sequences 15–17;
+  B retains one organization/calendar/private event/derived layer and no map.
+- Clean/reused B exact inventories, last-good preservation, failure and test-only
+  receiver assertions passed. These are developer evidence until independently
+  reviewed at the frozen test commit. No hosted action or production delivery.
+
+The notice's simulated-tab tests execute the actual shipped controller with a
+minimal DOM/fetch boundary. They are not connected-browser/provider cache proof.
+Current-origin old URLs, warmed CDN, historical deployments and download recall
+remain separate M2/operational gates; no cache-purge or removal guarantee follows
+from these local artifact checks.

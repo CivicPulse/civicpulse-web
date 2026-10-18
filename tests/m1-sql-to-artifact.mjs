@@ -69,6 +69,13 @@ async function failureSource(name, postbuild) {
   execFileSync('git', ['-c', 'user.name=M1 Fixture', '-c', 'user.email=m1@example.invalid', 'commit', '-qm', name], { cwd: directory });
   return { repository: directory, sourceSha: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: directory, encoding: 'utf8' }).trim() };
 }
+const localRecordIds = new Set();
+const localPositiveIds = [];
+for (const name of ['events', 'mgdsa-events', 'mgrls-events', 'bcsd-events', 'mobilize-events']) {
+  const rows = JSON.parse(execFileSync('git', ['show', `${sourceSha}:src/data/${name}.json`], { cwd: repository, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }));
+  for (const row of rows) localRecordIds.add(row.id);
+  if (name !== 'events') localPositiveIds.push(rows[0].id);
+}
 let started = false;
 try {
   const timeout = setTimeout(() => readyReject(new Error('Fixture startup timeout')), 120_000);
@@ -88,6 +95,7 @@ try {
   const inventoryA = await files(builtA.artifact);
   const bytesA = Buffer.concat(await Promise.all(inventoryA.map(file => readFile(path.join(builtA.artifact, file.path)))));
   for (const sentinel of Object.values(info.expected.sentinels)) assert.ok(bytesA.includes(sentinel), `A valid control missing ${sentinel}`);
+  for (const id of localRecordIds) assert.equal(bytesA.includes(id), false, 'A contains an unselected local event record ID');
   const bReply = await command('advanceB');
   assert.equal(bReply.stage, 'B'); assert.equal(bReply.receipts.length, 3);
   const b = await exportPublishedSnapshot(exportOptions);
@@ -106,6 +114,15 @@ try {
   assert.deepEqual(await files(builtA.artifact), inventoryB, 'Dirty/reused B differs from clean B control');
   const bytesB = Buffer.concat(await Promise.all(inventoryB.map(file => readFile(path.join(builtB.artifact, file.path)))));
   for (const sentinel of Object.values(info.expected.sentinels)) assert.equal(bytesB.includes(sentinel), false, `B retained ${sentinel}`);
+  for (const id of localRecordIds) assert.equal(bytesB.includes(id), false, 'B contains an unselected local event record ID');
+  const localControl = path.join(root, 'local-control');
+  await import('node:fs/promises').then(fs => fs.mkdir(localControl));
+  execFileSync('tar', ['-x', '-C', localControl], { input: execFileSync('git', ['archive', sourceSha], { cwd: repository, maxBuffer: 128 * 1024 * 1024 }) });
+  await import('node:fs/promises').then(fs => fs.symlink(path.join(repository, 'node_modules'), path.join(localControl, 'node_modules'), 'dir'));
+  execFileSync('npm', ['run', 'build'], { cwd: localControl, env: { PATH: process.env.PATH, HOME: path.join(builtB.attempt, 'home'), ASTRO_TELEMETRY_DISABLED: '1', PUBLIC_CONTENT_SOURCE: 'local' }, stdio: 'pipe', timeout: 120_000 });
+  const localFiles = await files(path.join(localControl, 'dist'));
+  const localBytes = Buffer.concat(await Promise.all(localFiles.map(file => readFile(path.join(localControl, 'dist', file.path)))));
+  for (const id of localPositiveIds) assert.ok(localBytes.includes(id), 'Local-mode valid control lost its event records');
   assert.equal(inventoryB.some(file => file.path === `events/${info.expected.ids.event}.ics`), false);
   assert.equal(inventoryB.some(file => file.path === `data/cms/${encodeURIComponent(info.expected.ids.layer)}.geojson`), false);
   assert.deepEqual(await files(retainedA), inventoryA, 'Retained A artifact changed during B build');
@@ -126,10 +143,37 @@ try {
   }
   assert.deepEqual(await files(retainedA), inventoryA);
   assert.deepEqual(await files(builtB.artifact), inventoryB);
-  // This command never imports or accepts an uploader. Fake transport outcomes
-  // and production authority integration are separate, explicitly scoped work.
+  // TEST-ONLY transport: a private directory stands in for a receiver. A timeout
+  // can occur AFTER bytes changed; it must not be reported as unchanged/live.
+  // No transport selector or callback exists in the operational build entrypoint.
+  const receiver = path.join(root, 'synthetic-receiver');
+  await cp(retainedA, receiver, { recursive: true });
+  let syntheticCalls = 0;
+  async function syntheticSend(mode) {
+    syntheticCalls++;
+    if (mode === 'failure') throw new Error('fixture terminal failure');
+    await rm(receiver, { recursive: true });
+    await cp(builtB.artifact, receiver, { recursive: true });
+    if (mode === 'timeout') throw new Error('fixture unknown outcome');
+    return { transport: 'fixture-only', outcome: 'success' };
+  }
+  await assert.rejects(syntheticSend('failure'), /terminal failure/);
+  assert.deepEqual(await files(receiver), inventoryA);
+  await assert.rejects(syntheticSend('timeout'), /unknown outcome/);
+  assert.deepEqual(await files(receiver), inventoryB, 'Timeout does not prove receiver remained at A');
+  assert.equal(syntheticCalls, 2, 'No automatic timeout retry');
+  assert.equal((await syntheticSend('success')).transport, 'fixture-only');
+  assert.deepEqual(await files(receiver), inventoryB);
+  let forbiddenSendCalls = 0;
+  try {
+    await buildCmsArtifact({ ...options, snapshotDirectory: invalid });
+    forbiddenSendCalls++;
+  } catch (error) { assert.match(error.message, /identity|checksum/); }
+  assert.equal(forbiddenSendCalls, 0, 'Invalid build never reaches even the synthetic transport');
   await writeFile(path.join(root, 'evidence.json'), JSON.stringify({ sourceSha, fixtureId: info.fixture_id, countsA: a.manifest.counts, countsB: b.manifest.counts,
-    artifactA: builtA.sha256, artifactB: builtB.sha256, receipts: bReply.receipts, uploaderCalls: 0, authority: false }, null, 2));
+    artifactA: builtA.sha256, artifactB: builtB.sha256, receipts: bReply.receipts, scannedLocalRecordIds: localRecordIds.size,
+    localControlPositiveIds: localPositiveIds.length, artifactDirectoryA: retainedA, artifactDirectoryB: builtB.artifact,
+    localRecordMatchesA: 0, localRecordMatchesB: 0, uploaderCalls: 0, syntheticTransportCalls: syntheticCalls, authority: false }, null, 2));
   console.log(`M1 actual SQL -> normal Astro A/B passed; evidence ${root}`);
 } finally {
   if (started && fixture.exitCode === null) await command('close');
