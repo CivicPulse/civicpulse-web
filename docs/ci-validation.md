@@ -72,7 +72,7 @@ private tmpfs database/socket/temp storage. The only password is a fixed public
 throwaway initialization marker. A random per-attempt ownership label binds
 cleanup. On success, test failure, readiness failure or uncertain start, cleanup
 queries that exact label and removes only a single matching container ID; no
-name-only deletion, wildcard or host-wide prune. Readiness is bounded. Cleanup
+name-only deletion, wildcard or host-wide prune. Readiness is bounded and requires PID 1 to be the final postgres server before pg_isready; the temporary initialization server is not sufficient. Cleanup
 failure is a failing run, not success. SIGKILL/runner loss can interrupt cleanup;
 these jobs must use disposable hosted runners, never a persistent/shared host.
 There is no automatic orphan adoption or hosted database configuration.
@@ -137,10 +137,38 @@ matched. No shared package/test/UI overlays were consumed.
   success cleanup and failed-task cleanup passed under a unique remapped smoke
   container name. It did not replace API-Dev's existing fixed-name container.
   Log: `/tmp/civicpulse-ci-container-smoke.log`. This is real lifecycle evidence,
-  NOT execution of the entire sequential SQL helper or API harness under that
-  remapped name. The full fixed-name sequential helper remains unrun locally to
-  preserve the existing shared test container; prior real SQL A/B evidence and
-  the upcoming first GitHub lane remain separately identified.
+  not execution of the entire sequential SQL lane. A subsequent full rehearsal
+  is recorded below; the native fixed-name GitHub lane remains unexecuted.
 
 No GitHub run, remote workflow activation, required-check protection, provider
 operation or deployment has occurred as part of this checkpoint.
+
+Final pre-review CI corrections and rehearsal:
+
+- `3f20c0c` requires final-server PID 1 before pg_isready. A real first rehearsal
+  caught the entrypoint's temporary init server shutting down mid-test; the failed
+  run cleaned up its own container. The regression proves a temporary `bash` PID
+  cannot start the SQL task. CI regression count is now 5, local lane total 79.
+- A clean `3f20c0c` archive passed all 79 tests/build/private-output checks on the
+  pinned Node 22.23.2 container. Log:
+  `/tmp/civicpulse-ci-3f20c0c/node22-validation.log`. Two unused-symbol hints in
+  that run were removed without behavior changes at `cb4a36e`; subsequent Astro
+  check reports zero errors, warnings and hints.
+- The complete three-harness sequential SQL helper then PASSED using a separate
+  clean API Git checkout at exact c11 plus locked install. A PRIVATE test-only
+  PATH shim remapped only the fixed test-container name to an isolated name,
+  preserving API-Dev's existing host container. It did not replace SQL, HTTP,
+  image/network guards, migrations, exporter, reader, materializer or builds.
+  Every harness had a fresh real pinned offline/read-only-root PostGIS container,
+  and owned-only cleanup completed between them. This is local Node 24.21.0
+  execution, not GitHub or hosted Auth/PostgREST evidence. Log:
+  `/tmp/civicpulse-ci-sequential-sql-final.log`.
+- Third-harness actual A/B evidence:
+  `/tmp/civicpulse-m1-artifacts-aBetOs/evidence.json`; exact source SHA and artifact
+  hashes are recorded there. All-byte removal/local-positive/dirty-clean/failure
+  assertions passed, with zero real uploader calls. Container-name mapping is a
+  disposable local verification aid, not a committed production transport/flag.
+
+The fixed-name GitHub job, Ubuntu browser dependency install, hosted runner
+versions and final check publication still await the first reviewed push/run.
+No settings/protection or deployment follows from these local passes.
