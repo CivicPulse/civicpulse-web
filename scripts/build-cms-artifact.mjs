@@ -44,26 +44,34 @@ export async function buildCmsArtifact({ repository, sourceSha, snapshotDirector
   }
   // Do not inherit hosted credentials or caller source selection. This stage
   // builds only the supplied immutable public snapshot; no API call is needed.
-  Object.assign(env, { PUBLIC_CONTENT_SOURCE: 'supabase', CIVICPULSE_SNAPSHOT_DIR: snapshot.directory });
+  Object.assign(env, { PUBLIC_CONTENT_SOURCE: 'supabase', CIVICPULSE_SNAPSHOT_DIR: snapshot.directory, ASTRO_TELEMETRY_DISABLED: '1' });
   const build = spawnSync('npm', ['run', 'build'], { cwd: source, env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
   await writeFile(path.join(attempt, 'build.log'), `${build.stdout || ''}${build.stderr || ''}`);
   if (build.status !== 0) throw new Error(`CMS build failed; candidate not releasable (${path.basename(attempt)})`);
   const artifact = path.join(source, 'dist');
+  const artifactStat = await lstat(artifact);
+  if (!artifactStat.isDirectory() || artifactStat.isSymbolicLink()) throw new Error('Build artifact root must be a real directory');
   const files = [];
   async function inventory(directory, prefix = '') {
     for (const name of await readdir(directory)) {
       const file = path.join(directory, name), relative = `${prefix}${name}`, stat = await lstat(file);
       if (stat.isSymbolicLink()) throw new Error('Build artifact symlink rejected');
       if (stat.isDirectory()) await inventory(file, `${relative}/`);
-      else if (stat.isFile()) { const bytes = await readFile(file); files.push({ path: relative, bytes: bytes.length, sha256: sha256(bytes) }); }
+      else if (stat.isFile()) {
+        if (stat.nlink !== 1) throw new Error('Build artifact hardlink rejected');
+        const bytes = await readFile(file); files.push({ path: relative, bytes: bytes.length, sha256: sha256(bytes) });
+      }
       else throw new Error('Build artifact special file rejected');
     }
   }
   await inventory(artifact);
   files.sort((a, b) => Buffer.compare(Buffer.from(a.path), Buffer.from(b.path)));
-  const manifest = { format: 'civicpulse-cms-artifact-v1', source_sha: sourceSha, snapshot_sha256: snapshot.manifest.sha256, files };
-  const bytes = `${stableSerialize(manifest)}\n`;
+  // M2's artifact identity is ONLY the canonical complete file inventory, with
+  // no newline. Source/snapshot claims remain separate provenance, not authority.
+  const manifest = { schema_version: 1, files };
+  const bytes = stableSerialize(manifest);
   await writeFile(path.join(attempt, 'artifact-manifest.json'), bytes, { flag: 'wx' });
+  await writeFile(path.join(attempt, 'build-provenance.json'), `${stableSerialize({ source_sha: sourceSha, snapshot_sha256: snapshot.manifest.sha256, artifact_sha256: sha256(bytes) })}\n`, { flag: 'wx' });
   return { attempt, artifact, manifest, sha256: sha256(bytes) };
 }
 
