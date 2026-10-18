@@ -29,7 +29,7 @@ test('workflow has PR/main coverage, exact checkout/runtime pins and no credenti
 });
 function fakeRuntime({ existing = false, startupFailure = false } = {}) {
   const calls = []; const pin = { Id: 'fixed-image', Os: 'linux', Architecture: 'amd64', RepoDigests: [image] };
-  const run = (command, args) => {
+  const run = (_command, args) => {
     calls.push(args);
     if (args[0] === 'ps') return args.includes('name=^civicpulse-api-db-test$') ? existing ? 'existing-id' : '' : 'a'.repeat(64);
     if (args.includes('/proc/1/comm')) return 'postgres';

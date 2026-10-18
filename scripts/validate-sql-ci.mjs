@@ -2,7 +2,6 @@
 import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { realpathSync } from 'node:fs';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 export const apiSha = 'c11e6fd69a90c7884a2763aa843d28fd7ce93114';
 export const image = 'docker.io/postgis/postgis@sha256:7ef699637304feff96028edbc7a653e135f2db2236d322b5cb2bfca11fd920bc';
