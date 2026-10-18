@@ -95,14 +95,30 @@ cleanup after an uncertain start; they are not real container/provider evidence.
 Existing real SQL A/B evidence is separately recorded in
 [M1 integration](m1-sql-artifacts.md).
 
-Before push: freeze owned workflow/helpers/tests/docs only; inspect staged scope,
-scan new committed files without external secret verification, confirm exact
-remote URL/HEAD and ancestry, and send the full intended SHA plus normal
-`SHA:refs/heads/main` push plan through lead for scoped Security review. Do not
-push until that review/lead instruction; no force or shared unstaged files.
-After an authorized push, observe actual dependency/browser/container/gate results
-and correct concrete failures before the lead enables required-check protection.
-No branch settings, secrets, environments or deployment changes are included.
+Before push: freeze owned workflow/helpers/tests/docs only; inspect staged scope
+and scan new committed files without external secret verification. Confirm the
+remote is `https://github.com/CivicPulse/civicpulse-web.git`, main is still
+`4b1313fcf736d7da87e2cb878db59d836962309f`, and
+`refs/heads/feat/cms-static-validation` is absent. Send the full intended SHA and
+normal `SHA:refs/heads/feat/cms-static-validation` push plan through lead for
+scoped Security review. Do not push until scoped clearance and lead instruction;
+recheck these facts immediately before execution and stop on drift. No force,
+branch rewrite, direct-main push or shared unstaged files are permitted.
+
+After the authorized branch push, verify its exact SHA and unchanged main, then
+create the draft bootstrap PR targeting main using `gh pr create --draft` with
+`--body-file`. Reconcile any uncertain push/PR outcome read-only before another
+mutation; do not duplicate a PR. Observe the actual hosted validation results and
+successful unique `civicpulse-validate` check, retaining its run/check IDs, source
+SHA and authenticated Actions App ID. Local passes are not hosted check evidence.
+
+Lead coordinates the reviewed [ADR7](../../docs/adr/0007-solo-protected-main.md)
+protection configuration and effective enforcement evidence, binding the actual
+check name/App ID, BEFORE a protected PR merge. Keep main unchanged during branch
+push and draft PR creation. Record the resulting main SHA/tree correspondence and
+validate that exact result separately; PR head and merged main are not assumed
+identical. No settings, secrets, environments, merge or deployment change is
+authorized by this branch-push/PR plan.
 
 GitHub behavior references: [job dependencies and conditions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds)
 and [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions).
