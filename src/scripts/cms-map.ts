@@ -72,7 +72,8 @@ function renderDirectory() {
 }
 function sync(updateUrl = true, _resetGroups = false) {
   choice.value = currentMap.id;
-  byId('layer-selection').textContent = `Map layers · ${selected.size} selected`;
+  const selectionSummary = byId('layer-selection');
+  if (selectionSummary) selectionSummary.textContent = `Map layers · ${selected.size} selected`;
   byId('map-description').textContent = currentMap.description;
   for (const [id, layer] of loaded) { if (selected.has(id)) layer.addTo(map); else map.removeLayer(layer); }
   for (const check of checks) { check.checked = selected.has(check.value); check.disabled = failures.includes(layers.find(layer => layer.id === check.value)!.name); }

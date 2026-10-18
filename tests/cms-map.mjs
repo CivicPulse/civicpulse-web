@@ -16,12 +16,12 @@ class Element {
   querySelector() { return this.children[0] ||= new Element(); }
   focus() {} scrollIntoView() {}
 }
-async function run({ empty = false, fail = false } = {}) {
+async function run({ empty = false, noMaps = false, fail = false } = {}) {
   const nodes = new Map();
   const byId = id => { if (!nodes.has(id)) nodes.set(id, new Element()); return nodes.get(id); };
   const ids = ['__proto__', 'constructor'];
   const layers = empty ? [] : ids.map(id => ({ id, name: `${id} published layer`, kind: 'point', color: '#123456' }));
-  const maps = empty ? [] : [{ id: '__proto__', name: 'Published map', description: 'Published description', layers: [ids[0]] }, { id: 'other', name: 'Other', description: 'Other description', layers: [ids[1]] }];
+  const maps = empty || noMaps ? [] : [{ id: '__proto__', name: 'Published map', description: 'Published description', layers: [ids[0]] }, { id: 'other', name: 'Other', description: 'Other description', layers: [ids[1]] }];
   const checks = layers.map(item => Object.assign(new Element(), { value: item.id }));
   const requests = [], groups = [], popups = [];
   const map = { createPane: () => ({ style: {} }), attributionControl: { setPrefix() {} }, removeLayer() {}, fitBounds() {}, setView() { return this; }, closePopup() {} };
@@ -34,7 +34,7 @@ async function run({ empty = false, fail = false } = {}) {
       }
       const group = { addTo() {}, getBounds() {} }; groups.push(group); return group;
     } };
-  const document = { getElementById: byId, createElement: () => new Element(), querySelectorAll: () => checks, querySelector: () => null };
+  const document = { getElementById: id => ['layer-selection', 'map-settings'].includes(id) ? null : byId(id), createElement: () => new Element(), querySelectorAll: () => checks, querySelector: () => null };
   const location = { search: '', href: 'https://example.org/maps/', hash: '', reload() {} };
   const fetch = async url => { requests.push(url); return { ok: !fail, json: async () => ({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: { type: 'Point', coordinates: [0, 0] }, properties: { name: 'Published stop', stop_id: '42', routeNumbers: ['9'], routeNames: ['Published route'], sourceUrl: 'https://example.org/source' } }] }) }; };
   new Function('L','layers','maps','layerUrl','appendPublishedDetails','publishedFeatureColor','document','matchMedia','location','history','fetch',controller)(L,layers,maps,id => `/_content/fixture/${encodeURIComponent(id)}`,details.appendPublishedDetails,details.publishedFeatureColor,document,() => ({ matches: false }),location,{ replaceState() {} },fetch);
@@ -57,6 +57,9 @@ test('actual CMS map controller selects arbitrary published IDs, searches, revea
 });
 test('actual CMS map controller supports empty catalogs and static layer failures without fallback', async () => {
   const empty = await run({ empty: true }); assert.deepEqual(empty.requests, []); assert.match(empty.byId('map-status').textContent, /0 layers/);
+  const unlisted = await run({ noMaps: true }); assert.equal(unlisted.requests.length, 0);
+  unlisted.checks[0].checked = true; await unlisted.checks[0].listeners.get('change')();
+  assert.equal(unlisted.requests.length, 1); assert.match(unlisted.byId('map-status').textContent, /1 layer/);
   const failed = await run({ fail: true }); assert.equal(failed.requests.length, 1); assert.equal(failed.byId('map-error').hidden, false); assert.match(failed.byId('map-status').textContent, /0 layers/);
 });
 test('published popup preserves source text, validates links and uses published transit properties only', () => {
