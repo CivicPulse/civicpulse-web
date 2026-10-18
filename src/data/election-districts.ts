@@ -1,4 +1,7 @@
 import snapshot from './election-districts.json';
+import { resolvePublicContentSource } from '../lib/content-source.mjs';
+resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
+const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 export const electionLayers = [
   { id: 'us-house-districts', name: 'U.S. House districts', description: '14 Georgia districts · 120th Congress / 2026 elections', color: '#2166ac', kind: 'area' },
   { id: 'state-house-districts', name: 'Georgia House districts', description: '180 districts · 2026 legislative boundaries', color: '#a15b29', kind: 'area' },
@@ -13,7 +16,7 @@ export const electionMaps = [
   { id: 'psc', name: 'Georgia PSC residency districts', description: 'Five commissioner residency districts derived from the enacted PSC-2022 county assignments and official Census county GIS. Commissioners must live in their district; voters statewide elect each commissioner. Bibb County is in District 1.', layers: ['psc-districts'] },
   { id: 'statewide', name: 'U.S. Senate & statewide offices', description: 'Both U.S. senators represent all of Georgia. This state boundary also provides geographic context for statewide offices; there are no separate U.S. Senate districts within the state.', layers: ['georgia-statewide'] },
 ];
-export const electionLayerIds = new Set<string>(snapshot.datasets.map(source => source.id));
+export const electionLayerIds = new Set<string>(useCmsSnapshot ? [] : snapshot.datasets.map(source => source.id));
 export function isElectionLayer(id: string) { return electionLayerIds.has(id); }
 export const censusElectionAttribution = '<a href="https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer">U.S. Census Bureau · TIGERweb</a>';
 export function electionAttribution(id: string) { return censusElectionAttribution + (id === 'psc-districts' ? ' · <a href="https://psc.ga.gov/site/downloads/psc-2022-map-packet.pdf">Georgia PSC / General Assembly</a>' : ''); }
