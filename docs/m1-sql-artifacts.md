@@ -61,6 +61,6 @@ historical deployments, downloaded copies, source admission or production gates.
 
 Developer checkpoints: actual SQL A/B, clean/reused inventories, retained bytes
 and failure cases passed on the local supported Node 24.21.0 runtime. The separate
-credential-free lane passed 69 tests/build/private output on cached Node 22.23.2
+credential-free lane passed 71 tests/build/private output on cached Node 22.23.2
 as described in [the runtime evidence](workflow-templates/README.md). Frozen
 independent review and a final complete M1 acceptance run remain separate.

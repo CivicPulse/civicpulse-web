@@ -2,7 +2,10 @@ import { electionLayers, electionMaps } from './election-districts';
 import { educationTransitLayers, educationTransitMaps } from './education-transit';
 import cms from './cms-published.json';
 import { resolvePublicContentSource } from '../lib/content-source.mjs';
-const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+import { cmsContentPrefix } from '../lib/cms-release';
+// Validate unknown configuration, then keep source selection statically foldable.
+resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
+const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 const localLayers = [
   ...electionLayers,
   ...educationTransitLayers,
@@ -31,8 +34,8 @@ export const layers: readonly MapLayer[] = useCmsSnapshot ? cmsLayers : localLay
 export const maps: readonly CmsMap[] = useCmsSnapshot ? cms.maps as unknown as CmsMap[] : localMaps;
 
 export function layerUrl(id: string) {
-  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id && layer.dynamic === 'events')) return '/data/calendar-events.geojson';
-  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id)) return `/data/cms/${encodeURIComponent(id)}.geojson`;
+  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id && layer.dynamic === 'events')) return `${cmsContentPrefix}/data/calendar-events.geojson`;
+  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id)) return `${cmsContentPrefix}/data/cms/${encodeURIComponent(id)}.geojson`;
   const filename = id === 'commission-districts' ? 'commission_districts' : id === 'polling-places' ? 'polling_places' : id === 'voting-precincts' ? 'voting_precincts' : id === 'event-locations' ? 'calendar-events' : id;
   return `/data/${filename}.geojson`;
 }

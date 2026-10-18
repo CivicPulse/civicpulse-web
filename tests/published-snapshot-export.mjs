@@ -547,6 +547,11 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
     return !['.git', 'node_modules', 'dist', '.astro', '.civicpulse', '.impeccable'].includes(first) && !relative.startsWith('.env');
   } });
   await symlink(path.join(repository, 'node_modules'), path.join(app, 'node_modules'), 'dir');
+  const unselectedLocalPath = path.join(app, 'src/data/events.json');
+  const unselectedLocal = JSON.parse(await readFile(unselectedLocalPath, 'utf8'));
+  assert.ok(unselectedLocal.length > 0);
+  unselectedLocal[0].title = 'M1_UNSELECTED_LOCAL_RECORD_SENTINEL';
+  await writeFile(unselectedLocalPath, JSON.stringify(unselectedLocal));
   // Static imports must resolve even when the selected CMS branch excludes
   // local events. Generate this ignored input from reviewed bytes in the
   // disposable app rather than inheriting a prepared shared checkout.
@@ -570,9 +575,14 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
     assert.deepEqual(JSON.parse(bytes), { type: 'FeatureCollection', features: [] });
   }
   assert.equal(JSON.parse(await readFile(path.join(app, 'dist/data/cms-snapshot.json'), 'utf8')).manifest_sha256, exported.manifest.sha256);
+  const boundLayer = path.join(app, 'dist/_content', exported.manifest.sha256, 'data/cms/__proto__.geojson');
+  assert.deepEqual(JSON.parse(await readFile(boundLayer, 'utf8')), { type: 'FeatureCollection', features: [] });
+  for (const page of ['index.html', 'maps/index.html', 'calendar/index.html', 'data/index.html']) {
+    assert.ok((await readFile(path.join(app, 'dist', page), 'utf8')).includes(`name="civicpulse-snapshot" content="${exported.manifest.sha256}"`));
+  }
   for (const file of await allFiles(path.join(app, 'dist'))) {
     const bytes = await readFile(file);
-    for (const localText of ['Four feeds were available; two embedded feeds returned 404.', 'Maintainers can replace the files in', '446 published occurrences']) {
+    for (const localText of ['Four feeds were available; two embedded feeds returned 404.', 'Maintainers can replace the files in', '446 published occurrences', 'The home page preview is drawn from the same voting data.', 'mgdsa-eb9d2fa8a7f2e28b8b14', 'M1_UNSELECTED_LOCAL_RECORD_SENTINEL']) {
       assert.equal(bytes.includes(localText), false, `Local source prose emitted in CMS artifact: ${file}`);
     }
   }
@@ -598,6 +608,7 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
   await assert.rejects(stat(path.join(app, 'dist/stale-output.json')), { code: 'ENOENT' });
   await assert.rejects(stat(path.join(app, 'dist/data/unreviewed-stale.json')), { code: 'ENOENT' });
   await assert.rejects(stat(path.join(app, 'dist/data/polling_places.geojson')), { code: 'ENOENT' });
+  await assert.rejects(stat(boundLayer), { code: 'ENOENT' });
   for (const file of await allFiles(path.join(app, 'dist'))) {
     const bytes = await readFile(file);
     for (const sentinel of ['m1-removed-layer', 'M1_STALE_PUBLIC_SENTINEL', 'M1_STALE_DIST_SENTINEL']) assert.equal(bytes.includes(sentinel), false, file);

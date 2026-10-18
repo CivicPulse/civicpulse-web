@@ -120,3 +120,32 @@ The shared URL corpus and local API publish tests now match. Cross-API privacy
 closure still requires independent review of the frozen web serialization
 boundary and API validator commits. See the independent
 [security review](security-review.md) for its separately owned rollout findings.
+
+## Release-bound local M1 outputs
+
+CMS materialization adds a separate `_snapshot.sha256` metadata field to its
+source-shaped input. It is not an API record field. CMS pages identify that
+snapshot in a meta tag and map clients fetch `/_content/<snapshot-sha>/data/...`,
+never a newer stable alias as a fallback. Each fresh candidate contains only its
+current namespace; prior namespace files do not survive a reused-workspace build.
+The stable `/data/cms-snapshot.json` marker is no-store. Generated CMS outputs,
+including content-bearing JavaScript and release data, revalidate rather than
+receiving a one-year immutable policy. Local-source headers remain unchanged.
+
+A throttled static marker check offers an accessible reload link when a different
+valid snapshot is observed. It never forces reload, replaces resident data or
+blocks already-rendered content on marker/network errors. There is no service
+worker or resident Supabase request. Local source has no marker checks. The
+actual shipped controller is fixture-tested by `node tests/release-notice.mjs`;
+normal build tests verify meta/data identity and removal of old namespace files.
+This does not prove provider-origin deletion, CDN propagation, old deployment
+access or recall of downloaded/offline content. Those remain external rollout
+acceptance gates under parent ADR 0006.
+
+CMS source conditionals are compile-time foldable so unselected local event and
+catalog imports are removed from browser bundles, not merely ignored at runtime.
+Configuration still passes the shared source validator, and plain Node importers
+still default to local. Raw evidence is never rewritten. Tests contaminate only a
+disposable local input with a synthetic sentinel and scan every CMS artifact file
+for that sentinel and known local-record IDs; a separate local build remains the
+positive source-selection control.

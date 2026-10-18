@@ -32,6 +32,9 @@ export async function prepareCmsBuild(root, snapshotPath) {
       await cp(source, destination, { errorOnExist: true, force: false });
     }
     await materializePinnedSnapshot(snapshot.directory, { dataDirectory: path.join(root, 'src/data'), publicDirectory: stage });
+    // Each page requests only data bound to its own immutable snapshot. Stable
+    // aliases remain revalidating downloads, never late-fetch substitutes.
+    await cp(path.join(stage, 'data'), path.join(stage, '_content', snapshot.manifest.sha256, 'data'), { recursive: true });
     // All generated content revalidates, including presently data-bearing JS.
     await writeFile(path.join(stage, '_headers'), '/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Cache-Control: public, max-age=0, must-revalidate\n/data/cms-snapshot.json\n  Cache-Control: no-store\n');
     await rm(target, { recursive: true, force: true });

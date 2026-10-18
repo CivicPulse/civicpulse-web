@@ -2,7 +2,9 @@ import { electionLayerIds } from './election-districts';
 import snapshot from './education-transit.json';
 import cms from './cms-published.json';
 import { resolvePublicContentSource } from '../lib/content-source.mjs';
-const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+// Validate unknown configuration, then keep source selection statically foldable.
+resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
+const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 const cmsLayerIds = (cms.layers as unknown as { id: string }[]).map(layer => layer.id);
 export const officialLayerIds = new Set([...snapshot.datasets.map(source => source.id), ...electionLayerIds, ...(useCmsSnapshot ? cmsLayerIds : [])]);
 export const schoolTypeLayers = [

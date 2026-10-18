@@ -1,7 +1,9 @@
 import catalog from '../data/calendars.json';
 import cms from '../data/cms-published.json';
 import { resolvePublicContentSource } from './content-source.mjs';
-const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+// Validate unknown configuration, then keep source selection statically foldable.
+resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
+const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 interface Organization { id: string; name: string; color: string; }
 interface Calendar { id: string; name: string; organizationId: string; color: string; sourceCalendar?: string; }
 // Color is optional in the API. Supply a presentation-only fallback without

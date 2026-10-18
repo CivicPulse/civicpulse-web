@@ -35,7 +35,7 @@ cached official `node:22-bookworm-slim` linux/amd64 image, immutable local image
 `sha256:6e6261159fd399ebe5a3d556b7d89da9c85c873f3f270918aad6c8107da8b411`,
 measured `node --version` = `v22.23.2`. It ran with network disabled, read-only
 container root and writable temporary HOME/source/dependency copies; SELinux
-remained enabled. The 69 focused tests, normal local build and private-output
+remained enabled. The 71 focused tests, normal local build and private-output
 checks passed. Dependencies were copied from the locked installed tree, not
 freshly installed in this run. This is local runtime evidence, not a GitHub-hosted
 execution or activated workflow. No global runtime installation was performed.
