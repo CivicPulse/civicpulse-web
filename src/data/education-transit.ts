@@ -18,7 +18,7 @@ export const schoolTypeLayers = [
 export const schoolPointLayerIds = useCmsSnapshot ? [] : schoolTypeLayers.map(layer => layer.id);
 export function isSchoolPointLayer(id: string) { return schoolTypeLayers.some(layer => layer.id === id); }
 export function schoolIcon(id: string) { return schoolTypeLayers.find(layer => layer.id === id)?.icon || '/icons/schools/school.svg'; }
-export const educationTransitLayers = [
+export const educationTransitLayers = useCmsSnapshot ? [] : [
   { id: 'rapid-service-area', name: 'Rapid Transit service area', description: '4 published on-demand service zones', color: '#e6ab02', kind: 'area' },
   ...schoolTypeLayers,
   { id: 'school-zones-elementary', name: 'Elementary attendance zones', description: '23 polygons · source school year 2025–26', color: '#2166ac', kind: 'area' },
@@ -28,7 +28,7 @@ export const educationTransitLayers = [
   { id: 'transit-routes', name: 'Transit routes', description: '10 routes with 29 path variants · scheduled service', color: '#26726b', kind: 'line' },
   { id: 'transit-stops', name: 'Transit stops', description: '854 stops with scheduled route connections', color: '#26726b', kind: 'point' },
 ] as const;
-export const educationTransitMaps = [
+export const educationTransitMaps = useCmsSnapshot ? [] : [
   { id: 'rapid', name: 'MBCTA Rapid service area', description: 'Published on-demand service zones from MBCTA Rapid’s own map: Downtown, South, East and Northwest Bibb. Both pickup and destination must be inside active service areas.', layers: ['rapid-service-area'] },
   { id: 'schools', name: 'Schools by type', description: '43 district-listed locations, grouped by their official source type. Toggle elementary, middle, high, pre-K, administration and specialty locations independently.', layers: [...schoolPointLayerIds] },
   { id: 'school-elementary', name: 'Elementary attendance zones', description: 'Published elementary boundaries with elementary school locations. The source labels these zones 2025–26; confirm enrollment assignments with BCSD.', layers: ['schools-elementary', 'school-zones-elementary'] },

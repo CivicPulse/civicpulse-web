@@ -6,7 +6,7 @@ import { cmsContentPrefix } from '../lib/cms-release';
 // Validate unknown configuration, then keep source selection statically foldable.
 resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
 const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
-const localLayers = [
+const localLayers = useCmsSnapshot ? [] : [
   ...electionLayers,
   ...educationTransitLayers,
   { id: 'recreation-centers', name: 'Recreation centers', description: '11 county centers with published hours and amenities', color: '#26726b', kind: 'point' },
@@ -16,7 +16,7 @@ const localLayers = [
   { id: 'polling-places', name: 'Polling places', description: 'Uploaded locations and record status', color: '#ae583b', kind: 'point' },
   { id: 'voting-precincts', name: 'Voting precincts', description: 'Uploaded precinct boundaries', color: '#3d704c', kind: 'area' },
 ] as const;
-const localMaps = [
+const localMaps = useCmsSnapshot ? [] : [
   { id: 'voting', name: 'Polling places & precincts', description: 'Uploaded polling locations and voting precincts, including historical records.', layers: ['polling-places', 'voting-precincts'] },
   { id: 'commissioners', name: 'Find your commissioner', description: 'Explore the nine commission districts and commissioner details from Macon-Bibb County Government IT GIS.', layers: ['commission-districts'] },
   { id: 'events', name: 'Community events', description: 'Explore calendar events by venue. Online events and listings without coordinates remain in the calendar.', layers: ['event-locations'] },
