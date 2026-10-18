@@ -67,7 +67,7 @@ credential-free lane passed 71 tests/build/private output on cached Node 22.23.2
 as described in [the runtime evidence](workflow-templates/README.md). Frozen
 independent review and a final complete M1 acceptance run remain separate.
 
-## Frozen source removal checkpoint
+## Earlier event-only removal checkpoint
 
 Developer full integration ran against Web source
 `97a7fa79ff85e76ea35bf9ba994f1d561a05c90c` and the external API fixture commit above,
@@ -97,3 +97,57 @@ minimal DOM/fetch boundary. They are not connected-browser/provider cache proof.
 Current-origin old URLs, warmed CDN, historical deployments and download recall
 remain separate M2/operational gates; no cache-purge or removal guarantee follows
 from these local artifact checks.
+
+## CMS map graph isolation checkpoint
+
+The earlier event-ID pass did not prove GIS isolation: local education/transit
+and election metadata still shipped through browser helper initializers. The
+normal CMS page now statically imports a separate published-only map controller;
+the unused local controller is omitted, including lazy chunks. Local catalog
+array, ID-set and feed-date initializers are also compile-time source gated.
+The local controller remains unchanged. CMS HTML conditionally omits local-only
+notes, legends and printable-map downloads rather than hiding them.
+
+The CMS controller uses published layer identity and snapshot-bound URLs, not
+local-ID routing. Route colors, route/stop properties, source attribution and
+HTTP(S)-validated source links come from published features. It does not attach
+local feed dates or hardcoded source links to CMS records. Event links remain
+available; no private/virtual geometry is constructed by the controller. Unknown
+CMS layer URLs fail closed instead of falling back to local paths.
+
+Developer full SQL integration passed against source
+`318883a5eca4ce34365061980b58d3bc9541f0a7` and frozen API fixture `c11e6fd`.
+Evidence: `/tmp/civicpulse-m1-artifacts-VHqlG3/evidence.json` and
+`raw-output-counts.json`; log `/tmp/civicpulse-m1-map-isolation-final.log`.
+
+- A: 83 files, digest `9a7659fd45ac7e68d3ea3325e51dd56cde77dad0126d3388c137cdb5bbcc05db`.
+- B: 80 files, digest `636e84061a3243ec1ab634f4b102b2994764834c30529730a97b1c1da6d7aad5`.
+- All 867 local event IDs absent from every A/B deployable byte. A 62-value map
+  corpus covers local layer IDs, source URLs, `/data` paths, feed dates/version
+  and local-only HTML claims. The 61 absent-source values have zero matches in
+  both artifacts. The explicitly published `event-locations` identity is retained
+  by contract; published inventory IDs are not incorrectly treated as withdrawn.
+  All 62 corpus values and four event controls exist in the normal local build.
+- CMS map chunks: A `_astro/cms-map.BSqTUq9j.js`, B
+  `_astro/cms-map.rJywCkJi.js`, each 157,709 bytes; zero absent local map sentinel
+  matches. Complete-file scanning includes HTML, JSON, GeoJSON, ICS, JS and assets.
+- Actual SQL withdrawals, clean/reused B inventory equality, removed routes and
+  bytes, unchanged prior artifacts, materialization/build/hardlink rejection and
+  test-only transport outcomes all pass. Real uploader calls: zero.
+- `node tests/cms-map.mjs`: 3 actual controller/detail tests cover arbitrary
+  `__proto__`/`constructor` IDs, map selection/search, published transit details,
+  safe source links, no-map/empty-layer controls and static fetch failure.
+  Astro check: zero diagnostics. These are developer results, not independent
+  review or production cache/authority evidence.
+
+Connected Chrome inspected these exact static A/B artifacts on loopback. A
+loaded two layers/three features, directory search worked, and Show on map opened
+the published feature and event link. B showed no published maps, retained only
+the explicitly published empty event layer, and selecting it showed zero features
+without fallback. No new-origin console error was observed. This is local static
+browser QA; live production/session/unknown-write QA remains unchanged and STOPPED.
+
+The credential-free local lane now includes the three CMS-map tests (74 total).
+The earlier measured Node 22 result above remains historical; do not interpret
+that earlier 71-test result as a rerun of this increment. Independent frozen
+review and later cache/runner/hosted gates remain separate.

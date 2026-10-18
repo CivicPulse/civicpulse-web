@@ -10,7 +10,7 @@ function main() {
     throw new Error('Local CI validation requires PUBLIC_CONTENT_SOURCE=local; CMS delivery is a separate gated lane');
   }
   const env = { ...process.env, PUBLIC_CONTENT_SOURCE: 'local' };
-  const suites = ['admin-controller', 'admin-json', 'admin-fields', 'admin-publish-gate', 'admin-session', 'admin-request', 'release-notice', 'private-event-publication', 'content-source', 'snapshot-integrity', 'published-snapshot-export'];
+  const suites = ['admin-controller', 'admin-json', 'admin-fields', 'admin-publish-gate', 'admin-session', 'admin-request', 'release-notice', 'cms-map', 'private-event-publication', 'content-source', 'snapshot-integrity', 'published-snapshot-export'];
   const commands = [
     ...suites.map(suite => [process.execPath, [`tests/${suite}.mjs`]]),
     [process.platform === 'win32' ? 'npm.cmd' : 'npm', ['run', 'build']],

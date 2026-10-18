@@ -76,6 +76,25 @@ for (const name of ['events', 'mgdsa-events', 'mgrls-events', 'bcsd-events', 'mo
   for (const row of rows) localRecordIds.add(row.id);
   if (name !== 'events') localPositiveIds.push(rows[0].id);
 }
+const localMapSentinels = new Set();
+for (const name of ['education-transit', 'election-districts']) {
+  const snapshot = JSON.parse(execFileSync('git', ['show', `${sourceSha}:src/data/${name}.json`], { cwd: repository, encoding: 'utf8' }));
+  for (const row of snapshot.datasets) {
+    for (const value of [row.id, row.data, row.sourceUrl]) if (typeof value === 'string') localMapSentinels.add(value);
+  }
+  if (snapshot.transitFeed) for (const key of ['sourceUrl', 'serviceStart', 'serviceEnd', 'feedVersion']) localMapSentinels.add(snapshot.transitFeed[key]);
+}
+// These local HTML-only descriptions/links must be omitted, not hidden.
+for (const value of ['commission-districts', 'polling-places', 'voting-precincts', 'recreation-centers', 'libraries', 'event-locations', '2025–26', 'https://myride.mbcta.net/', 'https://files.civpulse.org/maps/Macon-Bibb_', 'https://rapid.mbcta.net/']) localMapSentinels.add(value);
+function assertNoLocalMapData(bytes, stage, manifest) {
+  // A published layer may legitimately retain its original identity. In this
+  // fixture the derived event layer is explicitly published as event-locations.
+  const publishedIds = new Set(manifest.layers.map(layer => layer.id));
+  for (const value of localMapSentinels) {
+    if (publishedIds.has(value)) continue;
+    assert.equal(bytes.includes(value), false, `${stage} retained local map sentinel ${value}`);
+  }
+}
 let started = false;
 try {
   const timeout = setTimeout(() => readyReject(new Error('Fixture startup timeout')), 120_000);
@@ -96,6 +115,7 @@ try {
   const bytesA = Buffer.concat(await Promise.all(inventoryA.map(file => readFile(path.join(builtA.artifact, file.path)))));
   for (const sentinel of Object.values(info.expected.sentinels)) assert.ok(bytesA.includes(sentinel), `A valid control missing ${sentinel}`);
   for (const id of localRecordIds) assert.equal(bytesA.includes(id), false, 'A contains an unselected local event record ID');
+  assertNoLocalMapData(bytesA, 'A', a.manifest);
   const bReply = await command('advanceB');
   assert.equal(bReply.stage, 'B'); assert.equal(bReply.receipts.length, 3);
   const b = await exportPublishedSnapshot(exportOptions);
@@ -115,6 +135,7 @@ try {
   const bytesB = Buffer.concat(await Promise.all(inventoryB.map(file => readFile(path.join(builtB.artifact, file.path)))));
   for (const sentinel of Object.values(info.expected.sentinels)) assert.equal(bytesB.includes(sentinel), false, `B retained ${sentinel}`);
   for (const id of localRecordIds) assert.equal(bytesB.includes(id), false, 'B contains an unselected local event record ID');
+  assertNoLocalMapData(bytesB, 'B', b.manifest);
   const localControl = path.join(root, 'local-control');
   await import('node:fs/promises').then(fs => fs.mkdir(localControl));
   execFileSync('tar', ['-x', '-C', localControl], { input: execFileSync('git', ['archive', sourceSha], { cwd: repository, maxBuffer: 128 * 1024 * 1024 }) });
@@ -123,6 +144,7 @@ try {
   const localFiles = await files(path.join(localControl, 'dist'));
   const localBytes = Buffer.concat(await Promise.all(localFiles.map(file => readFile(path.join(localControl, 'dist', file.path)))));
   for (const id of localPositiveIds) assert.ok(localBytes.includes(id), 'Local-mode valid control lost its event records');
+  for (const value of localMapSentinels) assert.ok(localBytes.includes(value), `Local-mode positive control missing ${value}`);
   assert.equal(inventoryB.some(file => file.path === `events/${info.expected.ids.event}.ics`), false);
   assert.equal(inventoryB.some(file => file.path === `data/cms/${encodeURIComponent(info.expected.ids.layer)}.geojson`), false);
   assert.deepEqual(await files(retainedA), inventoryA, 'Retained A artifact changed during B build');
@@ -172,7 +194,7 @@ try {
   assert.equal(forbiddenSendCalls, 0, 'Invalid build never reaches even the synthetic transport');
   await writeFile(path.join(root, 'evidence.json'), JSON.stringify({ sourceSha, fixtureId: info.fixture_id, countsA: a.manifest.counts, countsB: b.manifest.counts,
     artifactA: builtA.sha256, artifactB: builtB.sha256, receipts: bReply.receipts, scannedLocalRecordIds: localRecordIds.size,
-    localControlPositiveIds: localPositiveIds.length, artifactDirectoryA: retainedA, artifactDirectoryB: builtB.artifact,
+    localControlPositiveIds: localPositiveIds.length, localMapSentinels: [...localMapSentinels], localMapMatchesA: 0, localMapMatchesB: 0, artifactDirectoryA: retainedA, artifactDirectoryB: builtB.artifact,
     localRecordMatchesA: 0, localRecordMatchesB: 0, uploaderCalls: 0, syntheticTransportCalls: syntheticCalls, authority: false }, null, 2));
   console.log(`M1 actual SQL -> normal Astro A/B passed; evidence ${root}`);
 } finally {
