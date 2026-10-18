@@ -106,3 +106,41 @@ No branch settings, secrets, environments or deployment changes are included.
 
 GitHub behavior references: [job dependencies and conditions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds)
 and [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions).
+
+## Frozen local execution evidence
+
+CI implementation source `e3fdb4f4378c55c144d23c501d969f6c2666e9c7` was validated
+in `/tmp/civicpulse-ci-f74501a/source`. It began as a clean f745 archive plus
+ONLY the subsequently committed ephemeral-port helper; every one of the 762
+regular committed files was byte-compared against the e3fdb4f Git archive and
+matched. No shared package/test/UI overlays were consumed.
+
+- Fresh `npm ci --no-audit --no-fund`: 311 locked packages installed successfully
+  (normal npm cache use, not copied node_modules). No secrets/config were added.
+- Full 78-test local lane, normal local Astro build with zero diagnostics and
+  private-output checks passed on measured Node 22.23.2 in the previously pinned
+  cached official image, network disabled/read-only root/private writable mounts.
+  Output: 81 private ICS pages, 34 map features, 973 static files. Log:
+  `/tmp/civicpulse-ci-f74501a/node22-validation.log`.
+- All five Python suites: 24 tests passed using installed versions matching
+  `requirements-ci.txt`; this was not a fresh pip install or hosted Python run.
+- Locked Playwright Chromium 1248 / Chrome for Testing 156.0.8078.4 was downloaded
+  successfully into `/tmp/civicpulse-ci-browsers`. All six committed browser
+  suites passed against the normal local build, including desktop/mobile,
+  no-JavaScript, unavailable-layer and source/ICS assertions. Log:
+  `/tmp/civicpulse-ci-f74501a/browser-validation.log`. Browser orchestration used
+  host Node 26.11.1; this is separate from the measured Node 22 unit/build lane
+  and from the future GitHub Ubuntu browser/system-dependency installation.
+- actionlint **1.7.12** passed. Four CI regressions passed, including actual YAML
+  final-gate execution over all 25 dependency-result combinations.
+- Actual pinned PostGIS startup, offline network/read-only root, SQL `SELECT 1`,
+  success cleanup and failed-task cleanup passed under a unique remapped smoke
+  container name. It did not replace API-Dev's existing fixed-name container.
+  Log: `/tmp/civicpulse-ci-container-smoke.log`. This is real lifecycle evidence,
+  NOT execution of the entire sequential SQL helper or API harness under that
+  remapped name. The full fixed-name sequential helper remains unrun locally to
+  preserve the existing shared test container; prior real SQL A/B evidence and
+  the upcoming first GitHub lane remain separately identified.
+
+No GitHub run, remote workflow activation, required-check protection, provider
+operation or deployment has occurred as part of this checkpoint.
