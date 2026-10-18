@@ -44,3 +44,11 @@ Full action SHAs follow GitHub's
 [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use).
 Pin verification and input review are not a complete action implementation audit.
 Reverify pins, runtime compatibility and caller isolation during activation review.
+
+The subsequent clean Web `e8496e9` archive also passed the updated 74-test lane
+(including CMS-map controller tests), normal local build with zero diagnostics,
+and private-output check: 81 private ICS pages, 34 map features, 973 files.
+It used the same measured immutable Node 22.23.2 image and network/read-only-root
+boundaries, with correctly mounted private locked dependency reuse; no fresh
+install or GitHub-hosted execution. Evidence log:
+`/tmp/civicpulse-m1-e8496e9/node22-validation.log`.

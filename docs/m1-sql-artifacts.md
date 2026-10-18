@@ -148,6 +148,11 @@ without fallback. No new-origin console error was observed. This is local static
 browser QA; live production/session/unknown-write QA remains unchanged and STOPPED.
 
 The credential-free local lane now includes the three CMS-map tests (74 total).
-The earlier measured Node 22 result above remains historical; do not interpret
-that earlier 71-test result as a rerun of this increment. Independent frozen
-review and later cache/runner/hosted gates remain separate.
+A clean `git archive` of `e8496e9` passed that complete lane on measured Node
+22.23.2 using the same immutable cached image above, network disabled/read-only
+container root and private writable source/HOME/dependency copies. Dependencies
+were reused from the locked installed tree, not freshly installed. Astro reported
+zero diagnostics; the private-output check found 81 private ICS pages, 34 public
+map features and 973 static files (one extra local controller entry chunk versus
+the earlier 972). Log: `/tmp/civicpulse-m1-e8496e9/node22-validation.log`.
+Independent frozen review and later cache/runner/hosted gates remain separate.
