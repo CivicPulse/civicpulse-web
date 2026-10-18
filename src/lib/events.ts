@@ -19,7 +19,7 @@ export interface CommunityEvent {
   sourceEventId?: string; sourceCity?: string; isVirtual?: boolean; addressPrivate?: boolean;
 }
 // Fresh captured listings replace their earlier manual imports, retaining the same IDs.
-const refreshedMobilizeUrls = new Set(mobilize.map(event => event.sourceUrl));
+const refreshedMobilizeUrls = new Set((mobilize as CommunityEvent[]).map(event => event.sourceUrl));
 const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
 const sourceEvents: CommunityEvent[] = useCmsSnapshot ? cms.events as CommunityEvent[] : [...data.filter(event => !refreshedMobilizeUrls.has(event.sourceUrl || '')), ...mgdsa, ...mobilize, ...mgrls, ...bcsd] as CommunityEvent[];
 export const events: CommunityEvent[] = sourceEvents.map((item: CommunityEvent) => {

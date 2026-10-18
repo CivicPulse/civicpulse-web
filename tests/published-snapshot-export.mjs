@@ -521,7 +521,7 @@ test('an unreadable assembled candidate cannot replace the active pointer or pri
 test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs', async t => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'civicpulse-snapshot-build-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
-  const layerIds = ['__proto__', 'constructor', 'toString'];
+  const layerIds = ['__proto__', 'constructor', 'toString', 'm1-removed-layer'];
   const records = [
     ...layerIds.map(id => row('layer', id, { name: `Layer ${id}`, description: 'Fixture layer', color: '#26726b', kind: 'point' })),
     row('map', 'fixture-map', { name: 'Fixture map', description: 'Snapshot build regression fixture', layers: layerIds }),
@@ -559,15 +559,43 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
   assert.equal(materialized.snapshot.manifest.generation, '1');
   const env = { ...process.env, PUBLIC_CONTENT_SOURCE: 'supabase', CIVICPULSE_SNAPSHOT_DIR: exported.directory };
   delete env.SUPABASE_SERVICE_ROLE_KEY;
-  execFileSync(process.execPath, [path.join(app, 'node_modules/astro/bin/astro.mjs'), 'build'], {
-    cwd: app, env, stdio: 'pipe', timeout: 120_000,
-  });
+  try {
+    execFileSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['run', 'build'], {
+      cwd: app, env, stdio: 'pipe', timeout: 120_000,
+    });
+  } catch (error) { throw new Error(`Normal CMS build failed:\n${error.stdout || ''}\n${error.stderr || ''}`); }
   const output = path.join(app, 'dist/data/cms');
   for (const id of layerIds) {
     const bytes = await readFile(path.join(output, `${encodeURIComponent(id)}.geojson`), 'utf8');
     assert.deepEqual(JSON.parse(bytes), { type: 'FeatureCollection', features: [] });
   }
   assert.equal(JSON.parse(await readFile(path.join(app, 'dist/data/cms-snapshot.json'), 'utf8')).manifest_sha256, exported.manifest.sha256);
+  // Dirty/reused attempts must not carry prior generated files or unrelated
+  // tracked public data into the next deployable inventory.
+  const removedPath = path.join(app, 'dist/data/cms/m1-removed-layer.geojson');
+  assert.ok(await stat(removedPath));
+  await writeFile(path.join(app, 'public/data/unreviewed-stale.json'), 'M1_STALE_PUBLIC_SENTINEL');
+  await writeFile(path.join(app, 'dist/stale-output.json'), 'M1_STALE_DIST_SENTINEL');
+  const remaining = records.filter(item => item.kind !== 'layer' || item.id !== 'm1-removed-layer')
+    .map(item => item.kind === 'map' ? { ...item, revision: 2, payload: { ...item.payload, layers: layerIds.slice(0, 3) } } : item);
+  const removed = {
+    records: remaining,
+    layers: new Map(layerIds.slice(0, 3).map(id => [id, []])),
+    manifest: manifest({ generation: '2', records: remaining, layers: layerIds.slice(0, 3).map(id => ({ id, revision: 1, mode: 'stored', feature_count: 0 })) }),
+  };
+  const next = await exportPublishedSnapshot({ api: clientFor(removed), snapshotsDir: path.join(dir, 'snapshots'), sourceMode: 'supabase', vendorManifestSha256: vendorHash, sourceSha });
+  execFileSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['run', 'build'], {
+    cwd: app, env: { ...env, CIVICPULSE_SNAPSHOT_DIR: next.directory }, stdio: 'pipe', timeout: 120_000,
+  });
+  await assert.rejects(stat(removedPath), { code: 'ENOENT' });
+  await assert.rejects(stat(path.join(app, 'dist/stale-output.json')), { code: 'ENOENT' });
+  await assert.rejects(stat(path.join(app, 'dist/data/unreviewed-stale.json')), { code: 'ENOENT' });
+  await assert.rejects(stat(path.join(app, 'dist/data/polling_places.geojson')), { code: 'ENOENT' });
+  for (const file of await allFiles(path.join(app, 'dist'))) {
+    const bytes = await readFile(file);
+    for (const sentinel of ['m1-removed-layer', 'M1_STALE_PUBLIC_SENTINEL', 'M1_STALE_DIST_SENTINEL']) assert.equal(bytes.includes(sentinel), false, file);
+  }
+  assert.equal(JSON.parse(await readFile(path.join(app, 'dist/data/cms-snapshot.json'), 'utf8')).manifest_sha256, next.manifest.sha256);
 });
 
 test('actual snapshot serialization matches every cp-source-url-v1 corpus and boundary vector', async t => {

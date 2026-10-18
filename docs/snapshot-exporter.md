@@ -51,9 +51,19 @@ consumes an explicit generation through that strict reader and writes Astro's
 source-shaped `cms-published.json`, layer GeoJSON files and a generation marker.
 It preserves arbitrary IDs such as `__proto__`, `constructor` and `toString` as
 array values and URL-encodes layer filenames. Use it only in a disposable build
-workspace. It is not wired into normal `npm run build` hooks; those continue to
-fail closed for `PUBLIC_CONTENT_SOURCE=supabase` until the reviewed trusted runner
-is ready. Path checks reject observed symlinks and traversal;
+workspace. Normal explicit CMS builds now run this preparation through the existing npm
+prebuild hook, requiring both process-level `PUBLIC_CONTENT_SOURCE=supabase` and
+an explicit `CIVICPULSE_SNAPSHOT_DIR`. There is no API read or local fallback in
+that build. `prepare-cms-build.mjs` creates a fresh generated public directory
+containing only the exact static assets in `cms-public-assets.json`, generated
+snapshot datasets and headers. Tracked local data/evidence is excluded from Astro's
+public copy. The generated public tree and dist are replaced on each attempt;
+use only disposable attempt workspaces. Failure is not a deployment.
+`build-cms-artifact.mjs` archives an explicit source commit into a unique build
+attempt, binds it to the snapshot source SHA, runs the NORMAL npm build and emits
+an exact artifact inventory outside dist. Prior attempts are untouched. No uploader,
+claim, source admission, live receipt or production authority is implemented.
+Path checks reject observed symlinks and traversal;
 they do not provide an `openat`-style defense against a concurrent process
 rewriting ancestor directories. A future runner must keep the staging root in a
 private, isolated workspace with no untrusted concurrent filesystem writer.
@@ -95,9 +105,10 @@ reports matching disposable SQL publish tests at local API commit
 
 ## Not enabled for resident builds
 
-The materializer is not yet wired to the regular build hooks or a trusted isolated
-runner. `PUBLIC_CONTENT_SOURCE=local` remains the resident-site default;
-`scripts/prepare-public-mobilize.mjs` continues to gate Supabase builds. The API's
+The normal local mode remains the resident-site default. The new explicit CMS
+build path is a LOCAL M1 foundation, not a hosted rollout. It requires a previously
+validated immutable snapshot; it does not activate the hosted manifest contract,
+bootstrap or a production workflow. The API's
 current publication manifest is unbootstrapped, and the frozen hosted v1 has no
 manifest RPC. Production snapshot mode therefore remains disabled pending the
 additive API rollout, reviewed bootstrap, independent security closure, and the

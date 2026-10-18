@@ -15,13 +15,14 @@ node scripts/validate-local-ci.mjs
 ```
 
 The command accepts local or unset public source selection (unset defaults to
-local) and rejects explicit Supabase selection before starting steps. It runs the CMS publish-review,
+local) and rejects explicit Supabase selection before starting steps. It runs the actual admin controller, raw numeric transport, structured fields,
+session/request and publish-review suites, plus
 private-event, content-source, deterministic JSON and actual snapshot export/build
 fixtures, builds the normal static site, then checks private-event public output.
 Snapshot mocks use explicit fixture source identity and never call the hosted API.
 Their isolated Astro app prepares reviewed derived Mobilize data itself; no
-ignored artifact from the shared checkout is required. The normal build retains
-the explicit Supabase gate. The command changes generated build files only and
+ignored artifact from the shared checkout is required. The local validation lane rejects Supabase selection; the separate explicit CMS
+build requires a verified pinned snapshot and is not production delivery. The command changes generated build files only and
 does not invoke any uploader, migration, database import or provider CLI.
 
 This lane is intended for untrusted pull requests with **no production secrets or
