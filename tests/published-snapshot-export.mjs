@@ -570,6 +570,13 @@ test('export-read-materialize-Astro-build roundtrips prototype-named layer IDs',
     assert.deepEqual(JSON.parse(bytes), { type: 'FeatureCollection', features: [] });
   }
   assert.equal(JSON.parse(await readFile(path.join(app, 'dist/data/cms-snapshot.json'), 'utf8')).manifest_sha256, exported.manifest.sha256);
+  for (const file of await allFiles(path.join(app, 'dist'))) {
+    const bytes = await readFile(file);
+    for (const localText of ['Four feeds were available; two embedded feeds returned 404.', 'Maintainers can replace the files in', '446 published occurrences']) {
+      assert.equal(bytes.includes(localText), false, `Local source prose emitted in CMS artifact: ${file}`);
+    }
+  }
+
   // Dirty/reused attempts must not carry prior generated files or unrelated
   // tracked public data into the next deployable inventory.
   const removedPath = path.join(app, 'dist/data/cms/m1-removed-layer.geojson');
