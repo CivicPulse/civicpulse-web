@@ -29,14 +29,26 @@ actionlint docs/workflow-templates/validate.yml.example
 
 The official pinned metadata defines `persist-credentials` and
 `package-manager-cache`; the template disables both. Both actions use Node 24
-internally. The separate project runtime is fixed to Node 22.22.0, matching the
-locked Astro package's `engines.node: >=22.22.0`. The official
-[Node 22.22.0 release](https://nodejs.org/en/blog/release/v22.22.0) confirms that
-runtime exists. Earlier 22.12 guidance is insufficient for this lockfile. Local
-validation evidence so far used Node 26.11.1; this inactive template is not proof
-of a GitHub-hosted or Node 22.22.0 execution.
+internally. The separate project runtime is fixed to Node 22.23.2, meeting the
+locked Astro requirement `>=22.22.0`. Developer M1 validation used the existing
+cached official `node:22-bookworm-slim` linux/amd64 image, immutable local image ID
+`sha256:6e6261159fd399ebe5a3d556b7d89da9c85c873f3f270918aad6c8107da8b411`,
+measured `node --version` = `v22.23.2`. It ran with network disabled, read-only
+container root and writable temporary HOME/source/dependency copies; SELinux
+remained enabled. The 71 focused tests, normal local build and private-output
+checks passed. Dependencies were copied from the locked installed tree, not
+freshly installed in this run. This is local runtime evidence, not a GitHub-hosted
+execution or activated workflow. No global runtime installation was performed.
 
 Full action SHAs follow GitHub's
 [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use).
 Pin verification and input review are not a complete action implementation audit.
 Reverify pins, runtime compatibility and caller isolation during activation review.
+
+The subsequent clean Web `e8496e9` archive also passed the updated 74-test lane
+(including CMS-map controller tests), normal local build with zero diagnostics,
+and private-output check: 81 private ICS pages, 34 map features, 973 files.
+It used the same measured immutable Node 22.23.2 image and network/read-only-root
+boundaries, with correctly mounted private locked dependency reuse; no fresh
+install or GitHub-hosted execution. Evidence log:
+`/tmp/civicpulse-m1-e8496e9/node22-validation.log`.

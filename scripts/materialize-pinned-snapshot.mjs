@@ -12,6 +12,7 @@ function cmsData(snapshot) {
   const layers = payloads(snapshot, 'layer').map(layer =>
     layerMode.get(layer.id) === 'events' ? { ...layer, dynamic: 'events' } : layer);
   return {
+    _snapshot: { sha256: snapshot.manifest.sha256 },
     organizations: payloads(snapshot, 'organization'),
     calendars: payloads(snapshot, 'calendar'),
     events: payloads(snapshot, 'event'),

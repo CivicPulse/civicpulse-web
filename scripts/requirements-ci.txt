@@ -1,0 +1,5 @@
+# Exact offline importer-test dependency versions, including transitive packages.
+python-dateutil==2.9.0.post0
+six==1.17.0
+shapely==2.2.0
+numpy==2.4.6

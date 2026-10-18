@@ -24,7 +24,7 @@ jobs:
       - name: Set up pinned project runtime without package-manager caching
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
-          node-version: '22.22.0'
+          node-version: '22.23.2'
           package-manager-cache: false
       - name: Install locked dependencies
         run: npm ci

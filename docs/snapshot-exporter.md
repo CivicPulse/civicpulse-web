@@ -51,9 +51,19 @@ consumes an explicit generation through that strict reader and writes Astro's
 source-shaped `cms-published.json`, layer GeoJSON files and a generation marker.
 It preserves arbitrary IDs such as `__proto__`, `constructor` and `toString` as
 array values and URL-encodes layer filenames. Use it only in a disposable build
-workspace. It is not wired into normal `npm run build` hooks; those continue to
-fail closed for `PUBLIC_CONTENT_SOURCE=supabase` until the reviewed trusted runner
-is ready. Path checks reject observed symlinks and traversal;
+workspace. Normal explicit CMS builds now run this preparation through the existing npm
+prebuild hook, requiring both process-level `PUBLIC_CONTENT_SOURCE=supabase` and
+an explicit `CIVICPULSE_SNAPSHOT_DIR`. There is no API read or local fallback in
+that build. `prepare-cms-build.mjs` creates a fresh generated public directory
+containing only the exact static assets in `cms-public-assets.json`, generated
+snapshot datasets and headers. Tracked local data/evidence is excluded from Astro's
+public copy. The generated public tree and dist are replaced on each attempt;
+use only disposable attempt workspaces. Failure is not a deployment.
+`build-cms-artifact.mjs` archives an explicit source commit into a unique build
+attempt, binds it to the snapshot source SHA, runs the NORMAL npm build and emits
+an exact artifact inventory outside dist. Prior attempts are untouched. No uploader,
+claim, source admission, live receipt or production authority is implemented.
+Path checks reject observed symlinks and traversal;
 they do not provide an `openat`-style defense against a concurrent process
 rewriting ancestor directories. A future runner must keep the staging root in a
 private, isolated workspace with no untrusted concurrent filesystem writer.
@@ -95,9 +105,10 @@ reports matching disposable SQL publish tests at local API commit
 
 ## Not enabled for resident builds
 
-The materializer is not yet wired to the regular build hooks or a trusted isolated
-runner. `PUBLIC_CONTENT_SOURCE=local` remains the resident-site default;
-`scripts/prepare-public-mobilize.mjs` continues to gate Supabase builds. The API's
+The normal local mode remains the resident-site default. The new explicit CMS
+build path is a LOCAL M1 foundation, not a hosted rollout. It requires a previously
+validated immutable snapshot; it does not activate the hosted manifest contract,
+bootstrap or a production workflow. The API's
 current publication manifest is unbootstrapped, and the frozen hosted v1 has no
 manifest RPC. Production snapshot mode therefore remains disabled pending the
 additive API rollout, reviewed bootstrap, independent security closure, and the
@@ -109,3 +120,32 @@ The shared URL corpus and local API publish tests now match. Cross-API privacy
 closure still requires independent review of the frozen web serialization
 boundary and API validator commits. See the independent
 [security review](security-review.md) for its separately owned rollout findings.
+
+## Release-bound local M1 outputs
+
+CMS materialization adds a separate `_snapshot.sha256` metadata field to its
+source-shaped input. It is not an API record field. CMS pages identify that
+snapshot in a meta tag and map clients fetch `/_content/<snapshot-sha>/data/...`,
+never a newer stable alias as a fallback. Each fresh candidate contains only its
+current namespace; prior namespace files do not survive a reused-workspace build.
+The stable `/data/cms-snapshot.json` marker is no-store. Generated CMS outputs,
+including content-bearing JavaScript and release data, revalidate rather than
+receiving a one-year immutable policy. Local-source headers remain unchanged.
+
+A throttled static marker check offers an accessible reload link when a different
+valid snapshot is observed. It never forces reload, replaces resident data or
+blocks already-rendered content on marker/network errors. There is no service
+worker or resident Supabase request. Local source has no marker checks. The
+actual shipped controller is fixture-tested by `node tests/release-notice.mjs`;
+normal build tests verify meta/data identity and removal of old namespace files.
+This does not prove provider-origin deletion, CDN propagation, old deployment
+access or recall of downloaded/offline content. Those remain external rollout
+acceptance gates under parent ADR 0006.
+
+CMS source conditionals are compile-time foldable so unselected local event and
+catalog imports are removed from browser bundles, not merely ignored at runtime.
+Configuration still passes the shared source validator, and plain Node importers
+still default to local. Raw evidence is never rewritten. Tests contaminate only a
+disposable local input with a synthetic sentinel and scan every CMS artifact file
+for that sentinel and known local-record IDs; a separate local build remains the
+positive source-selection control.

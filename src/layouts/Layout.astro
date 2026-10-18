@@ -5,6 +5,7 @@ import '@fontsource/unna/700.css';
 import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/500.css';
 import '@fontsource/dm-sans/600.css';
+import { cmsSnapshotSha } from '../lib/cms-release';
 interface Props { title: string; description?: string; }
 const { title, description = 'Explore community and voting maps and a calendar of local events in Macon–Bibb.' } = Astro.props;
 const path = Astro.url.pathname;
@@ -17,6 +18,7 @@ const nav = [{ url: '/', label: 'Home' }, { url: '/maps/', label: 'Explore maps'
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f6f1e7" />
+    {cmsSnapshotSha && <meta name="civicpulse-snapshot" content={cmsSnapshotSha} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title} · Civic Pulse</title>
   </head>
@@ -39,3 +41,6 @@ const nav = [{ url: '/', label: 'Home' }, { url: '/maps/', label: 'Explore maps'
     </div>
   </body>
 </html>
+<script>
+  import '../scripts/release-notice';
+</script>

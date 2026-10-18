@@ -2,9 +2,11 @@ import { electionLayerIds } from './election-districts';
 import snapshot from './education-transit.json';
 import cms from './cms-published.json';
 import { resolvePublicContentSource } from '../lib/content-source.mjs';
-const useCmsSnapshot = resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE) === 'supabase';
+// Validate unknown configuration, then keep source selection statically foldable.
+resolvePublicContentSource(import.meta.env?.PUBLIC_CONTENT_SOURCE);
+const useCmsSnapshot = typeof import.meta.env !== 'undefined' && import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 const cmsLayerIds = (cms.layers as unknown as { id: string }[]).map(layer => layer.id);
-export const officialLayerIds = new Set([...snapshot.datasets.map(source => source.id), ...electionLayerIds, ...(useCmsSnapshot ? cmsLayerIds : [])]);
+export const officialLayerIds = new Set(useCmsSnapshot ? cmsLayerIds : [...snapshot.datasets.map(source => source.id), ...electionLayerIds]);
 export const schoolTypeLayers = [
   { id: 'schools-elementary', name: 'Elementary schools', description: '22 locations · Elementary School in source', color: '#b45a16', icon: '/icons/schools/elementary.svg', kind: 'point' },
   { id: 'schools-middle', name: 'Middle schools', description: '6 locations · Middle School in source', color: '#2166ac', icon: '/icons/schools/middle.svg', kind: 'point' },
@@ -13,10 +15,10 @@ export const schoolTypeLayers = [
   { id: 'schools-administration', name: 'Administration & other facilities', description: '7 locations · Administration in source', color: '#5a5a5a', icon: '/icons/schools/administration.svg', kind: 'point' },
   { id: 'schools-specialty', name: 'Specialty schools', description: '1 location · Specialty School in source', color: '#1b9e77', icon: '/icons/schools/specialty.svg', kind: 'point' },
 ] as const;
-export const schoolPointLayerIds = schoolTypeLayers.map(layer => layer.id);
+export const schoolPointLayerIds = useCmsSnapshot ? [] : schoolTypeLayers.map(layer => layer.id);
 export function isSchoolPointLayer(id: string) { return schoolTypeLayers.some(layer => layer.id === id); }
 export function schoolIcon(id: string) { return schoolTypeLayers.find(layer => layer.id === id)?.icon || '/icons/schools/school.svg'; }
-export const educationTransitLayers = [
+export const educationTransitLayers = useCmsSnapshot ? [] : [
   { id: 'rapid-service-area', name: 'Rapid Transit service area', description: '4 published on-demand service zones', color: '#e6ab02', kind: 'area' },
   ...schoolTypeLayers,
   { id: 'school-zones-elementary', name: 'Elementary attendance zones', description: '23 polygons · source school year 2025–26', color: '#2166ac', kind: 'area' },
@@ -26,7 +28,7 @@ export const educationTransitLayers = [
   { id: 'transit-routes', name: 'Transit routes', description: '10 routes with 29 path variants · scheduled service', color: '#26726b', kind: 'line' },
   { id: 'transit-stops', name: 'Transit stops', description: '854 stops with scheduled route connections', color: '#26726b', kind: 'point' },
 ] as const;
-export const educationTransitMaps = [
+export const educationTransitMaps = useCmsSnapshot ? [] : [
   { id: 'rapid', name: 'MBCTA Rapid service area', description: 'Published on-demand service zones from MBCTA Rapid’s own map: Downtown, South, East and Northwest Bibb. Both pickup and destination must be inside active service areas.', layers: ['rapid-service-area'] },
   { id: 'schools', name: 'Schools by type', description: '43 district-listed locations, grouped by their official source type. Toggle elementary, middle, high, pre-K, administration and specialty locations independently.', layers: [...schoolPointLayerIds] },
   { id: 'school-elementary', name: 'Elementary attendance zones', description: 'Published elementary boundaries with elementary school locations. The source labels these zones 2025–26; confirm enrollment assignments with BCSD.', layers: ['schools-elementary', 'school-zones-elementary'] },
@@ -63,7 +65,7 @@ export function officialFeatureColor(properties: Record<string, any>, source: st
 function dateText(raw: string) {
   return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}T12:00:00Z`));
 }
-export const transitServicePeriod = `${dateText(snapshot.transitFeed.serviceStart)} – ${dateText(snapshot.transitFeed.serviceEnd)}`;
+export const transitServicePeriod = useCmsSnapshot ? '' : `${dateText(snapshot.transitFeed.serviceStart)} – ${dateText(snapshot.transitFeed.serviceEnd)}`;
 export function transitFeedExpired(now = new Date()) {
   const today = new Intl.DateTimeFormat('en-CA', {timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(now).replaceAll('-', '');
   return today > snapshot.transitFeed.serviceEnd;

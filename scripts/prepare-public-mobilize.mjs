@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { loadEnv } from 'vite';
 import { assertPublicPrivateEvent, PRIVATE_EVENT_KEYS, PRIVATE_LOCATION } from '../src/lib/private-event-policy.mjs';
+import { prepareCmsBuild } from './prepare-cms-build.mjs';
 
 export const REVIEWED_MOBILIZE_SHA256 = 'bc7f96e0faff7b3bf69058a3ef5d8826ea8ba71141bc874f8075af6b38d5c740';
 export const REVIEWED_MOBILIZE_COUNT = 119;
@@ -53,7 +54,14 @@ async function main() {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   const developmentEnv = loadEnv('development', root, 'PUBLIC_');
   const productionEnv = loadEnv('production', root, 'PUBLIC_');
-  assertLocalContentSource(process.env.PUBLIC_CONTENT_SOURCE || developmentEnv.PUBLIC_CONTENT_SOURCE || productionEnv.PUBLIC_CONTENT_SOURCE || 'local');
+  const source = process.env.PUBLIC_CONTENT_SOURCE || developmentEnv.PUBLIC_CONTENT_SOURCE || productionEnv.PUBLIC_CONTENT_SOURCE || 'local';
+  if (source === 'supabase') {
+    if (process.env.PUBLIC_CONTENT_SOURCE !== 'supabase') throw new Error('CMS build requires explicit PUBLIC_CONTENT_SOURCE=supabase in the build process');
+    await prepareCmsBuild(root, process.env.CIVICPULSE_SNAPSHOT_DIR);
+    process.stdout.write('Prepared explicit verified CMS snapshot in isolated public tree.\n');
+    return;
+  }
+  assertLocalContentSource(source);
   const sourcePath = path.join(root, 'src/data/mobilize-events.json');
   const outputPath = path.join(root, 'src/data/mobilize-events.public.json');
   const bytes = await readFile(sourcePath);

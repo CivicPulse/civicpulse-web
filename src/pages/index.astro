@@ -4,6 +4,7 @@ import Icon from '../components/Icon.astro';
 import VotingPreview from '../components/VotingPreview.astro';
 import { events, eventDate, eventTime } from '../lib/events';
 const featured = events.filter(event => new Date(event.end).getTime() >= Date.now()).slice(0, 3);
+const cmsMode = import.meta.env.PUBLIC_CONTENT_SOURCE === 'supabase';
 ---
 <Layout title="Our community, a little closer">
   <main id="main">
@@ -13,11 +14,10 @@ const featured = events.filter(event => new Date(event.end).getTime() >= Date.no
     </section>
     <div class="home-destinations">
       <section class="destination maps-destination" aria-labelledby="maps-title">
-        <header class="destination-heading"><h2 id="maps-title">Explore maps</h2><p>Polling places and voting precincts across Macon–Bibb.</p></header>
-        <a class="map-preview" href="/maps/" aria-label="Explore polling places and voting precincts">
+        <header class="destination-heading"><h2 id="maps-title">Explore maps</h2><p>{cmsMode ? 'Explore the maps in this published snapshot.' : 'Polling places and voting precincts across Macon–Bibb.'}</p></header>
+        <a class="map-preview" href="/maps/" aria-label={cmsMode ? 'Explore published maps' : 'Explore polling places and voting precincts'}>
           <VotingPreview />
-          <span class="preview-legend" aria-hidden="true"><span><i style="--swatch:#f5a400"></i>Polling places</span><span><i style="--swatch:#2166ac"></i>Voting precincts</span></span>
-          <span class="illustration-note">34 polling places · 31 voting precincts</span>
+          {!cmsMode && <><span class="preview-legend" aria-hidden="true"><span><i style="--swatch:#f5a400"></i>Polling places</span><span><i style="--swatch:#2166ac"></i>Voting precincts</span></span><span class="illustration-note">34 polling places · 31 voting precincts</span></>}
         </a>
         <a class="destination-link map-cta" href="/maps/">Open map explorer <Icon /></a>
       </section>
