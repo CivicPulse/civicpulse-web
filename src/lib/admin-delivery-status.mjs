@@ -94,6 +94,10 @@ export function createDeliveryStatusController({ port, render, isVisible=()=>tru
     if(!context.staff){emit({availability:'signed_out',message:'Staff access must be verified before checking delivery.',global:null,record:null,recordMessage:''});return;}
     if(context.source!=='supabase'||!context.available){emit({availability:'not_enabled',message:context.source!=='supabase'?'CMS-to-website refresh is not enabled in this local-source build.':'Website delivery status is not configured in this build.',global:null,record:null,recordMessage:'',draftRevision:context.record?.draftRevision??null,apiRevision:context.record?.publishedRevision??null});return;}
     if(context.record&&(!kinds.includes(context.record.kind)||typeof context.record.id!=='string'||!optional(context.record.draftRevision,counter)||!optional(context.record.publishedRevision,counter))) {stopped=true;emit({availability:'unavailable',message:'Reload the saved record before checking website delivery.',global:null,record:null,recordMessage:''});return;}
+    // A context change must never leave the previous record's verified status on
+    // screen. refresh() already clears it synchronously when visible; when hidden
+    // it returns before rendering, so clear to a neutral view here instead.
+    if(!isVisible()){emit({availability:'checking',message:'Website delivery status is paused while this tab is hidden. Show the tab to check.',global:null,record:null,recordMessage:'',draftRevision:context.record?.draftRevision??null,apiRevision:context.record?.publishedRevision??null});return;}
     void refresh();
   }
   return {setContext,refresh:()=>{stopped=false;return refresh();},visibilityChanged:()=>{clearTimer();if(isVisible())enqueue();},dispose:()=>{clearTimer();run++;request++;context=null;pending=false;baseline=null;signature='';}};

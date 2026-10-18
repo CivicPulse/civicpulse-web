@@ -64,6 +64,20 @@ test('visible authenticated polling is capped, hidden checks stop, manual refres
  h.state.visible=false;await h.refresh();assert.equal(h.state.calls.length,22);h.controller.visibilityChanged();assert.equal(h.timers.size,0);
  h.state.visible=true;const pending=deferred();h.state.globalRead=()=>pending.promise;const first=h.refresh();await flush();await h.refresh();assert.equal(h.state.calls.length,24);pending.resolve(statusGlobal());await first;h.controller.dispose();
 });
+test('hidden context switch clears the previous record status and does not fetch',async()=>{
+ const h=harness();await h.bind(context({selection:1,record:{kind:'event',id:'old',draftRevision:'3',publishedRevision:'2'}}));
+ assert.equal(h.view().global.dataset_epoch,epoch);assert.equal(h.view().record.website_state,'pending_publication');
+ h.state.visible=false;const calls=h.state.calls.length;
+ h.controller.setContext(context({selection:2,record:{kind:'event',id:'new',draftRevision:'4',publishedRevision:'3'}}));await flush();
+ assert.equal(h.state.calls.length,calls);assert.equal(h.view().global,null);assert.equal(h.view().record,null);assert.match(h.view().message,/hidden/i);assert.equal(h.view().draftRevision,'4');
+ h.state.visible=true;h.state.global=statusGlobal({live_generation:'9007199254740994',generation_lag:'0',state:'live'});h.state.record=statusRecord({published_revision:'3',live_revision:'3',website_state:'live'});
+ await h.refresh();assert.equal(h.view().record.website_state,'live');assert.ok(h.state.calls.some(c=>Array.isArray(c)&&c[0]==='event'&&c[1]==='new'));h.controller.dispose();
+});
+test('hidden sign-out clears sensitive status without fetching',async()=>{
+ const h=harness();await h.bind();h.state.visible=false;const calls=h.state.calls.length;
+ h.controller.setContext(context({staff:false,user:null,record:null}));await flush();
+ assert.equal(h.view().availability,'signed_out');assert.equal(h.view().global,null);assert.equal(h.view().record,null);assert.equal(h.state.calls.length,calls);h.controller.dispose();
+});
 test('actual vendored status client + guarded raw transport preserves string counters, rejects unsafe2xx, preserves non2xx ApiError',async()=>{
  let response=statusGlobal(),raw=null,calls=0;
  const api=createCivicPulseClient({url:'https://example.test',publishableKey:'public-fixture',accessToken:()=> 'session-fixture',fetch:createCmsJsonFetch(async(url,init)=>{
