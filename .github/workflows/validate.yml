@@ -1,0 +1,101 @@
+name: Credential-free validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web local, Python and browser validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PUBLIC_CONTENT_SOURCE: local
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout validation source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # official v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup supported Node without cache
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # official v6.5.0
+        with:
+          node-version: '22.23.2'
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Controller, snapshot, normal local build and private-output checks
+        run: node scripts/validate-local-ci.mjs
+      - name: Install isolated Python test dependencies
+        run: |
+          python3 --version
+          python3 -m venv "$RUNNER_TEMP/civicpulse-python"
+          "$RUNNER_TEMP/civicpulse-python/bin/pip" install --disable-pip-version-check -r scripts/requirements-ci.txt
+      - name: Five committed offline importer suites
+        run: '"$RUNNER_TEMP/civicpulse-python/bin/python" -m unittest discover -s tests -p "test_*.py"'
+      - name: Install locked Playwright Chromium and system dependencies
+        run: node node_modules/playwright/cli.js install --with-deps chromium
+      - name: Six committed browser suites against local static preview
+        run: node scripts/validate-browser-ci.mjs
+
+  sql:
+    name: Pinned disposable SQL and CMS removal validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PUBLIC_CONTENT_SOURCE: local
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout Web source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # official v7.0.1
+        with:
+          persist-credentials: false
+      - name: Checkout exact public API fixture revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # official v7.0.1
+        with:
+          repository: CivicPulse/civicpulse-api
+          ref: c11e6fd69a90c7884a2763aa843d28fd7ce93114
+          path: .ci-api
+          persist-credentials: false
+      - name: Setup supported Node without cache
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # official v6.5.0
+        with:
+          node-version: '22.23.2'
+          package-manager-cache: false
+      - name: Install locked Web dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Install pinned API test dependencies without CLI lifecycle
+        working-directory: .ci-api
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Pull immutable amd64 PostGIS test image
+        run: |
+          podman --version
+          podman pull --platform linux/amd64 docker.io/postgis/postgis@sha256:7ef699637304feff96028edbc7a653e135f2db2236d322b5cb2bfca11fd920bc
+      - name: Sequential fresh offline database harnesses and actual A/B builds
+        env:
+          CIVICPULSE_CI_API_DIRECTORY: ${{ github.workspace }}/.ci-api
+        run: node scripts/validate-sql-ci.mjs
+
+  civicpulse-validate:
+    name: civicpulse-validate
+    if: ${{ always() }}
+    needs: [web, sql]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Require every validation lane to succeed
+        env:
+          WEB_RESULT: ${{ needs.web.result }}
+          SQL_RESULT: ${{ needs.sql.result }}
+        shell: bash
+        run: |
+          if [[ "$WEB_RESULT" != success || "$SQL_RESULT" != success ]]; then
+            printf 'Required validation failed: web=%s sql=%s\n' "$WEB_RESULT" "$SQL_RESULT"
+            exit 1
+          fi
+          printf 'All required validation lanes succeeded.\n'
