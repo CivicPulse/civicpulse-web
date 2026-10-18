@@ -46,7 +46,7 @@ const failures: string[] = [];
 type Place = { feature: Feature; layer: L.Layer; source: string; title: string };
 const places: Place[] = [];
 const params = new URLSearchParams(location.search);
-let currentMap = maps.find(item => item.id === params.get('map')) || maps.find(item => item.id === (params.has('event') ? 'events' : 'voting'))!;
+let currentMap = maps.find(item => item.id === params.get('map')) || maps.find(item => item.id === (params.has('event') ? 'events' : 'voting')) || maps[0] || { id: '', name: 'No published maps', description: 'No maps are published in this snapshot.', layers: [] };
 let selected = new Set<string>(currentMap.layers);
 const requestedLayers = params.get('layers');
 if (requestedLayers !== null) {
