@@ -34,8 +34,12 @@ export const layers: readonly MapLayer[] = useCmsSnapshot ? cmsLayers : localLay
 export const maps: readonly CmsMap[] = useCmsSnapshot ? cms.maps as unknown as CmsMap[] : localMaps;
 
 export function layerUrl(id: string) {
-  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id && layer.dynamic === 'events')) return `${cmsContentPrefix}/data/calendar-events.geojson`;
-  if (useCmsSnapshot && cmsLayers.some(layer => layer.id === id)) return `${cmsContentPrefix}/data/cms/${encodeURIComponent(id)}.geojson`;
+  if (useCmsSnapshot) {
+    const layer = cmsLayers.find(layer => layer.id === id);
+    if (!layer) throw new Error('Layer is absent from the pinned published catalog');
+    return layer.dynamic === 'events' ? `${cmsContentPrefix}/data/calendar-events.geojson`
+      : `${cmsContentPrefix}/data/cms/${encodeURIComponent(id)}.geojson`;
+  }
   const filename = id === 'commission-districts' ? 'commission_districts' : id === 'polling-places' ? 'polling_places' : id === 'voting-precincts' ? 'voting_precincts' : id === 'event-locations' ? 'calendar-events' : id;
   return `/data/${filename}.geojson`;
 }
