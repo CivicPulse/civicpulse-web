@@ -61,6 +61,7 @@ export async function materializeV1Capture(snapshotPath, { dataDirectory, public
     [cmsPath, `${stableSerialize(data)}\n`],
     [markerPath, `${stableSerialize({
       format: snapshot.manifest.format,
+      manifest_sha256: snapshot.manifest.sha256,
       capture_sha256: snapshot.manifest.sha256,
       source_sha: snapshot.manifest.source_sha,
       captured_at: snapshot.manifest.captured_at,

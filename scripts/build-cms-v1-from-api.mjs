@@ -11,6 +11,7 @@ import { captureV1PublicContent } from './v1-public-capture.mjs';
 import { buildCmsArtifact } from './build-cms-artifact.mjs';
 import { sha256, stableSerialize } from './snapshot-integrity.mjs';
 import { validateApprovedPublicConfig } from './public-supabase-config.mjs';
+import { assertCleanSourceCommit } from './v1-build-source.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -29,6 +30,7 @@ async function main() {
     sourceSha = process.env.GITHUB_SHA;
   }
   if (typeof sourceSha !== 'string' || !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('A full lowercase source commit SHA is required');
+  assertCleanSourceCommit({ repository: root, sourceSha });
   const vendorDir = path.join(root, 'src/vendor/civicpulse-api');
   const vendorManifestBytes = await readFile(path.join(vendorDir, 'manifest.json'));
   const vendorManifest = JSON.parse(vendorManifestBytes.toString('utf8'));

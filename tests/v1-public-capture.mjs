@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { captureV1PublicContent, loadV1Capture, loadV1Inventory, sourceIdentityDigest } from '../scripts/v1-public-capture.mjs';
 import { sha256, stableSerialize } from '../scripts/snapshot-integrity.mjs';
+import { materializeV1Capture } from '../scripts/materialize-v1-capture.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const inventoryPath = path.join(root, 'data/cms-v1-cutover/v1-935-00c472b8.json');
@@ -140,7 +141,16 @@ try {
   assert.equal(loaded.records.event.length, 867);
   assert.equal(loaded.records.event.filter((row) => row.payload.addressPrivate === true).length, 81);
   assert.equal(loaded.manifest.inventory.synthetic_exclusions.length, 3);
-  console.log('V1 capture positive: 935 selected, 3 explicit exclusions, 1311 stored + 608 event features, honest provenance.');
+  const markerData = await mkdtemp(path.join(tmpdir(), 'civicpulse-v1-unused-'));
+  const markerPublic = await mkdtemp(path.join(tmpdir(), 'civicpulse-v1-public-'));
+  await materializeV1Capture(capture.directory, { dataDirectory: markerData, publicDirectory: markerPublic });
+  const cms = JSON.parse(await readFile(path.join(markerData, 'cms-published.json'), 'utf8'));
+  const marker = JSON.parse(await readFile(path.join(markerPublic, 'data/cms-snapshot.json'), 'utf8'));
+  assert.equal(marker.manifest_sha256, cms._snapshot.sha256);
+  assert.equal(marker.capture_sha256, cms._snapshot.sha256);
+  assert.equal(marker.manifest_sha256, loaded.manifest.sha256);
+  await rm(markerData, { recursive: true, force: true }); await rm(markerPublic, { recursive: true, force: true });
+  console.log('V1 capture positive: 935 selected, 3 explicit exclusions, 1311 stored + 608 event features, honest provenance, marker manifest_sha256 matches embedded metadata.');
   async function mutatedInventory(mutate) {
     const dir = await mkdtemp(path.join(tmpdir(), 'civicpulse-v1-inventory-'));
     const file = path.join(dir, 'inventory.json');

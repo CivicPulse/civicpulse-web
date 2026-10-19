@@ -101,6 +101,7 @@ try {
     assert.equal(result.code, 0, `resident smoke failed (${result.signal || result.code})`);
     const marker = JSON.parse(await readFile(path.join(artifact, 'data/cms-snapshot.json'), 'utf8'));
     assert.equal(marker.format, 'civicpulse-v1-direct-capture');
+    assert.equal(marker.manifest_sha256, loaded.manifest.sha256);
     assert.equal(marker.capture_sha256, loaded.manifest.sha256);
     process.stdout.write(`V1 fixture build + resident static E2E PASS: ${artifact} (${base})\n`);
   } finally { server.closeAllConnections(); await new Promise((resolve) => server.close(resolve)); }

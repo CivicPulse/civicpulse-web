@@ -21,8 +21,8 @@ or reuse the additive M1 snapshot format. No deployment or upload is performed.
 
 ## Behavior
 
-`scripts/capture-v1-public-content.mjs` reads all public v1 content in deterministic
-ordered pages, validates payload/revision and exact page counts, and partitions
+`scripts/v1-public-capture.mjs`, invoked by `scripts/build-cms-v1-from-api.mjs`,
+reads all public v1 content in deterministic ordered pages, validates payload/revision and exact page counts, and partitions
 the complete published set into the 935 expected records and the 3 explicit
 exclusions. Missing, unknown, duplicate, changed or private-policy-invalid rows
 fail closed; no local content is selected.
