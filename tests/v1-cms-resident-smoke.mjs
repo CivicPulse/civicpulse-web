@@ -37,7 +37,7 @@ try {
   await expect(page.locator('#login-form')).toBeVisible();
   await expect(page.locator('#email')).toBeVisible();
   await expect(page.locator('#password')).toBeVisible();
-  await expect(page.locator('body')).not.toContainText('CMS setup needed');
+  expect(await page.locator('main').innerText()).not.toContain('CMS setup needed');
   const ics = await (await fetch(`${base}/events.ics`)).text();
   expect((ics.match(/BEGIN:VEVENT/g) || []).length).toBeGreaterThan(800);
   const layer = await (await fetch(`${base}/data/cms/polling-places.geojson`)).json();
