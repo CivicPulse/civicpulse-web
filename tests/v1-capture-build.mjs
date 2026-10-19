@@ -55,6 +55,7 @@ try {
   if (dependencyDirectory) buildOptions.dependencyDirectory = dependencyDirectory;
   await assert.rejects(buildCmsArtifact(buildOptions), /approved public Supabase/);
   await assert.rejects(buildCmsArtifact({ ...buildOptions, publicSupabaseConfig: { url: 'https://wrong.invalid', publishableKey: publicSupabaseConfig.publishableKey } }), /approved hosted project/);
+  await assert.rejects(buildCmsArtifact({ ...buildOptions, publicSupabaseConfig: { url: publicSupabaseConfig.url, publishableKey: 'x'.repeat(40) } }), /approved public-only config/);
   const built = await buildCmsArtifact({ ...buildOptions, publicSupabaseConfig });
   const artifact = await realpath(built.artifact);
   const provenance = JSON.parse(await readFile(path.join(built.attempt, 'build-provenance.json'), 'utf8'));
