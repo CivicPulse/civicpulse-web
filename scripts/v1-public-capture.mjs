@@ -124,6 +124,7 @@ export async function loadV1Inventory(inventoryPath) {
     !isRecord(doc.expected_counts) || Object.keys(doc.expected_counts).length !== CONTENT_KINDS.length ||
     !Number.isSafeInteger(doc.expected_total) || doc.expected_total < 1 ||
     !Array.isArray(doc.records) || !Array.isArray(doc.synthetic_exclusions) || !Array.isArray(doc.layers) ||
+    !isRecord(doc.presentation_order) || Object.keys(doc.presentation_order).length !== CONTENT_KINDS.length ||
     !isRecord(doc.expected_features) || !/^[0-9a-f]{64}$/i.test(doc.expected_identity_sha256 || '')) {
     fail('V1 cutover inventory is incomplete');
   }
@@ -132,6 +133,18 @@ export async function loadV1Inventory(inventoryPath) {
   }
   if (CONTENT_KINDS.reduce((sum, kind) => sum + doc.expected_counts[kind], 0) !== doc.expected_total) fail('V1 inventory total does not match counts');
   if (doc.records.length !== doc.expected_total) fail('V1 inventory record count does not match total');
+  const expectedIds = new Set(doc.records.map((row) => `${row.kind}\0${row.id}`));
+  const orderedIds = new Set();
+  for (const kind of CONTENT_KINDS) {
+    const order = doc.presentation_order[kind];
+    if (!Array.isArray(order) || order.length !== doc.expected_counts[kind] || new Set(order).size !== order.length) fail(`V1 inventory ${kind} presentation order is invalid`);
+    for (const id of order) {
+      const key = `${kind}\0${id}`;
+      if (!expectedIds.has(key) || orderedIds.has(key)) fail(`V1 inventory ${kind} presentation order is not a permutation`);
+      orderedIds.add(key);
+    }
+  }
+  if (orderedIds.size !== expectedIds.size) fail('V1 inventory presentation order is incomplete');
   const seen = new Set();
   for (const row of doc.records) {
     if (!isRecord(row) || !CONTENT_KINDS.includes(row.kind) || typeof row.id !== 'string' || !row.id) fail('V1 inventory contains a malformed record');
@@ -332,6 +345,7 @@ export async function captureV1PublicContent({
         expected_total: inventory.expected_total,
         expected_counts: inventory.expected_counts,
         expected_identity_sha256: inventory.expected_identity_sha256,
+        presentation_order: inventory.presentation_order,
         expected_features: inventory.expected_features,
         expected_private_events: inventory.expected_private_events,
         expected_normal_events: inventory.expected_normal_events,
@@ -419,6 +433,17 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
   for (const kind of CONTENT_KINDS) if (manifest.counts[kind] !== manifest.inventory.expected_counts?.[kind]) fail(`V1 capture ${kind} count differs from inventory`);
   if (manifest.records.length !== manifest.inventory.expected_total) fail('V1 capture record count differs from inventory');
   if (sourceIdentityDigest(manifest.records) !== manifest.inventory.expected_identity_sha256) fail('V1 capture selected identity differs from inventory');
+  const ordered = new Set();
+  for (const kind of CONTENT_KINDS) {
+    const order = manifest.inventory.presentation_order?.[kind];
+    if (!Array.isArray(order) || order.length !== manifest.counts[kind] || new Set(order).size !== order.length) fail(`V1 capture ${kind} presentation order is invalid`);
+    for (const id of order) {
+      const key = `${kind}\0${id}`;
+      if (!manifest.records.some((row) => `${row.kind}\0${row.id}` === key) || ordered.has(key)) fail(`V1 capture ${kind} presentation order is not a permutation`);
+      ordered.add(key);
+    }
+  }
+  if (ordered.size !== manifest.records.length) fail('V1 capture presentation order is incomplete');
   const expected = new Set(manifest.inventory.synthetic_exclusions.map((row) => `${row.kind}\0${row.id}`));
   for (const row of manifest.records) {
     if (!isRecord(row) || !CONTENT_KINDS.includes(row.kind) || typeof row.id !== 'string' || !/^[1-9][0-9]*$/.test(row.revision) || !/^[0-9a-f]{64}$/i.test(row.payload_sha256)) fail('V1 capture record metadata is malformed');

@@ -5,7 +5,8 @@ import { loadV1Capture } from './v1-public-capture.mjs';
 import { stableSerialize } from './snapshot-integrity.mjs';
 
 function payloads(snapshot, kind) {
-  return snapshot.records[kind].map((row) => row.payload);
+  const byId = new Map(snapshot.records[kind].map((row) => [row.id, row.payload]));
+  return snapshot.manifest.inventory.presentation_order[kind].map((id) => byId.get(id));
 }
 
 function captureData(snapshot) {
