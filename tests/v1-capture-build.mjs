@@ -17,7 +17,7 @@ const fixturePath = process.env.CIVICPULSE_V1_FIXTURE;
 if (!fixturePath) throw new Error('CIVICPULSE_V1_FIXTURE must point to a real v1 fixture JSON');
 const inventoryPath = path.join(root, 'data/cms-v1-cutover/v1-935-00c472b8.json');
 const sourceSha = exec('git', ['rev-parse', 'HEAD']).trim();
-const dependencyDirectory = process.env.CIVICPULSE_DEPENDENCY_DIRECTORY || path.join('/mnt/storage/projects/CivicPulse/civicpulse-web', 'node_modules');
+const dependencyDirectory = process.env.CIVICPULSE_DEPENDENCY_DIRECTORY;
 function exec(program, args, options = {}) {
   const result = spawnSync(program, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 64 * 1024 * 1024, ...options });
   if (result.error) throw result.error;
@@ -48,7 +48,9 @@ try {
   const loaded = await loadV1Capture(capture.directory);
   assert.equal(loaded.manifest.content_fence.selected_rows, 935);
   assert.equal(loaded.manifest.content_fence.excluded_rows, 3);
-  const built = await buildCmsArtifact({ repository: root, sourceSha, snapshotDirectory: capture.directory, attemptsDirectory: path.join(work, 'attempts'), dependencyDirectory });
+  const buildOptions = { repository: root, sourceSha, snapshotDirectory: capture.directory, attemptsDirectory: path.join(work, 'attempts') };
+  if (dependencyDirectory) buildOptions.dependencyDirectory = dependencyDirectory;
+  const built = await buildCmsArtifact(buildOptions);
   const artifact = await realpath(built.artifact);
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.geojson': 'application/geo+json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ics': 'text/calendar' };
   let base = '';
