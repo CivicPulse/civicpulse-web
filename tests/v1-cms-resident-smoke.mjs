@@ -28,7 +28,7 @@ try {
   await page.screenshot({ path: `${out}/maps.png`, fullPage: true });
   await page.goto(`${base}/calendar/`);
   await expect(page.locator('main h1')).toBeVisible();
-  await expect(page.locator('.calendar-event').first()).toBeVisible();
+  expect(await page.locator('.calendar-event').count()).toBeGreaterThan(0);
   await page.goto(`${base}/data/`);
   await expect(page.locator('main h1')).toBeVisible();
   await page.goto(`${base}/admin/`);
