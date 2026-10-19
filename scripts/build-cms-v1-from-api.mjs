@@ -10,6 +10,7 @@ import { createCivicPulseClient } from '../src/vendor/civicpulse-api/client.mjs'
 import { captureV1PublicContent } from './v1-public-capture.mjs';
 import { buildCmsArtifact } from './build-cms-artifact.mjs';
 import { sha256, stableSerialize } from './snapshot-integrity.mjs';
+import { validateApprovedPublicConfig } from './public-supabase-config.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -19,6 +20,7 @@ async function main() {
   const publishableKey = process.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const inventoryPath = process.env.CIVICPULSE_V1_INVENTORY;
   if (!url || !publishableKey || !inventoryPath) throw new Error('PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY and CIVICPULSE_V1_INVENTORY are required');
+  const publicSupabaseConfig = validateApprovedPublicConfig({ url, publishableKey });
   let sourceSha = process.env.CIVICPULSE_SOURCE_SHA || process.env.GITHUB_SHA;
   if (process.env.GITHUB_ACTIONS === 'true') {
     if (process.env.GITHUB_REF !== 'refs/heads/main' || !process.env.GITHUB_SHA) throw new Error('GitHub Actions v1 capture is restricted to a main-branch commit');
@@ -46,6 +48,7 @@ async function main() {
   const build = await buildCmsArtifact({
     repository: root, sourceSha, snapshotDirectory: capture.directory,
     attemptsDirectory: path.join(root, '.civicpulse/build-attempts'),
+    publicSupabaseConfig,
   });
   process.stdout.write(`${JSON.stringify({
     capture: capture.directory,
@@ -54,6 +57,7 @@ async function main() {
     counts: capture.manifest.counts,
     content_fence: capture.manifest.content_fence,
     source_sha: sourceSha,
+    public_config_sha256: publicSupabaseConfig.config_sha256,
     artifact: build.artifact,
     artifact_sha256: build.sha256,
   }, null, 2)}\n`);

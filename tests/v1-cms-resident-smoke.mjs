@@ -32,7 +32,12 @@ try {
   await page.goto(`${base}/data/`);
   await expect(page.locator('main h1')).toBeVisible();
   await page.goto(`${base}/admin/`);
-  await expect(page.locator('main')).toContainText(/Staff access|delivery/i);
+  await expect(page.locator('#config-notice')).toBeHidden();
+  await expect(page.locator('#login-panel')).toBeVisible();
+  await expect(page.locator('#login-form')).toBeVisible();
+  await expect(page.locator('#email')).toBeVisible();
+  await expect(page.locator('#password')).toBeVisible();
+  await expect(page.locator('body')).not.toContainText('CMS setup needed');
   const ics = await (await fetch(`${base}/events.ics`)).text();
   expect((ics.match(/BEGIN:VEVENT/g) || []).length).toBeGreaterThan(800);
   const layer = await (await fetch(`${base}/data/cms/polling-places.geojson`)).json();

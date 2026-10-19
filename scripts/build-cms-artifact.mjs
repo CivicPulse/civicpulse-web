@@ -5,9 +5,10 @@ import { fileURLToPath } from 'node:url';
 import { loadPinnedSnapshot } from './read-pinned-snapshot.mjs';
 import { loadV1Capture } from './v1-public-capture.mjs';
 import { sha256, stableSerialize } from './snapshot-integrity.mjs';
+import { validateApprovedPublicConfig } from './public-supabase-config.mjs';
 
 /** Content/build foundation only: no uploader, claim, live receipt or authority. */
-export async function buildCmsArtifact({ repository, sourceSha, snapshotDirectory, attemptsDirectory, dependencyDirectory }) {
+export async function buildCmsArtifact({ repository, sourceSha, snapshotDirectory, attemptsDirectory, dependencyDirectory, publicSupabaseConfig }) {
   if (typeof sourceSha !== 'string' || !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Explicit lowercase source commit required');
   const manifestBytes = await readFile(path.join(snapshotDirectory, 'manifest.json'));
   const publicManifest = JSON.parse(manifestBytes.toString('utf8'));
@@ -15,6 +16,9 @@ export async function buildCmsArtifact({ repository, sourceSha, snapshotDirector
     ? await loadV1Capture(snapshotDirectory)
     : await loadPinnedSnapshot(snapshotDirectory);
   if (snapshot.manifest.source_sha !== sourceSha) throw new Error('Build source differs from pinned snapshot source');
+  const isV1Capture = snapshot.manifest.format === 'civicpulse-v1-direct-capture';
+  if (isV1Capture && !publicSupabaseConfig) throw new Error('V1 CMS build requires the approved public Supabase configuration');
+  const approvedPublicConfig = publicSupabaseConfig ? validateApprovedPublicConfig(publicSupabaseConfig) : null;
   const version = process.versions.node.split('.').map(Number);
   if (version[0] < 22 || version[0] === 22 && version[1] < 22) throw new Error('Node 22.22.0 or newer required');
   attemptsDirectory = path.resolve(attemptsDirectory);
@@ -50,6 +54,7 @@ export async function buildCmsArtifact({ repository, sourceSha, snapshotDirector
   // Do not inherit hosted credentials or caller source selection. This stage
   // builds only the supplied immutable public snapshot; no API call is needed.
   Object.assign(env, { PUBLIC_CONTENT_SOURCE: 'supabase', CIVICPULSE_SNAPSHOT_DIR: snapshot.directory, ASTRO_TELEMETRY_DISABLED: '1' });
+  if (approvedPublicConfig) Object.assign(env, { PUBLIC_SUPABASE_URL: approvedPublicConfig.url, PUBLIC_SUPABASE_PUBLISHABLE_KEY: approvedPublicConfig.publishableKey });
   const build = spawnSync('npm', ['run', 'build'], { cwd: source, env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
   await writeFile(path.join(attempt, 'build.log'), `${build.stdout || ''}${build.stderr || ''}`);
   if (build.status !== 0) throw new Error(`CMS build failed; candidate not releasable (${path.basename(attempt)})`);
@@ -76,7 +81,7 @@ export async function buildCmsArtifact({ repository, sourceSha, snapshotDirector
   const manifest = { schema_version: 1, files };
   const bytes = stableSerialize(manifest);
   await writeFile(path.join(attempt, 'artifact-manifest.json'), bytes, { flag: 'wx' });
-  await writeFile(path.join(attempt, 'build-provenance.json'), `${stableSerialize({ source_sha: sourceSha, snapshot_sha256: snapshot.manifest.sha256, artifact_sha256: sha256(bytes) })}\n`, { flag: 'wx' });
+  await writeFile(path.join(attempt, 'build-provenance.json'), `${stableSerialize({ source_sha: sourceSha, snapshot_sha256: snapshot.manifest.sha256, artifact_sha256: sha256(bytes), ...(approvedPublicConfig ? { public_config_sha256: approvedPublicConfig.config_sha256 } : {}) })}\n`, { flag: 'wx' });
   return { attempt, artifact, manifest, sha256: sha256(bytes) };
 }
 

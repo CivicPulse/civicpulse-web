@@ -1,10 +1,12 @@
 // Test-only v1 cutover capture fixtures. No hosted API, credentials or writes.
 import assert from 'node:assert/strict';
-import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
+import { cp, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { captureV1PublicContent, loadV1Capture, loadV1Inventory, sourceIdentityDigest } from '../scripts/v1-public-capture.mjs';
+import { sha256, stableSerialize } from '../scripts/snapshot-integrity.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const inventoryPath = path.join(root, 'data/cms-v1-cutover/v1-935-00c472b8.json');
@@ -13,8 +15,9 @@ const vendorSha = 'b'.repeat(64);
 const inventory = await loadV1Inventory(inventoryPath);
 const kinds = ['organization', 'calendar', 'event', 'layer', 'map'];
 const eventIds = inventory.records.filter((row) => row.kind === 'event').map((row) => row.id).sort();
-const privateIds = new Set(eventIds.slice(0, inventory.expected_private_events));
-const mappedIds = new Set(eventIds.slice(inventory.expected_private_events, inventory.expected_private_events + inventory.expected_features.event_locations));
+const privateIds = new Set(inventory.private_event_ids);
+const normalEventIds = eventIds.filter((id) => !privateIds.has(id));
+const mappedIds = new Set(normalEventIds.slice(0, inventory.expected_features.event_locations));
 const layerMeta = new Map(inventory.layers.map((layer) => [layer.id, layer]));
 const storedLayers = new Map();
 let featureOrdinal = 0;
@@ -55,13 +58,21 @@ function baseRows() {
   for (const row of inventory.synthetic_exclusions) rows.push({ kind: row.kind, id: row.id, revision: 1, payload: { id: row.id, name: row.id } });
   return rows;
 }
-function fixture({ omit, extra, mutateFence, mutatePayload, privateViolation, incompletePage, layerDefect } = {}) {
+function fixture({ omit, extra, mutateFence, mutatePayload, privateViolation, privateSwap, incompletePage, layerDefect } = {}) {
   let rows = baseRows();
   if (omit) rows = rows.filter((row) => !(row.kind === omit.kind && row.id === omit.id));
   if (extra) rows.push(extra);
   if (privateViolation) {
     const row = rows.find((entry) => entry.kind === 'event' && privateIds.has(entry.id));
     row.payload = { ...row.payload, address: 'raw private address' };
+  }
+  if (privateSwap) {
+    const privateRow = rows.find((entry) => entry.kind === 'event' && privateIds.has(entry.id));
+    const normalRow = rows.find((entry) => entry.kind === 'event' && !privateIds.has(entry.id));
+    privateRow.payload = { ...privateRow.payload, addressPrivate: false, address: 'raw private address', coordinates: [-83.6, 32.8] };
+    const normalPayload = { ...normalRow.payload, addressPrivate: true, address: 'Private location — see organizer for details', location: 'Private location — see organizer for details' };
+    delete normalPayload.coordinates;
+    normalRow.payload = normalPayload;
   }
   let mutated = false;
   let layerReads = 0;
@@ -130,12 +141,62 @@ try {
   assert.equal(loaded.records.event.filter((row) => row.payload.addressPrivate === true).length, 81);
   assert.equal(loaded.manifest.inventory.synthetic_exclusions.length, 3);
   console.log('V1 capture positive: 935 selected, 3 explicit exclusions, 1311 stored + 608 event features, honest provenance.');
+  async function mutatedInventory(mutate) {
+    const dir = await mkdtemp(path.join(tmpdir(), 'civicpulse-v1-inventory-'));
+    const file = path.join(dir, 'inventory.json');
+    const doc = JSON.parse(await readFile(inventoryPath, 'utf8'));
+    mutate(doc);
+    await writeFile(file, JSON.stringify(doc));
+    return file;
+  }
+  const storedModePath = await mutatedInventory((doc) => { doc.layers.find((layer) => layer.id === 'event-locations').mode = 'stored'; });
+  await assert.rejects(loadV1Inventory(storedModePath), /events layer|event-locations/);
+  const extraModePath = await mutatedInventory((doc) => { doc.layers.find((layer) => layer.id !== 'event-locations').mode = 'events'; });
+  await assert.rejects(loadV1Inventory(extraModePath), /exactly one events|only event-locations/);
+  console.log('V1 layer-mode negatives: missing/swapped/extra events layers rejected.');
+
+  const pathParent = await mkdtemp(path.join(tmpdir(), 'civicpulse-v1-path-'));
+  async function cloneStaging() {
+    const stage = path.join(pathParent, `.staging-${randomUUID()}`);
+    await cp(capture.directory, stage, { recursive: true });
+    return stage;
+  }
+  async function rewriteManifest(stage, mutate) {
+    const file = path.join(stage, 'manifest.json');
+    const manifest = JSON.parse(await readFile(file, 'utf8'));
+    mutate(manifest);
+    const unhashed = { ...manifest };
+    delete unhashed.sha256;
+    manifest.sha256 = sha256(stableSerialize(unhashed));
+    await writeFile(file, `${stableSerialize(manifest)}\n`);
+    return stage;
+  }
+  const traversal = await rewriteManifest(await cloneStaging(), (manifest) => { manifest.layer_files[manifest.layers[0].id].file = 'layers/../escape.geojson'; });
+  await assert.rejects(loadV1Capture(traversal, { allowStagingDirectory: true }), /allowlisted|escapes|ancestor/);
+  const absolute = await rewriteManifest(await cloneStaging(), (manifest) => { manifest.layer_files[manifest.layers[0].id].file = '/tmp/escape.geojson'; });
+  await assert.rejects(loadV1Capture(absolute, { allowStagingDirectory: true }), /allowlisted|escapes|absolute/);
+  const symlinked = await cloneStaging();
+  const symlinkManifest = JSON.parse(await readFile(path.join(symlinked, 'manifest.json'), 'utf8'));
+  const symlinkFile = path.join(symlinked, symlinkManifest.layer_files[symlinkManifest.layers[0].id].file);
+  const outside = path.join(pathParent, 'outside.geojson');
+  await writeFile(outside, '{"type":"FeatureCollection","features":[]}\n');
+  await rm(symlinkFile);
+  await symlink(outside, symlinkFile);
+  await assert.rejects(loadV1Capture(symlinked, { allowStagingDirectory: true }), /regular non-symlink/);
+  const ancestor = await cloneStaging();
+  await cp(path.join(ancestor, 'layers'), path.join(ancestor, 'layers-real'), { recursive: true });
+  await rm(path.join(ancestor, 'layers'), { recursive: true });
+  await symlink(path.join(ancestor, 'layers-real'), path.join(ancestor, 'layers'));
+  await assert.rejects(loadV1Capture(ancestor, { allowStagingDirectory: true }), /ancestor/);
+  await rm(pathParent, { recursive: true, force: true });
+  console.log('V1 path negatives: traversal/absolute/final-symlink/ancestor-symlink rejected before layer read.');
 } finally { await rm(captureDir, { recursive: true, force: true }); }
 
 await rejectsCapture({ omit: { kind: 'event', id: eventIds[0] } }, /missing expected records/);
 await rejectsCapture({ extra: { kind: 'map', id: 'unknown-row', revision: 1, payload: { id: 'unknown-row' } } }, /Unknown published row/);
 await rejectsCapture({ omit: inventory.synthetic_exclusions[0] }, /missing an explicit synthetic exclusion/);
 await rejectsCapture({ privateViolation: true }, /failed public policy/);
+await rejectsCapture({ privateSwap: true }, /Pinned private event classified normal|Unpinned event classified private|classification/);
 await rejectsCapture({ mutateFence: true }, /changed during capture/);
 await rejectsCapture({ mutatePayload: true }, /changed during capture/);
 await rejectsCapture({ incompletePage: true }, /missing expected records/);

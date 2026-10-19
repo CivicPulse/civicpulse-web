@@ -11,12 +11,14 @@ import { captureV1PublicContent } from '../scripts/v1-public-capture.mjs';
 import { buildCmsArtifact } from '../scripts/build-cms-artifact.mjs';
 import { loadV1Capture } from '../scripts/v1-public-capture.mjs';
 import { sha256, stableSerialize } from '../scripts/snapshot-integrity.mjs';
+import { validateApprovedPublicConfig } from '../scripts/public-supabase-config.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fixturePath = process.env.CIVICPULSE_V1_FIXTURE;
 if (!fixturePath) throw new Error('CIVICPULSE_V1_FIXTURE must point to a real v1 fixture JSON');
 const inventoryPath = path.join(root, 'data/cms-v1-cutover/v1-935-00c472b8.json');
 const sourceSha = exec('git', ['rev-parse', 'HEAD']).trim();
+const publicSupabaseConfig = validateApprovedPublicConfig({ url: process.env.CIVICPULSE_TEST_PUBLIC_URL, publishableKey: process.env.CIVICPULSE_TEST_PUBLIC_KEY });
 const dependencyDirectory = process.env.CIVICPULSE_DEPENDENCY_DIRECTORY;
 function exec(program, args, options = {}) {
   const result = spawnSync(program, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 64 * 1024 * 1024, ...options });
@@ -51,8 +53,20 @@ try {
   assert.equal(loaded.manifest.content_fence.excluded_rows, 3);
   const buildOptions = { repository: root, sourceSha, snapshotDirectory: capture.directory, attemptsDirectory: path.join(work, 'attempts') };
   if (dependencyDirectory) buildOptions.dependencyDirectory = dependencyDirectory;
-  const built = await buildCmsArtifact(buildOptions);
+  await assert.rejects(buildCmsArtifact(buildOptions), /approved public Supabase/);
+  await assert.rejects(buildCmsArtifact({ ...buildOptions, publicSupabaseConfig: { url: 'https://wrong.invalid', publishableKey: publicSupabaseConfig.publishableKey } }), /approved hosted project/);
+  const built = await buildCmsArtifact({ ...buildOptions, publicSupabaseConfig });
   const artifact = await realpath(built.artifact);
+  const provenance = JSON.parse(await readFile(path.join(built.attempt, 'build-provenance.json'), 'utf8'));
+  assert.equal(provenance.public_config_sha256, publicSupabaseConfig.config_sha256);
+  let foundUrl = false; let foundKey = false;
+  for (const file of built.manifest.files) {
+    const bytes = await readFile(path.join(artifact, file.path));
+    if (bytes.includes(Buffer.from(publicSupabaseConfig.url))) foundUrl = true;
+    if (bytes.includes(Buffer.from(publicSupabaseConfig.publishableKey))) foundKey = true;
+  }
+  assert.equal(foundUrl, true, 'approved public URL missing from artifact');
+  assert.equal(foundKey, true, 'approved publishable key missing from artifact');
   for (const exclusion of inventory.synthetic_exclusions) {
     const grep = spawnSync('grep', ['-R', '-l', '--', exclusion.id, artifact], { encoding: 'utf8' });
     assert.equal(grep.status, 1, `synthetic record leaked into artifact: ${exclusion.id}`);

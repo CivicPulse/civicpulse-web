@@ -23,6 +23,32 @@ const FORBIDDEN = ['dataset_epoch', 'generation', 'bootstrap_complete'];
 const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const cCompare = (a, b) => Buffer.compare(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
 const fail = (message) => { throw new Error(message); };
+const LAYER_FILE = /^layers\/[0-9a-f]{24}\.geojson$/;
+const FIXED_FILES = new Set(['manifest.json', 'records.json']);
+function validateLayerModes(layers) {
+  const events = layers.filter((layer) => layer.mode === 'events');
+  if (events.length !== 1 || events[0].id !== 'event-locations') fail('V1 capture requires exactly one events layer: event-locations');
+  if (layers.some((layer) => layer.id === 'event-locations' && layer.mode !== 'events')) fail('V1 event-locations layer must be events mode');
+  if (layers.some((layer) => layer.id !== 'event-locations' && layer.mode === 'events')) fail('V1 only event-locations may be events mode');
+}
+async function readCaptureFile(root, relative) {
+  if (typeof relative !== 'string' || relative.length === 0 || relative.includes('\\') || relative.includes('\0') || path.isAbsolute(relative)) fail('V1 capture file path is not an allowlisted relative path');
+  if (!FIXED_FILES.has(relative) && !LAYER_FILE.test(relative)) fail('V1 capture file path is outside the allowlisted grammar');
+  const resolved = path.resolve(root, relative);
+  if (!resolved.startsWith(root + path.sep)) fail('V1 capture file escapes the pinned directory');
+  const parts = relative.split('/');
+  let current = root;
+  for (const part of parts.slice(0, -1)) {
+    current = path.join(current, part);
+    const ancestor = await lstat(current);
+    if (ancestor.isSymbolicLink() || !ancestor.isDirectory()) fail('V1 capture path ancestor is not a regular directory');
+  }
+  const file = await lstat(resolved);
+  if (file.isSymbolicLink() || !file.isFile()) fail('V1 capture file is not a regular non-symlink file');
+  const real = await realpath(resolved);
+  if (!real.startsWith(root + path.sep)) fail('V1 capture file resolves outside the pinned directory');
+  return readFile(resolved);
+}
 
 function requireRecord(value, message) {
   if (!isRecord(value)) fail(message);
@@ -40,6 +66,12 @@ async function assertNoSymlinkComponents(directory) {
     if (metadata.isSymbolicLink()) fail('Capture root path cannot contain symbolic links');
     if (!metadata.isDirectory()) fail('Capture root path components must be directories');
   }
+}
+
+export function privateEventIdsDigest(ids) {
+  const hash = createHash('sha256');
+  for (const id of [...ids].sort(cCompare)) hash.update(`${id}\n`);
+  return hash.digest('hex');
 }
 
 export function sourceIdentityDigest(records) {
@@ -125,6 +157,8 @@ export async function loadV1Inventory(inventoryPath) {
     !Number.isSafeInteger(doc.expected_total) || doc.expected_total < 1 ||
     !Array.isArray(doc.records) || !Array.isArray(doc.synthetic_exclusions) || !Array.isArray(doc.layers) ||
     !isRecord(doc.presentation_order) || Object.keys(doc.presentation_order).length !== CONTENT_KINDS.length ||
+    !Array.isArray(doc.private_event_ids) || !/^[0-9a-f]{64}$/i.test(doc.private_event_ids_sha256 || '') ||
+    !/^[0-9a-f]{64}$/i.test(doc.private_source_manifest_sha256 || '') || !/^[0-9a-f]{64}$/i.test(doc.private_policy_source_sha256 || '') ||
     !isRecord(doc.expected_features) || !/^[0-9a-f]{64}$/i.test(doc.expected_identity_sha256 || '')) {
     fail('V1 cutover inventory is incomplete');
   }
@@ -156,6 +190,10 @@ export async function loadV1Inventory(inventoryPath) {
     if (doc.records.filter((row) => row.kind === kind).length !== doc.expected_counts[kind]) fail(`V1 inventory ${kind} inventory count mismatch`);
   }
   if (sourceIdentityDigest(doc.records) !== doc.expected_identity_sha256.toLowerCase()) fail('V1 inventory identity digest mismatch');
+  if (doc.private_event_ids.length !== doc.expected_private_events || new Set(doc.private_event_ids).size !== doc.private_event_ids.length) fail('V1 inventory private event IDs are inconsistent');
+  const expectedEvents = new Set(doc.records.filter((row) => row.kind === 'event').map((row) => row.id));
+  if (doc.private_event_ids.some((id) => !expectedEvents.has(id))) fail('V1 inventory private event ID is not an expected event');
+  if (privateEventIdsDigest(doc.private_event_ids) !== doc.private_event_ids_sha256.toLowerCase()) fail('V1 inventory private event ID digest mismatch');
   const exclusions = new Set();
   for (const row of doc.synthetic_exclusions) {
     if (!isRecord(row) || !CONTENT_KINDS.includes(row.kind) || typeof row.id !== 'string' || !row.id) fail('V1 synthetic exclusion is malformed');
@@ -177,6 +215,7 @@ export async function loadV1Inventory(inventoryPath) {
     if (layer.mode === 'stored') stored += layer.feature_count;
     else events += layer.feature_count;
   }
+  validateLayerModes(doc.layers);
   if (stored !== doc.expected_features.stored || events !== doc.expected_features.event_locations ||
     doc.expected_features.total !== stored + events) fail('V1 inventory feature totals do not match layer metadata');
   return Object.freeze({ ...doc, inventory_sha256: sha256(bytes) });
@@ -201,14 +240,16 @@ function selectExpectedRows(rows, inventory) {
     if (count !== inventory.expected_counts[kind]) fail(`Selected ${kind} count mismatch`);
   }
   if (sourceIdentityDigest(selected) !== inventory.expected_identity_sha256.toLowerCase()) fail('Selected content identity digest mismatch');
+  const pinnedPrivate = new Set(inventory.private_event_ids);
   const privateEvents = selected.filter((row) => row.kind === 'event' && row.payload.addressPrivate === true);
-  if (privateEvents.length !== inventory.expected_private_events) fail('Private event count mismatch');
+  const normalEvents = selected.filter((row) => row.kind === 'event' && row.payload.addressPrivate !== true);
+  if (privateEvents.length !== inventory.expected_private_events || normalEvents.length !== inventory.expected_normal_events) fail('Event classification counts mismatch');
   for (const row of privateEvents) {
+    if (!pinnedPrivate.has(row.id)) fail(`Unpinned event classified private: ${row.id}`);
     try { assertPublicPrivateEvent(row.payload); }
     catch (error) { fail(`Private event ${row.id} failed public policy: ${error.message}`); }
   }
-  const normalEvents = selected.filter((row) => row.kind === 'event' && row.payload.addressPrivate !== true);
-  if (normalEvents.length !== inventory.expected_normal_events) fail('Normal event count mismatch');
+  for (const row of normalEvents) if (pinnedPrivate.has(row.id)) fail(`Pinned private event classified normal: ${row.id}`);
   selected.sort((a, b) => cCompare(a.kind, b.kind) || cCompare(a.id, b.id));
   return selected;
 }
@@ -240,6 +281,7 @@ async function fetchStoredLayer(api, layer) {
 }
 
 async function captureLayers(api, selected, inventory) {
+  validateLayerModes(inventory.layers);
   const layerRows = selected.filter((row) => row.kind === 'layer');
   if (layerRows.length !== inventory.layers.length) fail('Selected layer rows do not match inventory layer metadata');
   const byId = new Map(layerRows.map((row) => [row.id, row]));
@@ -349,6 +391,12 @@ export async function captureV1PublicContent({
         expected_features: inventory.expected_features,
         expected_private_events: inventory.expected_private_events,
         expected_normal_events: inventory.expected_normal_events,
+        private_event_ids: inventory.private_event_ids,
+        private_event_ids_sha256: inventory.private_event_ids_sha256,
+        private_source_manifest_path: inventory.private_source_manifest_path,
+        private_source_manifest_sha256: inventory.private_source_manifest_sha256,
+        private_policy_path: inventory.private_policy_path,
+        private_policy_source_sha256: inventory.private_policy_source_sha256,
         synthetic_exclusions: inventory.synthetic_exclusions,
         inventory_sha256: inventory.inventory_sha256,
       },
@@ -406,7 +454,7 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
   const stat = await lstat(requested);
   if (!stat.isDirectory() || stat.isSymbolicLink()) fail('V1 capture path must be a real directory');
   const root = await realpath(requested);
-  const manifestBytes = await readFile(path.join(root, 'manifest.json'));
+  const manifestBytes = await readCaptureFile(root, 'manifest.json');
   let manifest;
   try { manifest = JSON.parse(manifestBytes.toString('utf8')); }
   catch { fail('V1 capture manifest is not valid JSON'); }
@@ -449,7 +497,7 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
     if (!isRecord(row) || !CONTENT_KINDS.includes(row.kind) || typeof row.id !== 'string' || !/^[1-9][0-9]*$/.test(row.revision) || !/^[0-9a-f]{64}$/i.test(row.payload_sha256)) fail('V1 capture record metadata is malformed');
     if (expected.has(`${row.kind}\0${row.id}`)) fail('Synthetic exclusion leaked into selected records');
   }
-  const recordBytes = await readFile(path.join(root, 'records.json'));
+  const recordBytes = await readCaptureFile(root, 'records.json');
   if (manifest.files['records.json']?.sha256 !== sha256(recordBytes) || manifest.files['records.json']?.bytes !== recordBytes.length) fail('V1 capture records checksum mismatch');
   let grouped;
   try { grouped = JSON.parse(recordBytes.toString('utf8')); }
@@ -473,13 +521,14 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
   const expectedFiles = new Set(['manifest.json', 'records.json']);
   const expectedDirs = new Set(['layers']);
   if (manifest.layers.length !== manifest.inventory.expected_counts.layer) fail('V1 capture layer count mismatch');
+  validateLayerModes(manifest.layers);
   for (const layer of manifest.layers) {
     const meta = manifest.layer_files[layer.id];
     if (!isRecord(meta) || !['stored', 'events'].includes(layer.mode) || layer.mode !== meta.mode ||
       !Number.isSafeInteger(layer.feature_count) || layer.feature_count < 0 ||
       layer.output_feature_count !== meta.output_feature_count || !/^[0-9a-f]{64}$/i.test(meta.sha256 || '') ||
       !Number.isSafeInteger(meta.bytes) || meta.bytes < 0) fail(`V1 capture layer ${layer.id} metadata is malformed`);
-    const bytes = await readFile(path.join(root, meta.file));
+    const bytes = await readCaptureFile(root, meta.file);
     if (sha256(bytes) !== meta.sha256 || bytes.length !== meta.bytes) fail(`V1 capture layer ${layer.id} checksum mismatch`);
     let collection;
     try { collection = JSON.parse(bytes.toString('utf8')); }
@@ -489,6 +538,14 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
     if (layer.mode === 'stored' && collection.features.length !== layer.feature_count) fail(`V1 capture stored layer ${layer.id} count mismatch`);
     layers[layer.id] = collection;
     expectedFiles.add(meta.file);
+  }
+  const pinnedPrivate = new Set(manifest.inventory.private_event_ids || []);
+  if (pinnedPrivate.size !== manifest.inventory.expected_private_events || privateEventIdsDigest([...pinnedPrivate]) !== manifest.inventory.private_event_ids_sha256) fail('V1 capture private event pin mismatch');
+  for (const row of rows.filter((entry) => entry.kind === 'event')) {
+    if (row.payload.addressPrivate === true) {
+      if (!pinnedPrivate.has(row.id)) fail(`V1 capture unpinned event classified private: ${row.id}`);
+      assertPublicPrivateEvent(row.payload);
+    } else if (pinnedPrivate.has(row.id)) fail(`V1 capture pinned private event classified normal: ${row.id}`);
   }
   const events = rows.filter((row) => row.kind === 'event').map((row) => row.payload);
   const derived = deriveEventLocations(events);
