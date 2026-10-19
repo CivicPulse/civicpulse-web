@@ -3,12 +3,17 @@ import { mkdir, mkdtemp, readdir, lstat, readFile, writeFile, symlink } from 'no
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadPinnedSnapshot } from './read-pinned-snapshot.mjs';
+import { loadV1Capture } from './v1-public-capture.mjs';
 import { sha256, stableSerialize } from './snapshot-integrity.mjs';
 
 /** Content/build foundation only: no uploader, claim, live receipt or authority. */
 export async function buildCmsArtifact({ repository, sourceSha, snapshotDirectory, attemptsDirectory, dependencyDirectory }) {
   if (typeof sourceSha !== 'string' || !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Explicit lowercase source commit required');
-  const snapshot = await loadPinnedSnapshot(snapshotDirectory);
+  const manifestBytes = await readFile(path.join(snapshotDirectory, 'manifest.json'));
+  const publicManifest = JSON.parse(manifestBytes.toString('utf8'));
+  const snapshot = publicManifest?.format === 'civicpulse-v1-direct-capture'
+    ? await loadV1Capture(snapshotDirectory)
+    : await loadPinnedSnapshot(snapshotDirectory);
   if (snapshot.manifest.source_sha !== sourceSha) throw new Error('Build source differs from pinned snapshot source');
   const version = process.versions.node.split('.').map(Number);
   if (version[0] < 22 || version[0] === 22 && version[1] < 22) throw new Error('Node 22.22.0 or newer required');

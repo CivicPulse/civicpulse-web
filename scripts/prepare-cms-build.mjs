@@ -4,12 +4,17 @@ import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { materializePinnedSnapshot } from './materialize-pinned-snapshot.mjs';
 import { loadPinnedSnapshot } from './read-pinned-snapshot.mjs';
+import { loadV1Capture } from './v1-public-capture.mjs';
+import { materializeV1Capture } from './materialize-v1-capture.mjs';
 
 const assets = JSON.parse(await readFile(new URL('./cms-public-assets.json', import.meta.url), 'utf8'));
 
 /** Normal CMS prebuild. Only disposable attempt workspaces may consume CMS data. */
 export async function prepareCmsBuild(root, snapshotPath) {
-  const snapshot = await loadPinnedSnapshot(snapshotPath);
+  const manifestBytes = await readFile(path.join(snapshotPath, 'manifest.json'));
+  const manifest = JSON.parse(manifestBytes.toString('utf8'));
+  const isV1Capture = manifest?.format === 'civicpulse-v1-direct-capture';
+  const snapshot = isV1Capture ? await loadV1Capture(snapshotPath) : await loadPinnedSnapshot(snapshotPath);
   if ((await lstat(path.join(root, 'public'))).isSymbolicLink()) throw new Error('CMS source public root cannot be a symlink');
   const generated = path.join(root, '.civicpulse');
   await mkdir(generated, { recursive: true });
@@ -31,7 +36,8 @@ export async function prepareCmsBuild(root, snapshotPath) {
       await mkdir(path.dirname(destination), { recursive: true });
       await cp(source, destination, { errorOnExist: true, force: false });
     }
-    await materializePinnedSnapshot(snapshot.directory, { dataDirectory: path.join(root, 'src/data'), publicDirectory: stage });
+    if (isV1Capture) await materializeV1Capture(snapshot.directory, { dataDirectory: path.join(root, 'src/data'), publicDirectory: stage });
+    else await materializePinnedSnapshot(snapshot.directory, { dataDirectory: path.join(root, 'src/data'), publicDirectory: stage });
     // Each page requests only data bound to its own immutable snapshot. Stable
     // aliases remain revalidating downloads, never late-fetch substitutes.
     await cp(path.join(stage, 'data'), path.join(stage, '_content', snapshot.manifest.sha256, 'data'), { recursive: true });
