@@ -16,6 +16,7 @@ const venueCount = new Set(allEvents.filter(event => !event.sample && event.coor
 const october17Count = allEvents.filter(event => onDay(event, '2026-10-17')).length;
 
 const base = process.env.TEST_BASE_URL || 'http://localhost:4321';
+const mapStatusSuffix = process.env.CIVICPULSE_CMS_BUILD === '1' ? 'Published snapshot' : 'Uploaded voting data';
 const out = process.env.TEST_SCREENSHOTS || '.impeccable/review';
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch({ headless: true, ...(process.env.CHROME_EXECUTABLE_PATH ? { executablePath: process.env.CHROME_EXECUTABLE_PATH } : {}) });
@@ -32,7 +33,7 @@ try {
     await page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.getByRole('link', { name: 'Open map explorer' }).click();
-    await expect(page.locator('#map-status')).toHaveText('2 layers visible · Uploaded voting data');
+    await expect(page.locator('#map-status')).toHaveText(`2 layers visible · ${mapStatusSuffix}`);
     await expect(page.locator('.place-row')).toHaveCount(65);
     await expect(page.locator('#map img.leaflet-marker-icon')).toHaveCount(34);
     await expect.poll(async () => page.locator('#map img.leaflet-marker-icon').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.getBoundingClientRect().width > 20))).toBeTruthy();

@@ -75,7 +75,7 @@ try {
     const smokeRoot = path.dirname(path.dirname(smokePath));
     const child = spawn(process.execPath, [smokePath], {
       cwd: smokeRoot, stdio: 'inherit', timeout: 300000,
-      env: { ...process.env, TEST_BASE_URL: base, TEST_SCREENSHOTS: screenshots, PUBLIC_CONTENT_SOURCE: 'local' },
+      env: { ...process.env, TEST_BASE_URL: base, TEST_SCREENSHOTS: screenshots, PUBLIC_CONTENT_SOURCE: 'local', CIVICPULSE_CMS_BUILD: '1' },
     });
     const result = await new Promise((resolve, reject) => { child.on('error', reject); child.on('exit', (code, signal) => resolve({ code, signal })); });
     assert.equal(result.code, 0, `resident smoke failed (${result.signal || result.code})`);
