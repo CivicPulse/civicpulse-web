@@ -46,12 +46,17 @@ let failed = true;
 try {
   const capture = await captureV1PublicContent({ api, snapshotsDir: path.join(work, 'captures'), inventoryPath, sourceSha, vendorManifestSha256: sha256(stableSerialize(vendorManifest)) });
   const loaded = await loadV1Capture(capture.directory);
+  const inventory = JSON.parse(await readFile(inventoryPath, 'utf8'));
   assert.equal(loaded.manifest.content_fence.selected_rows, 935);
   assert.equal(loaded.manifest.content_fence.excluded_rows, 3);
   const buildOptions = { repository: root, sourceSha, snapshotDirectory: capture.directory, attemptsDirectory: path.join(work, 'attempts') };
   if (dependencyDirectory) buildOptions.dependencyDirectory = dependencyDirectory;
   const built = await buildCmsArtifact(buildOptions);
   const artifact = await realpath(built.artifact);
+  for (const exclusion of inventory.synthetic_exclusions) {
+    const grep = spawnSync('grep', ['-R', '-l', '--', exclusion.id, artifact], { encoding: 'utf8' });
+    assert.equal(grep.status, 1, `synthetic record leaked into artifact: ${exclusion.id}`);
+  }
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.geojson': 'application/geo+json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ics': 'text/calendar' };
   let base = '';
   const server = createServer(async (request, response) => {
