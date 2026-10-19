@@ -494,6 +494,7 @@ export async function loadV1Capture(snapshotPath, { allowStagingDirectory = fals
   const derived = deriveEventLocations(events);
   const eventLayer = manifest.layers.find((layer) => layer.mode === 'events');
   if (!eventLayer || eventLayer.feature_count !== derived.eligibleCount) fail('V1 capture event layer eligible count mismatch');
+  if (stableSerialize(layers[eventLayer.id]) !== stableSerialize(derived.collection)) fail('V1 capture event layer bytes mismatch');
   const expectedStored = manifest.layers.filter((layer) => layer.mode === 'stored').reduce((sum, layer) => sum + layer.feature_count, 0);
   const expectedEvents = manifest.layers.filter((layer) => layer.mode === 'events').reduce((sum, layer) => sum + layer.feature_count, 0);
   if (expectedStored !== manifest.inventory.expected_features.stored || expectedEvents !== manifest.inventory.expected_features.event_locations) fail('V1 capture feature totals mismatch');
