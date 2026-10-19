@@ -71,8 +71,10 @@ try {
   base = `http://127.0.0.1:${server.address().port}`;
   try {
     const screenshots = path.join(work, 'screens');
-    const child = spawn(process.execPath, [path.join(root, 'tests/smoke.mjs')], {
-      cwd: root, stdio: 'inherit', timeout: 300000,
+    const smokePath = process.env.CIVICPULSE_SMOKE_PATH || path.join(root, 'tests/smoke.mjs');
+    const smokeRoot = path.dirname(path.dirname(smokePath));
+    const child = spawn(process.execPath, [smokePath], {
+      cwd: smokeRoot, stdio: 'inherit', timeout: 300000,
       env: { ...process.env, TEST_BASE_URL: base, TEST_SCREENSHOTS: screenshots, PUBLIC_CONTENT_SOURCE: 'local' },
     });
     const result = await new Promise((resolve, reject) => { child.on('error', reject); child.on('exit', (code, signal) => resolve({ code, signal })); });
