@@ -144,6 +144,41 @@ test('controller rejects dirty, invalid and conflicted publish, preserves metada
   assert.equal(h.el('save-draft').disabled, false); assert.equal(h.el('publish').disabled, false);
 });
 
+test('controller recognizes verified PT409 conflicts and rejects malformed or unrelated errors without retry', async () => {
+  const h = await harness(); await h.select();
+  let latestReads = 0;
+  h.state.getDraft = () => { latestReads++; return { ...structuredClone(h.state.draft), revision: 2, payload: { ...h.state.draft.payload, name: 'Concurrent' } }; };
+  const initialReads = latestReads;
+  await h.edit('Local');
+  h.state.save = async () => { throw new ApiError(409, { code: 'PT409', message: 'Revision conflict' }); };
+  await h.submit();
+  assert.equal(h.state.calls.filter(([name]) => name === 'save').length, 1);
+  assert.equal(latestReads, initialReads + 1);
+  assert.equal(h.el('conflict-panel').hidden, false);
+  assert.equal(JSON.parse(h.el('conflict-local').value).name, 'Local');
+  assert.equal(JSON.parse(h.el('conflict-latest').value).name, 'Concurrent');
+  assert.equal(h.el('publish').disabled, true);
+
+  const failures = [
+    ['wrong HTTP status', new ApiError(500, { code: 'PT409', message: 'Conflict' })],
+    ['detail mismatch', (() => { const error = new ApiError(409, { code: 'PT409', message: 'Conflict' }); error.detail = { code: '40001' }; return error; })()],
+    ['missing detail code', (() => { const error = new ApiError(409, { code: 'PT409', message: 'Conflict' }); error.detail = {}; return error; })()],
+    ['ordinary Error code', Object.assign(new Error('Conflict'), { code: 'PT409' })],
+    ['transport error', new Error('network unavailable')],
+  ];
+  for (const [label, error] of failures) {
+    const negative = await harness(); await negative.select(); await negative.edit('Keep local');
+    let reads = 0; negative.state.getDraft = () => { reads++; return structuredClone(negative.state.draft); };
+    const before = reads;
+    negative.state.save = async () => { throw error; };
+    await negative.submit();
+    assert.equal(negative.state.calls.filter(([name]) => name === 'save').length, 1, `${label}: one save attempt`);
+    assert.equal(reads, before, `${label}: no conflict refresh`);
+    assert.equal(negative.el('conflict-panel').hidden, true, `${label}: no conflict UI`);
+    assert.equal(negative.el('payload').value.includes('Keep local'), true, `${label}: local text retained`);
+  }
+});
+
 test('older same-user reconciliation cannot unlock newer pending recovery; confirmed42501 clears retained text', async () => {
   const h = await harness(); await h.select(); await h.edit('Uncertain');
   h.state.save = () => new Promise(() => {}); const write = h.el('editor-form').event('submit'); await h.flush(); h.timeout(); await write;
