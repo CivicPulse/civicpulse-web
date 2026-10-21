@@ -116,9 +116,14 @@ function showMessage(target: HTMLElement, message: string, kind: 'error' | 'succ
   target.hidden = false;
 }
 function hideMessage(target: HTMLElement) { target.hidden = true; target.textContent = ''; }
+function isStaleRevisionConflict(error: unknown): error is ApiError {
+  if (!(error instanceof ApiError) || error.status !== 409) return false;
+  const code = error.code;
+  return (code === '40001' || code === 'PT409') && error.detail?.code === code;
+}
 function userMessage(error: unknown) {
   const code = error instanceof ApiError ? error.code : (error as { code?: string } | null)?.code;
-  if (code === '40001') return 'This draft changed after you opened it. Your unsaved text is preserved below so you can compare it with the latest saved revision.';
+  if (isStaleRevisionConflict(error)) return 'This draft changed after you opened it. Your unsaved text is preserved below so you can compare it with the latest saved revision.';
   if (code === '42501') return 'Access was denied. Your staff membership may have changed; refresh your role or ask an administrator.';
   if (code === '23503') return 'A referenced organization, calendar, or layer is missing or cannot be changed yet. Resolve the dependency and try again.';
   if (code === 'P0002') return 'The selected record or published layer no longer exists. Refresh the record list.';
@@ -454,7 +459,7 @@ byId<HTMLFormElement>('editor-form').addEventListener('submit', async event => {
   } catch (error) {
     if (editorRequest !== editorRun || sessionRequest !== authRun) return;
     if (error instanceof CmsOutcomeUnknown || isCmsJsonValueError(error)) outcomeUnknown = true;
-    if (error instanceof ApiError && error.code === '40001') {
+    if (isStaleRevisionConflict(error)) {
       const local = payloadInput.value;
       byId<HTMLTextAreaElement>('conflict-local').value = local;
       byId<HTMLTextAreaElement>('conflict-latest').value = 'The latest saved draft could not be loaded. Refresh the record before publishing.';

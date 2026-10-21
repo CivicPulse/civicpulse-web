@@ -49,6 +49,23 @@ test('ordinary/equivalent raw values and HTTP error semantics survive actual cli
   await assert.rejects(failing.getDraft('organization', 'x'), error => error instanceof ApiError && error.status === 409 && error.code === '40001');
 });
 
+test('actual vendored client preserves PT409 and rejects malformed, non-409, and transport cases without retry', async () => {
+  let calls = 0;
+  const clientFor = fetch => createCivicPulseClient({ url, publishableKey: 'public-fixture', fetch: createCmsJsonFetch(async () => { calls++; return fetch(); }, url) });
+  const pt409 = clientFor(async () => new Response('{"code":"PT409","message":"Revision conflict"}', { status: 409 }));
+  await assert.rejects(pt409.getDraft('organization', 'x'), error => error instanceof ApiError && error.status === 409 && error.code === 'PT409' && error.detail.code === error.code);
+  assert.equal(calls, 1);
+  const wrongStatus = clientFor(async () => new Response('{"code":"PT409","message":"Revision conflict"}', { status: 500 }));
+  await assert.rejects(wrongStatus.getDraft('organization', 'x'), error => error instanceof ApiError && error.status === 500 && error.code === 'PT409');
+  assert.equal(calls, 2);
+  const malformed = clientFor(async () => new Response('not-json', { status: 409 }));
+  await assert.rejects(malformed.getDraft('organization', 'x'), error => error instanceof ApiError && error.status === 409 && error.code === undefined);
+  assert.equal(calls, 3);
+  const transport = createCivicPulseClient({ url, publishableKey: 'public-fixture', fetch: async () => { calls++; throw new Error('network unavailable'); } });
+  await assert.rejects(transport.getDraft('organization', 'x'), /network unavailable/);
+  assert.equal(calls, 4);
+});
+
 test('Advanced JSON with a rounded-to-baseline number cannot pass the handler publish gate', () => {
   const draft = { kind: 'organization', id: 'x', revision: 1, payload: { id: 'x', n: 0 } };
   assert.equal(canPublishReviewedDraft({ role: 'admin', kind: 'organization', id: 'x', expectedRevision: 1, draft, payloadText: '{"id":"x","n":1e-400}' }), false);
